@@ -68,7 +68,7 @@ export default function BrandCard({
         {brand.description}
       </p>
       <Link
-        href="/marcas"
+        href={`/marcas/${brand.slug}`}
         className="group mt-2 inline-flex w-fit items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-barcel-black"
       >
         Ver todos los productos

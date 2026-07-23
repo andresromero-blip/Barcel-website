@@ -1,23 +1,9 @@
-import type { Metadata } from "next";
-import { SearchProvider } from "@/components/SearchContext";
-import Header from "@/components/Header";
-import MarcasCatalog from "@/components/MarcasCatalog";
-import Footer from "@/components/Footer";
+import { redirect } from "next/navigation";
+import { brands } from "@/data/brands";
 
-export const metadata: Metadata = {
-  title: "Nuestras marcas | Barcel",
-  description:
-    "Descubre todas las marcas del universo Barcel: Chip's, Takis, Big Mix, Runners, Hot Nuts y Golden Nuts.",
-};
-
-export default function MarcasPage() {
-  return (
-    <SearchProvider>
-      <Header />
-      <main>
-        <MarcasCatalog />
-      </main>
-      <Footer />
-    </SearchProvider>
-  );
+// Ya no existe un "hub" /marcas: cada marca tiene su propia página
+// (/marcas/[slug]). Si alguien llega a /marcas a secas (link viejo,
+// escrito a mano), lo mandamos a la primera marca en vez de un 404.
+export default function MarcasIndexRedirect() {
+  redirect(`/marcas/${brands[0].slug}`);
 }

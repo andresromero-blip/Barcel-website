@@ -226,6 +226,43 @@ src/
 - Se agregaron los campos opcionales `heroImage` y `flavors` al tipo
   `Brand` (`src/data/brands.ts`), sin afectar el Home.
 
+## Ronda 9: se elimina el hub /marcas — página individual por marca
+
+- **Feedback**: el hub `/marcas` (ronda 8) seguía sin convencer a nivel de
+  UX — el Home ya da acceso a las 6 marcas, así que un catálogo intermedio
+  es un paso redundante. Decisión: no debe existir un "hub"; cada marca
+  tiene su propia entrada directa con su portafolio de productos, y el nav
+  "Marcas" del Header debe ser un desplegable con acceso a cada una.
+- **Ruta dinámica `/marcas/[slug]`** (`src/app/marcas/[slug]/page.tsx`,
+  `generateStaticParams` para las 6 marcas) reemplaza la página única de
+  catálogo. `src/components/BrandPage.tsx` es el contenido: hero a color
+  sólido de marca (igual que antes), y debajo una sección "Portafolio de
+  productos" siempre visible —ya no escondida en un acordeón, porque en
+  una página dedicada a una sola marca el portafolio es el contenido
+  principal, no un detalle secundario—, más "Dónde encontrarla" y una
+  franja "Explora otras marcas" al final (así cada página de marca conecta
+  con las demás sin necesitar un hub intermedio).
+- **`/marcas` a secas** ahora hace `redirect()` a la primera marca en vez
+  de un catálogo, por si queda algún link viejo.
+- **Header**: "Marcas" dejó de ser un link — ahora es un botón con
+  desplegable (clic, con cierre al hacer clic afuera o cambiar de página)
+  listando las 6 marcas, tanto en desktop como en el menú mobile
+  (acordeón). El subrayado activo usa `pathname.startsWith("/marcas")`.
+- **Home**: se quitó el botón "Nuestras botanas" de "Conoce toda nuestra
+  familia" — ya no hay a dónde mandarlo que no sea redundante con las
+  tarjetas de abajo. Cada tarjeta de marca ahora enlaza su "Ver todos los
+  productos →" directo a `/marcas/[slug]` de esa marca en particular (antes
+  todas apuntaban al mismo catálogo genérico).
+- `MarcasCatalog.tsx` y `BrandShowcase.tsx` (el hub y su sección) quedan
+  deprecados/vacíos en el repo — el sandbox de este entorno no permite
+  borrar archivos entre pasos, así que no se eliminaron físicamente, pero
+  ya no se importan desde ningún lado.
+- Se empezó por **Takis**, la única marca con fotografía de producto real
+  compartida hasta ahora — su página muestra el portafolio completo de 8
+  presentaciones. Las otras 5 ya tienen su página (el dropdown del nav no
+  lleva a ningún link roto) pero con el mismo fallback de rondas
+  anteriores hasta que se comparta su fotografía de producto.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
