@@ -13,7 +13,7 @@ export default function BrandCard({
 
   const imageTile = (
     <div
-      className={`group relative flex min-h-[220px] flex-1 items-center justify-center overflow-hidden p-8 md:min-h-[300px] ${brand.bg}`}
+      className={`group relative flex min-h-[220px] items-center justify-center overflow-hidden p-8 md:min-h-[300px] ${brand.bg}`}
     >
       {hasRealLogo ? (
         <>
@@ -45,7 +45,7 @@ export default function BrandCard({
   );
 
   const textTile = (
-    <div className="flex flex-1 flex-col justify-center gap-3 bg-white p-8 md:p-12">
+    <div className="flex flex-col justify-center gap-3 bg-white p-8 md:p-12">
       <h3 className="font-display text-2xl font-extrabold text-barcel-black md:text-3xl">
         {brand.name}
         <sup className="text-[0.45em]">®</sup>
@@ -69,7 +69,7 @@ export default function BrandCard({
   return (
     <article
       id={brand.slug}
-      className={`flex flex-col overflow-hidden transition-all duration-500 md:flex-row ${
+      className={`flex flex-col overflow-hidden transition-all duration-500 md:grid md:grid-cols-2 ${
         dimmed ? "opacity-30 saturate-50" : "opacity-100"
       } ${highlighted ? "ring-4 ring-barcel-red ring-offset-2" : ""}`}
     >
