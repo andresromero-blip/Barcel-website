@@ -1,3 +1,8 @@
+export type Flavor = {
+  name: string;
+  image: string;
+};
+
 export type Brand = {
   slug: string;
   name: string;
@@ -9,6 +14,8 @@ export type Brand = {
   imageFirst: boolean; // whether the color tile is on the left (desktop)
   logo?: string; // logo real (estado default)
   logoHover?: string; // logo real con microinteracción de hover (producto asomando)
+  heroImage?: string; // foto de producto suelto a gran escala — usada en /marcas
+  flavors?: Flavor[]; // presentaciones/sabores con foto real de empaque — usada en /marcas
 };
 
 export const brands: Brand[] = [
@@ -37,6 +44,17 @@ export const brands: Brand[] = [
     imageFirst: false,
     logo: "/logos/takis.png",
     logoHover: "/logos/takis-hover.png",
+    heroImage: "/products/takis/hero-dragon.png",
+    flavors: [
+      { name: "Fuego", image: "/products/takis/flavors/fuego.png" },
+      { name: "Original", image: "/products/takis/flavors/original.png" },
+      { name: "Salsa Brava", image: "/products/takis/flavors/salsa-brava.png" },
+      { name: "Ranch", image: "/products/takis/flavors/ranch.png" },
+      { name: "Chile Limón", image: "/products/takis/flavors/chile-limon.png" },
+      { name: "Huacamoles", image: "/products/takis/flavors/huacamoles.png" },
+      { name: "Blue Heat", image: "/products/takis/flavors/blue-heat.png" },
+      { name: "Intense Nacho", image: "/products/takis/flavors/intense-nacho.png" },
+    ],
   },
   {
     slug: "runners",

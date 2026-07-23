@@ -184,6 +184,48 @@ src/
   anchor). El subrayado activo del nav ahora se calcula con `usePathname()`
   en vez de estar fijo en "Inicio".
 
+## Ronda 8: rediseño de `/marcas` (referente Pinterest)
+
+- **Feedback**: `/marcas` replicaba literalmente el mismo layout de "Conoce
+  toda nuestra familia" en el Home — un paso extra sin aportar nada nuevo,
+  confuso para el usuario. Se compartió como referente la landing animada
+  de "Domingo" (Pinterest): secciones a pantalla casi completa, una por
+  producto, con el nombre en tipografía gigante de fondo, foto de producto
+  flotando en grande, color sólido distinto por producto y un panel de
+  detalle tipo acordeón en vez de texto siempre visible.
+- **Nuevo componente `BrandShowcase.tsx`** reemplaza `BrandCard` dentro de
+  `/marcas` (Home sigue usando `BrandCard`/`FamilyGrid` sin cambios — son
+  vistas distintas a propósito: preview curado en Home, catálogo inmersivo
+  en `/marcas`):
+  - Fondo a color sólido de marca + wordmark gigante del nombre en
+    `font-teko` al 15% de opacidad (puramente decorativo/textura).
+  - Todo el texto legible (nombre, tagline, descripción, acordeón) vive
+    dentro de una tarjeta blanca — así el contraste es siempre AA sin
+    importar qué tan claro u oscuro sea el color de cada marca (evita tener
+    que calcular contraste caso por caso contra 6 colores distintos).
+  - Foto de producto grande flotando directamente sobre el color de fondo,
+    alternando de lado con `imageFirst` (mismo mecanismo que ya usa
+    `BrandCard`).
+  - Acordeón con "Presentaciones" (si hay fotos reales de sabores) y "Dónde
+    encontrarla".
+  - Numeración 01→06 con índice de salto rápido arriba de la página.
+- **Assets reales de Takis**: se recibió la carpeta completa de producto
+  (`ASSETS PROTOTIPO/ASSETS PRODUCTOS/1) Takis`). Se usó
+  `TAKIS DRAGON.png` (pieza suelta) como foto hero de la sección, y las 8
+  fotos 3D de bolsa (`3D TAKIS FUEGO/ORIGINAL/SALSA BRAVA/RANCH/CHILE
+  LIMÓN/HUACAMOLES/BLUE HEAT/INTENSE NACHO.png`) para el acordeón de
+  "Presentaciones" — copiadas a `public/products/takis/` redimensionadas y
+  optimizadas (originales pesaban ~6MB c/u).
+- **Las otras 5 marcas** (sin fotografía de producto real todavía) usan el
+  mismo layout pero con fallback: la imagen hero es `logoHover` (el asset
+  de logo+producto asomando que ya existía) y sin acordeón de
+  "Presentaciones". En cuanto se comparta fotografía de producto de cada
+  marca, `brands.ts` solo necesita un `heroImage`/`flavors` por marca para
+  que se vean igual de completas que Takis — no hace falta tocar el
+  componente.
+- Se agregaron los campos opcionales `heroImage` y `flavors` al tipo
+  `Brand` (`src/data/brands.ts`), sin afectar el Home.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
