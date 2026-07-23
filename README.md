@@ -33,12 +33,12 @@ npm start
 ```
 src/
   app/
-    layout.tsx      # layout raíz, metadata, fuentes (Poppins/Inter vía Google Fonts link)
+    layout.tsx      # layout raíz, metadata, fuente Raleway vía Google Fonts link
     page.tsx         # ensambla el Home
     globals.css       # tailwind + estilos base
   components/
     Header.tsx        # nav sticky, buscador funcional, menú móvil
-    Hero.tsx           # carrusel interactivo (autoplay + dots + flechas)
+    Hero.tsx           # carrusel con los 3 banners reales (public/hero) + CTA como componente
     LogoMarquee.tsx      # scroll infinito de marcas
     BrandIntro.tsx        # sección "Sabor y calidad, ¡Así es Barcel!"
     FamilyGrid.tsx          # "Conoce toda nuestra familia" (grid de marcas)
@@ -63,13 +63,22 @@ src/
 - Los íconos de redes sociales por marca se dejaron **fuera** del Home (van
   en las páginas internas de cada marca, según lo acordado en next steps).
 
-## Pendiente / próximos pasos
+## Assets reales de Figma
 
-- **Assets reales**: todo el sitio usa placeholders (bloques de color con el
-  nombre de marca) donde van logos y fotografía de producto. En cuanto se
-  compartan los archivos de marca, se reemplazan directamente en
-  `src/data/brands.ts`, `src/data/news.ts` y los componentes `Hero.tsx` /
-  `BrandIntro.tsx`.
+- **Colores y tipografía**: extraídos con `get_variable_defs` del archivo de
+  Figma (fuente única: Raleway; rojo primario `#ff2d50`/`#f5173c`/`#ce0728`,
+  verde Chip's `#02e55b`, morado Takis `#ac43ff`, azul Big Mix `#0a8ced`,
+  escala de grises, etc.) y aplicados en `tailwind.config.ts`.
+- **Hero (`public/hero/`)**: los 3 banners del slider (`slide-bienvenido.jpg`,
+  `slide-golden-nuts.jpg`, `slide-wapas.jpg`) son los assets reales
+  exportados del prototipo. El texto y el arte ya vienen resueltos en la
+  imagen; el CTA de cada slide se renderiza aparte como componente real
+  (`<a>` posicionado sobre el banner con `left/top/width/height` en %, con
+  estados hover/focus) en vez de venir quemado en el jpg.
+- El resto de las marcas (Chip's, Takis, Big Mix, Runners, Hot Nuts, Golden
+  Nuts) y la sección de Novedades siguen con placeholders — en cuanto se
+  compartan esos assets se reemplazan en `src/data/brands.ts` y
+  `src/data/news.ts`.
 - **Páginas internas**: este repo está preparado para escalar a Inicio →
   Marcas → Sobre nosotros → Novedades (próximo orden de prioridad según el
   cliente), agregando rutas dentro de `src/app/`.

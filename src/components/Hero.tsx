@@ -2,32 +2,55 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+// Banners 1:1 desde Figma (public/hero). El texto/arte ya viene resuelto en la
+// imagen; el CTA de cada slide se renderiza aparte como componente real
+// (clickeable, accesible, con estados hover/focus) posicionado sobre el
+// banner en vez de venir "quemado" en el jpg.
 const SLIDES = [
   {
-    eyebrow: "Universo Barcel",
-    title: "¡Bienvenido al universo Barcel!",
-    copy: "Antojos con actitud: descubre todas nuestras marcas en un solo lugar.",
-    cta: "Explora todas las categorías",
-    ctaHref: "#marcas",
-    shape: "bg-barcel-red",
+    id: "bienvenido",
+    image: "/hero/slide-bienvenido.jpg",
+    alt: "¡Bienvenido al universo Barcel! — mix de botanas y frutos secos Barcel",
+    cta: {
+      label: "Explora todas las categorías",
+      href: "#marcas",
+      variant: "outline-light" as const,
+      // posición del botón como % del banner (1440x900), medida sobre el diseño
+      box: { left: 36.5, top: 76.5, width: 27, height: 8.2 },
+    },
   },
   {
-    eyebrow: "Nuevo lanzamiento",
-    title: "Hot Nuts® ya está aquí",
-    copy: "El picante que engancha llegó para quedarse. Pruébalo antes que nadie.",
-    cta: "Conoce Hot Nuts®",
-    ctaHref: "#marcas",
-    shape: "bg-hotnuts-orange",
+    id: "golden-nuts",
+    image: "/hero/slide-golden-nuts.jpg",
+    alt: "Golden Nuts Select — más que premium, select",
+    cta: {
+      label: "Conócelos ahora",
+      href: "#marcas",
+      variant: "solid-gold" as const,
+      box: { left: 40.5, top: 76.5, width: 19, height: 8.2 },
+    },
   },
   {
-    eyebrow: "Promoción activa",
-    title: "Suma papas, gana premios",
-    copy: "Participa con tus empaques Barcel y llévate stickers coleccionables.",
-    cta: "Ver novedades",
-    ctaHref: "#novedades",
-    shape: "bg-takis-purple",
+    id: "wapas",
+    image: "/hero/slide-wapas.jpg",
+    alt: "Nuevas Wapas Fuego — 100% onda fuego",
+    cta: {
+      label: "Listo para el reto",
+      href: "#marcas",
+      variant: "outline-purple" as const,
+      box: { left: 40.8, top: 76.3, width: 18.5, height: 8.4 },
+    },
   },
 ];
+
+const CTA_VARIANTS = {
+  "outline-light":
+    "border-2 border-white text-white hover:bg-white hover:text-barcel-red focus-visible:bg-white focus-visible:text-barcel-red",
+  "solid-gold":
+    "border-2 border-goldennuts-gold bg-goldennuts-gold text-barcel-black hover:brightness-110 focus-visible:brightness-110",
+  "outline-purple":
+    "border-2 border-takis-purple text-white hover:bg-takis-purple/90 focus-visible:bg-takis-purple/90",
+};
 
 const AUTOPLAY_MS = 6000;
 
@@ -53,62 +76,57 @@ export default function Hero() {
     };
   }, [paused]);
 
-  const slide = SLIDES[index];
-
   return (
     <section
       className="relative overflow-hidden bg-barcel-black"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div
-        className={`diagonal-clip relative min-h-[560px] w-full transition-colors duration-700 md:min-h-[640px] ${slide.shape}`}
-      >
-        {/* decorative blobs */}
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
-        <div className="pointer-events-none absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-white/10 blur-2xl" />
-
-        <div className="container-page relative flex h-full flex-col items-center justify-center gap-8 py-20 text-center md:py-28">
-          <span className="rounded-full bg-white/15 px-4 py-1.5 font-body text-xs font-semibold uppercase tracking-widest text-white backdrop-blur-sm">
-            {slide.eyebrow}
-          </span>
-
-          <h1 className="max-w-3xl font-display text-4xl font-extrabold uppercase leading-[1.05] text-white sm:text-5xl md:text-6xl">
-            {slide.title}
-          </h1>
-
-          <p className="max-w-lg font-body text-base text-white/90 md:text-lg">
-            {slide.copy}
-          </p>
-
-          {/* product image placeholders */}
-          <div className="flex items-end justify-center gap-4 py-2 md:gap-6">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className={`flex items-center justify-center rounded-[2rem] border-2 border-dashed border-white/40 bg-white/10 font-display text-[10px] font-semibold uppercase tracking-wide text-white/70 backdrop-blur-sm transition-transform duration-500 hover:-translate-y-2 ${
-                  i === 1 ? "h-32 w-24 md:h-40 md:w-32" : "h-24 w-20 md:h-32 md:w-28"
-                }`}
-              >
-                producto
-              </div>
-            ))}
-          </div>
-
-          <a
-            href={slide.ctaHref}
-            className="rounded-full bg-white px-7 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-barcel-red shadow-lg transition-transform hover:scale-105 active:scale-95"
+      {/* aspect-ratio fijo (1440x900) para que el botón overlay quede siempre
+          alineado con el banner, en cualquier viewport */}
+      <div className="relative aspect-[1440/900] w-full">
+        {SLIDES.map((slide, i) => (
+          <div
+            key={slide.id}
+            aria-hidden={i !== index}
+            className={`absolute inset-0 transition-opacity duration-700 ${
+              i === index ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
           >
-            {slide.cta} ↗
-          </a>
-        </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={slide.image}
+              alt={slide.alt}
+              className="h-full w-full object-cover"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+
+            {/* CTA real como componente, posicionado sobre el banner */}
+            <a
+              href={slide.cta.href}
+              tabIndex={i === index ? 0 : -1}
+              className={`absolute flex items-center justify-center gap-1.5 rounded-sm font-display text-[clamp(0.6rem,1.4vw,0.95rem)] font-extrabold uppercase tracking-wide transition-all duration-200 active:scale-95 ${
+                CTA_VARIANTS[slide.cta.variant]
+              }`}
+              style={{
+                left: `${slide.cta.box.left}%`,
+                top: `${slide.cta.box.top}%`,
+                width: `${slide.cta.box.width}%`,
+                height: `${slide.cta.box.height}%`,
+              }}
+            >
+              {slide.cta.label}
+              <span aria-hidden>↗</span>
+            </a>
+          </div>
+        ))}
 
         {/* arrow nav */}
         <button
           type="button"
           aria-label="Anterior"
           onClick={prev}
-          className="absolute left-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:flex"
+          className="absolute left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:flex md:h-11 md:w-11"
         >
           ‹
         </button>
@@ -116,25 +134,25 @@ export default function Hero() {
           type="button"
           aria-label="Siguiente"
           onClick={next}
-          className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35"
+          className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:h-11 md:w-11"
         >
           ›
         </button>
-      </div>
 
-      {/* dots */}
-      <div className="absolute inset-x-0 bottom-6 flex items-center justify-center gap-2">
-        {SLIDES.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            aria-label={`Ir al slide ${i + 1}`}
-            onClick={() => goTo(i)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === index ? "w-7 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
-            }`}
-          />
-        ))}
+        {/* dots */}
+        <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 md:bottom-5">
+          {SLIDES.map((slide, i) => (
+            <button
+              key={slide.id}
+              type="button"
+              aria-label={`Ir al slide ${i + 1}`}
+              onClick={() => goTo(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 md:h-2 ${
+                i === index ? "w-6 bg-white md:w-7" : "w-1.5 bg-white/50 hover:bg-white/80 md:w-2"
+              }`}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
