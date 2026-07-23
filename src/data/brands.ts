@@ -4,9 +4,11 @@ export type Brand = {
   tagline: string;
   description: string;
   bg: string; // tailwind bg class for the logo tile
-  logoText: string; // tailwind text color class for logo placeholder
+  logoText: string; // tailwind text color class — usado solo si no hay logo real (fallback)
   textOnBg: string; // tailwind text color for tagline on white tile
   imageFirst: boolean; // whether the color tile is on the left (desktop)
+  logo?: string; // logo real (estado default)
+  logoHover?: string; // logo real con microinteracción de hover (producto asomando)
 };
 
 export const brands: Brand[] = [
@@ -20,6 +22,8 @@ export const brands: Brand[] = [
     logoText: "text-chips-brown",
     textOnBg: "text-chips-brown",
     imageFirst: true,
+    logo: "/logos/chips.png",
+    logoHover: "/logos/chips-hover.png",
   },
   {
     slug: "takis",
@@ -31,6 +35,8 @@ export const brands: Brand[] = [
     logoText: "text-takis-yellow",
     textOnBg: "text-takis-purple",
     imageFirst: false,
+    logo: "/logos/takis.png",
+    logoHover: "/logos/takis-hover.png",
   },
   {
     slug: "big-mix",
@@ -42,6 +48,8 @@ export const brands: Brand[] = [
     logoText: "text-bigmix-yellow",
     textOnBg: "text-bigmix-blue",
     imageFirst: true,
+    logo: "/logos/big-mix.png",
+    logoHover: "/logos/big-mix-hover.png",
   },
   {
     slug: "runners",
@@ -53,6 +61,8 @@ export const brands: Brand[] = [
     logoText: "text-runners-yellow",
     textOnBg: "text-runners-pink",
     imageFirst: false,
+    logo: "/logos/runners.png",
+    logoHover: "/logos/runners-hover.png",
   },
   {
     slug: "hot-nuts",
@@ -64,6 +74,8 @@ export const brands: Brand[] = [
     logoText: "text-white",
     textOnBg: "text-hotnuts-orange",
     imageFirst: true,
+    logo: "/logos/hot-nuts.png",
+    logoHover: "/logos/hot-nuts-hover.png",
   },
   {
     slug: "golden-nuts",
@@ -75,5 +87,6 @@ export const brands: Brand[] = [
     logoText: "text-white",
     textOnBg: "text-goldennuts-gold",
     imageFirst: false,
+    // Sin logo real todavía — usa el placeholder de texto hasta que se comparta el asset.
   },
 ];

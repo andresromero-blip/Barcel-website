@@ -75,10 +75,20 @@ src/
   imagen; el CTA de cada slide se renderiza aparte como componente real
   (`<a>` posicionado sobre el banner con `left/top/width/height` en %, con
   estados hover/focus) en vez de venir quemado en el jpg.
-- El resto de las marcas (Chip's, Takis, Big Mix, Runners, Hot Nuts, Golden
-  Nuts) y la sección de Novedades siguen con placeholders — en cuanto se
-  compartan esos assets se reemplazan en `src/data/brands.ts` y
-  `src/data/news.ts`.
+- **Logos de marca (`public/logos/`)**: Chip's, Takis, Big Mix, Runners y Hot
+  Nuts ya usan sus logos reales en `FamilyGrid`/`BrandCard` y en el marquee.
+  Cada uno tiene microinteracción de hover: el logo por default hace fade-out
+  y el asset "hover" (logo + producto asomando) hace fade-in con un pequeño
+  scale — 100% CSS (`group-hover`), sin JS. **Golden Nuts** sigue con el
+  placeholder de texto porque todavía no hay logo exportado para esa marca.
+- **Sabor y calidad (`public/sabor/`)**: imagen real de las papas cayendo en
+  `BrandIntro.tsx`.
+- **Novedades (`public/novedades/`)**: las 4 piezas reales (influencer con
+  stickers, Papas Barcel, comunidad Barcel, campaña de la mascota zorro) en
+  `NewsSection.tsx`, con ícono de play en las que son video y modal al hacer
+  clic.
+- **Footer**: logo horizontal real de Barcel® (blanco, pensado para fondo
+  oscuro).
 - **Páginas internas**: este repo está preparado para escalar a Inicio →
   Marcas → Sobre nosotros → Novedades (próximo orden de prioridad según el
   cliente), agregando rutas dentro de `src/app/`.

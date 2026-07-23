@@ -1,52 +1,44 @@
 export type NewsItem = {
   id: string;
+  image: string;
   label: string;
   tag: string;
-  bg: string;
+  isVideo: boolean;
   span: string; // tailwind grid span classes
 };
 
+// Assets reales del prototipo (public/novedades)
 export const news: NewsItem[] = [
   {
     id: "n1",
-    label: "Últimos días: corre por tus stickers coleccionables",
+    image: "/novedades/1.jpg",
+    label: "Le pegas pero con ganas — ¡Últimos días! Corre por tus stickers coleccionables",
     tag: "Promoción",
-    bg: "bg-barcel-red",
+    isVideo: false,
     span: "md:row-span-2",
   },
   {
     id: "n2",
-    label: "Suma papas Barcel® y gana",
+    image: "/novedades/2.png",
+    label: "Somos Papas Barcel®",
     tag: "Novedad",
-    bg: "bg-chips-green",
+    isVideo: true,
     span: "",
   },
   {
     id: "n3",
-    label: "Nueva textura, mismo sabor picoso",
-    tag: "Lanzamiento",
-    bg: "bg-takis-purple",
+    image: "/novedades/3.png",
+    label: "Antójate con la comunidad Barcel®",
+    tag: "Video",
+    isVideo: true,
     span: "",
   },
   {
     id: "n4",
-    label: "Antójate con la comunidad Barcel®",
-    tag: "Comunidad",
-    bg: "bg-bigmix-blue",
+    image: "/novedades/4.png",
+    label: "Ya hace falta un diciembre de lokiar, ¿no? Yo picho las Papas Barcel®",
+    tag: "Campaña",
+    isVideo: false,
     span: "md:col-span-2",
-  },
-  {
-    id: "n5",
-    label: "Reto de octubre: fox mode on",
-    tag: "Reto",
-    bg: "bg-runners-pink",
-    span: "",
-  },
-  {
-    id: "n6",
-    label: "Últimos días para tus stickers",
-    tag: "Promoción",
-    bg: "bg-hotnuts-orange",
-    span: "",
   },
 ];

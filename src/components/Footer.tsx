@@ -29,13 +29,13 @@ export default function Footer() {
   return (
     <footer id="contacto" className="bg-barcel-black text-white">
       <div className="container-page flex flex-col gap-8 py-12 md:flex-row md:items-center md:justify-between">
-        <a href="#inicio" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-barcel-red font-display text-lg font-extrabold text-white">
-            B
-          </span>
-          <span className="font-display text-lg font-extrabold tracking-tight">
-            BARCEL<sup className="text-[0.5em] font-semibold">®</sup>
-          </span>
+        <a href="#inicio" className="flex items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logos/barcel-logo-horizontal.png"
+            alt="Barcel®"
+            className="h-9 w-auto object-contain object-left"
+          />
         </a>
 
         <nav className="flex flex-wrap gap-x-6 gap-y-3 font-body text-sm text-white/70">

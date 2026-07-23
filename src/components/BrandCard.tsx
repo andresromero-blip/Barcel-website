@@ -9,16 +9,38 @@ export default function BrandCard({
   dimmed: boolean;
   highlighted: boolean;
 }) {
+  const hasRealLogo = Boolean(brand.logo && brand.logoHover);
+
   const imageTile = (
     <div
-      className={`flex min-h-[220px] flex-1 items-center justify-center p-8 md:min-h-[300px] ${brand.bg}`}
+      className={`group relative flex min-h-[220px] flex-1 items-center justify-center overflow-hidden p-8 md:min-h-[300px] ${brand.bg}`}
     >
-      <span
-        className={`font-display text-3xl font-black uppercase tracking-tight md:text-5xl ${brand.logoText}`}
-      >
-        {brand.name}
-        <sup className="ml-1 text-[0.4em]">®</sup>
-      </span>
+      {hasRealLogo ? (
+        <>
+          {/* Estado default */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={brand.logo}
+            alt={`Logo ${brand.name}`}
+            className="h-40 w-auto max-w-[80%] object-contain transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95 md:h-56"
+          />
+          {/* Estado hover: microinteracción — el producto asoma junto al logo */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={brand.logoHover}
+            alt=""
+            aria-hidden="true"
+            className="absolute h-44 w-auto max-w-[85%] object-contain opacity-0 scale-105 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100 md:h-64"
+          />
+        </>
+      ) : (
+        <span
+          className={`font-display text-3xl font-black uppercase tracking-tight transition-transform duration-300 group-hover:scale-105 md:text-5xl ${brand.logoText}`}
+        >
+          {brand.name}
+          <sup className="ml-1 text-[0.4em]">®</sup>
+        </span>
+      )}
     </div>
   );
 

@@ -3,6 +3,16 @@
 import { useState } from "react";
 import { news } from "@/data/news";
 
+function PlayIcon() {
+  return (
+    <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/85 text-barcel-black shadow-sm md:h-9 md:w-9">
+      <svg viewBox="0 0 24 24" className="ml-0.5 h-3.5 w-3.5 fill-current">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </span>
+  );
+}
+
 export default function NewsSection() {
   const [active, setActive] = useState<string | null>(null);
   const activeItem = news.find((n) => n.id === active) ?? null;
@@ -26,12 +36,22 @@ export default function NewsSection() {
             key={item.id}
             type="button"
             onClick={() => setActive(item.id)}
-            className={`group relative flex min-h-[140px] flex-col justify-end overflow-hidden rounded-2xl p-4 text-left text-white shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg md:min-h-[180px] md:p-5 ${item.bg} ${item.span}`}
+            className={`group relative flex min-h-[180px] flex-col justify-end overflow-hidden rounded-2xl text-left text-white shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg md:min-h-[220px] ${item.span}`}
           >
-            <span className="absolute right-3 top-3 rounded-full bg-white/20 px-3 py-1 font-display text-[10px] font-bold uppercase tracking-wide backdrop-blur-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={item.image}
+              alt={item.label}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+
+            {item.isVideo && <PlayIcon />}
+
+            <span className="relative m-4 w-fit rounded-full bg-white/20 px-3 py-1 font-display text-[10px] font-bold uppercase tracking-wide backdrop-blur-sm">
               {item.tag}
             </span>
-            <span className="font-display text-sm font-bold leading-snug drop-shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5 md:text-base">
+            <span className="relative mx-4 mb-4 font-display text-sm font-bold leading-snug drop-shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5 md:text-base">
               {item.label}
             </span>
           </button>
@@ -40,31 +60,35 @@ export default function NewsSection() {
 
       {activeItem && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-6"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-6"
           onClick={() => setActive(null)}
         >
           <div
-            className={`relative w-full max-w-md rounded-3xl p-8 text-white shadow-2xl ${activeItem.bg}`}
+            className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-barcel-black text-white shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Cerrar"
               onClick={() => setActive(null)}
-              className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 hover:bg-white/30"
+              className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 hover:bg-black/70"
             >
               ✕
             </button>
-            <span className="rounded-full bg-white/20 px-3 py-1 font-display text-[10px] font-bold uppercase tracking-wide">
-              {activeItem.tag}
-            </span>
-            <h3 className="mt-4 font-display text-xl font-extrabold leading-snug">
-              {activeItem.label}
-            </h3>
-            <p className="mt-3 font-body text-sm text-white/85">
-              Contenido de muestra para el prototipo — aquí irá la publicación,
-              imagen o video real conectado a redes sociales de Barcel®.
-            </p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeItem.image}
+              alt={activeItem.label}
+              className="max-h-[70vh] w-full object-cover"
+            />
+            <div className="p-6">
+              <span className="w-fit rounded-full bg-white/15 px-3 py-1 font-display text-[10px] font-bold uppercase tracking-wide">
+                {activeItem.tag}
+              </span>
+              <h3 className="mt-3 font-display text-lg font-extrabold leading-snug">
+                {activeItem.label}
+              </h3>
+            </div>
           </div>
         </div>
       )}

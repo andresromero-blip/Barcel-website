@@ -20,9 +20,12 @@ export default function BrandIntro() {
           Explora, elige y encuentra tu próximo antojo.
         </p>
 
-        <div className="mt-4 flex h-40 w-full max-w-md items-center justify-center rounded-3xl border-2 border-dashed border-barcel-red/30 bg-barcel-cream font-display text-xs font-semibold uppercase tracking-wide text-barcel-red/60 md:h-52">
-          imagen de producto
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/sabor/sabor-calidad.png"
+          alt="Papas Barcel cayendo"
+          className="mt-4 h-auto w-full max-w-md md:max-w-lg"
+        />
       </div>
     </section>
   );
