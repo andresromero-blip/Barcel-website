@@ -10,6 +10,15 @@ const NAV_LINKS = [
   { label: "Novedades", href: "#novedades" },
 ];
 
+function MailIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect x="3" y="5" width="18" height="14" />
+      <path d="m3 6 9 7 9-7" />
+    </svg>
+  );
+}
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -35,31 +44,35 @@ export default function Header() {
   return (
     <header
       id="inicio"
-      className={`sticky top-0 z-50 w-full bg-white transition-shadow ${
-        scrolled ? "shadow-[0_2px_16px_rgba(0,0,0,0.08)]" : ""
+      className={`sticky top-0 z-50 w-full bg-barcel-red transition-shadow ${
+        scrolled ? "shadow-[0_2px_16px_rgba(0,0,0,0.25)]" : ""
       }`}
     >
       <div className="container-page flex h-16 items-center justify-between gap-4 md:h-20">
         {/* Logo */}
-        <a href="#inicio" className="flex shrink-0 items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-barcel-red font-display text-lg font-extrabold text-white md:h-10 md:w-10">
-            B
-          </span>
-          <span className="font-display text-lg font-extrabold tracking-tight text-barcel-black md:text-xl">
-            BARCEL<sup className="text-[0.5em] font-semibold">®</sup>
-          </span>
+        <a href="#inicio" className="flex shrink-0 items-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logos/barcel-logo-horizontal.png"
+            alt="Barcel®"
+            className="h-8 w-auto object-contain object-left md:h-9"
+          />
         </a>
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-7 lg:flex">
-          {NAV_LINKS.map((link) => (
+          {NAV_LINKS.map((link, i) => (
             <a
               key={link.href}
               href={link.href}
-              className="group relative font-body text-sm font-semibold text-barcel-black/80 transition-colors hover:text-barcel-red"
+              className="group relative font-body text-sm font-semibold text-white/90 transition-colors hover:text-white"
             >
               {link.label}
-              <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-barcel-red transition-all duration-200 group-hover:w-full" />
+              <span
+                className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full ${
+                  i === 0 ? "w-full" : "w-0"
+                }`}
+              />
             </a>
           ))}
         </nav>
@@ -73,9 +86,9 @@ export default function Header() {
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setSearchOpen(true)}
               onBlur={() => setSearchOpen(false)}
-              placeholder="Buscar tu marca favorita..."
-              className={`h-10 rounded-full border border-black/10 bg-barcel-cream/70 pl-4 pr-10 text-sm outline-none transition-all duration-300 focus:border-barcel-red/40 ${
-                searchOpen || query ? "w-56" : "w-11 cursor-pointer pl-0 text-transparent"
+              placeholder="Buscar"
+              className={`h-10 border border-white/20 bg-white pl-4 pr-10 text-sm text-barcel-black outline-none transition-all duration-300 placeholder:text-barcel-black/40 ${
+                searchOpen || query ? "w-56" : "w-40"
               }`}
             />
             <svg
@@ -91,9 +104,10 @@ export default function Header() {
           </div>
           <a
             href="#contacto"
-            className="rounded-full bg-barcel-red px-5 py-2.5 font-display text-sm font-bold text-white transition-transform hover:scale-[1.04] hover:bg-barcel-red-dark active:scale-95"
+            className="flex items-center gap-2 bg-barcel-black px-5 py-2.5 font-display text-sm font-bold text-white transition-transform hover:scale-[1.04] hover:bg-black active:scale-95"
           >
             Contáctanos
+            <MailIcon />
           </a>
         </div>
 
@@ -102,21 +116,21 @@ export default function Header() {
           type="button"
           aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
           onClick={() => setMenuOpen((v) => !v)}
-          className="flex h-10 w-10 items-center justify-center rounded-full text-barcel-black lg:hidden"
+          className="flex h-10 w-10 items-center justify-center text-white lg:hidden"
         >
           <div className="flex h-4 w-6 flex-col justify-between">
             <span
-              className={`h-0.5 w-full origin-left bg-barcel-black transition-transform duration-300 ${
+              className={`h-0.5 w-full origin-left bg-white transition-transform duration-300 ${
                 menuOpen ? "translate-x-0.5 rotate-45" : ""
               }`}
             />
             <span
-              className={`h-0.5 w-full bg-barcel-black transition-opacity duration-200 ${
+              className={`h-0.5 w-full bg-white transition-opacity duration-200 ${
                 menuOpen ? "opacity-0" : "opacity-100"
               }`}
             />
             <span
-              className={`h-0.5 w-full origin-left bg-barcel-black transition-transform duration-300 ${
+              className={`h-0.5 w-full origin-left bg-white transition-transform duration-300 ${
                 menuOpen ? "translate-x-0.5 -rotate-45" : ""
               }`}
             />
@@ -137,7 +151,7 @@ export default function Header() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar tu marca favorita..."
-              className="h-11 w-full rounded-full border border-black/10 bg-barcel-cream/70 pl-4 pr-10 text-sm outline-none focus:border-barcel-red/40"
+              className="h-11 w-full border border-black/10 bg-barcel-cream/70 pl-4 pr-10 text-sm outline-none focus:border-barcel-red/40"
             />
             <svg
               viewBox="0 0 24 24"
@@ -155,7 +169,7 @@ export default function Header() {
               key={link.href}
               href={link.href}
               onClick={handleNavClick}
-              className="rounded-lg px-2 py-3 font-display text-base font-semibold text-barcel-black active:bg-barcel-cream"
+              className="px-2 py-3 font-display text-base font-semibold text-barcel-black active:bg-barcel-cream"
             >
               {link.label}
             </a>
@@ -163,9 +177,10 @@ export default function Header() {
           <a
             href="#contacto"
             onClick={handleNavClick}
-            className="mt-2 rounded-full bg-barcel-red px-5 py-3 text-center font-display text-sm font-bold text-white"
+            className="mt-2 flex items-center justify-center gap-2 bg-barcel-black px-5 py-3 text-center font-display text-sm font-bold text-white"
           >
             Contáctanos
+            <MailIcon />
           </a>
         </div>
       </div>

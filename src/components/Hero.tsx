@@ -105,7 +105,7 @@ export default function Hero() {
             <a
               href={slide.cta.href}
               tabIndex={i === index ? 0 : -1}
-              className={`absolute flex items-center justify-center gap-1.5 rounded-sm font-display text-[clamp(0.6rem,1.4vw,0.95rem)] font-extrabold uppercase tracking-wide transition-all duration-200 active:scale-95 ${
+              className={`absolute flex items-center justify-center gap-1.5 font-display text-[clamp(0.6rem,1.4vw,0.95rem)] font-extrabold uppercase tracking-wide transition-all duration-200 active:scale-95 ${
                 CTA_VARIANTS[slide.cta.variant]
               }`}
               style={{
@@ -126,7 +126,7 @@ export default function Hero() {
           type="button"
           aria-label="Anterior"
           onClick={prev}
-          className="absolute left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:flex md:h-11 md:w-11"
+          className="absolute left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:flex md:h-11 md:w-11"
         >
           ‹
         </button>
@@ -134,7 +134,7 @@ export default function Hero() {
           type="button"
           aria-label="Siguiente"
           onClick={next}
-          className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:h-11 md:w-11"
+          className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 md:h-11 md:w-11"
         >
           ›
         </button>
@@ -147,7 +147,7 @@ export default function Hero() {
               type="button"
               aria-label={`Ir al slide ${i + 1}`}
               onClick={() => goTo(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 md:h-2 ${
+              className={`h-1.5 transition-all duration-300 md:h-2 ${
                 i === index ? "w-6 bg-white md:w-7" : "w-1.5 bg-white/50 hover:bg-white/80 md:w-2"
               }`}
             />

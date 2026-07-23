@@ -34,9 +34,12 @@ export default function FamilyGrid() {
         </div>
         <a
           href="#marcas"
-          className="shrink-0 rounded-full bg-barcel-red px-5 py-2.5 font-display text-sm font-bold text-white transition-transform hover:scale-[1.04] active:scale-95"
+          className="flex shrink-0 items-center gap-2 bg-barcel-red px-5 py-2.5 font-display text-sm font-bold text-white transition-transform hover:scale-[1.04] active:scale-95"
         >
           Nuestras botanas
+          <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </a>
       </div>
 

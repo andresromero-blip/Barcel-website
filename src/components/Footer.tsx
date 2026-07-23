@@ -56,7 +56,7 @@ export default function Footer() {
               key={social.label}
               href={social.href}
               aria-label={social.label}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-barcel-red"
+              className="flex h-9 w-9 items-center justify-center bg-white/10 transition-colors hover:bg-barcel-red"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                 <path d={social.path} />

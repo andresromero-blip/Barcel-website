@@ -69,7 +69,7 @@ export default function BrandCard({
   return (
     <article
       id={brand.slug}
-      className={`flex flex-col overflow-hidden rounded-2xl transition-all duration-500 md:flex-row md:rounded-none ${
+      className={`flex flex-col overflow-hidden transition-all duration-500 md:flex-row ${
         dimmed ? "opacity-30 saturate-50" : "opacity-100"
       } ${highlighted ? "ring-4 ring-barcel-red ring-offset-2" : ""}`}
     >

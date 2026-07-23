@@ -2,8 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./src/app/**/*.{ts,tsx}",
-    "./src/components/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   theme: {
     extend: {
@@ -26,22 +25,22 @@ const config: Config = {
           950: "#262626", // Colors base/Grey/950
         },
         chips: {
-          green: "#02e55b", // Complementary Colors/Green/500
-          "green-600": "#00bf47", // Complementary Colors/Green/600
+          green: "#28C445", // color de marca (referencia visual del diseño aprobado)
+          "green-600": "#1FA036",
           brown: "#5A3A22",
         },
         takis: {
-          purple: "#ac43ff", // Complementary Colors/Purple/500
-          "purple-600": "#981eff", // Complementary Colors/Purple/600
+          purple: "#7B1FE0", // color de marca (referencia visual del diseño aprobado)
+          "purple-600": "#6B1FD0",
           yellow: "#FBE733",
         },
         bigmix: {
-          blue: "#0a8ced", // Complementary Colors/Blue/500
-          "blue-600": "#006dcb", // Complementary Colors/Blue/600
+          blue: "#1E7FE8", // color de marca (referencia visual del diseño aprobado)
+          "blue-600": "#1569C4",
           yellow: "#FCE838",
         },
         runners: {
-          pink: "#f5173c", // Colors base/Primary/600*
+          pink: "#E8144C", // color de marca (referencia visual del diseño aprobado)
           yellow: "#FCE838",
         },
         hotnuts: {

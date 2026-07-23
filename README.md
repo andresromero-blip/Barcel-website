@@ -63,6 +63,25 @@ src/
 - Los íconos de redes sociales por marca se dejaron **fuera** del Home (van
   en las páginas internas de cada marca, según lo acordado en next steps).
 
+## Ronda de feedback visual (revisión sobre el diseño aprobado)
+
+- **Corner radius 0**: todos los CTAs y elementos interactivos (botones,
+  buscador, tarjetas de marca, tiles de Novedades, dots del hero, íconos
+  sociales) pasaron a esquinas rectas.
+- **Bug de colores corregido**: `tailwind.config.ts` solo escaneaba
+  `src/app` y `src/components`, así que las clases de color definidas en
+  `src/data/brands.ts` (`bg-chips-green`, `bg-takis-purple`, etc.) nunca se
+  generaban y no se veían. Se amplió el `content` a `./src/**/*.{ts,tsx}` y
+  se ajustaron los hex de Chip's/Takis/Big Mix/Runners para que coincidan
+  con el diseño aprobado.
+- **Marquee de logos**: ya no incluye el placeholder de texto de Golden Nuts
+  — solo se muestran las marcas con logo real confirmado.
+- **Novedades 1:1**: grid de 5 tiles (reutilizando la foto del influencer
+  dos veces, igual que el diseño aprobado), sin tags ni texto superpuesto
+  inventados — solo el ícono de play en las piezas que son video.
+- **Header**: ahora usa fondo rojo + el logo horizontal real de Barcel®
+  (antes estaba con fondo blanco y un logo armado a mano).
+
 ## Assets reales de Figma
 
 - **Colores y tipografía**: extraídos con `get_variable_defs` del archivo de
