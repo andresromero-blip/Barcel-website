@@ -27,6 +27,7 @@ const config: Config = {
         chips: {
           green: "#28C445", // color de marca (referencia visual del diseño aprobado)
           "green-600": "#1FA036",
+          "green-700": "#14802A", // 5.06:1 sobre blanco — AA para texto normal
           brown: "#5A3A22",
         },
         takis: {
@@ -51,9 +52,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        // Text/Family/Text = Raleway (única familia usada en el sistema de diseño)
+        // Text/Family/Text = Raleway (nav, botones, párrafos, nombres de marca)
         display: ["var(--font-display)", "sans-serif"],
         body: ["var(--font-body)", "sans-serif"],
+        // Teko: fuente condensada para los títulos de sección (H2)
+        teko: ["var(--font-teko)", "sans-serif"],
       },
       keyframes: {
         marquee: {

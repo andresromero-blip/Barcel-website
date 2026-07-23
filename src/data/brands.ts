@@ -20,7 +20,7 @@ export const brands: Brand[] = [
       "Chip's es sabor sin filtro. Una marca intensa, juvenil y explosiva que convierte cada papa en una experiencia llena de crunch, picante y actitud mexicana.",
     bg: "bg-chips-green",
     logoText: "text-chips-brown",
-    textOnBg: "text-chips-brown",
+    textOnBg: "text-chips-green-700",
     imageFirst: true,
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",

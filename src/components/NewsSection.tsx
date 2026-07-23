@@ -20,7 +20,7 @@ export default function NewsSection() {
   return (
     <section id="novedades" className="bg-barcel-cream py-16 md:py-24">
       <div className="container-page mb-10">
-        <h2 className="font-display text-2xl font-extrabold uppercase text-barcel-red md:text-3xl">
+        <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
           Nuestras novedades
         </h2>
         <p className="mt-2 max-w-2xl font-body text-sm text-barcel-black/70 md:text-base">

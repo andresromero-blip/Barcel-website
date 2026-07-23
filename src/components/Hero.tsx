@@ -139,19 +139,23 @@ export default function Hero() {
           ›
         </button>
 
-        {/* dots */}
-        <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-2 md:bottom-5">
-          {SLIDES.map((slide, i) => (
-            <button
-              key={slide.id}
-              type="button"
-              aria-label={`Ir al slide ${i + 1}`}
-              onClick={() => goTo(i)}
-              className={`h-1.5 transition-all duration-300 md:h-2 ${
-                i === index ? "w-6 bg-white md:w-7" : "w-1.5 bg-white/50 hover:bg-white/80 md:w-2"
-              }`}
-            />
-          ))}
+        {/* dots — único elemento interactivo con corner radius (1:1 con el diseño) */}
+        <div className="absolute inset-x-0 bottom-3 flex items-center justify-center md:bottom-6">
+          <div className="flex items-center gap-2 rounded-xl bg-white px-4 py-3 shadow-sm md:gap-2.5 md:rounded-2xl md:px-5 md:py-4">
+            {SLIDES.map((slide, i) => (
+              <button
+                key={slide.id}
+                type="button"
+                aria-label={`Ir al slide ${i + 1}`}
+                onClick={() => goTo(i)}
+                className={`h-2 rounded-full transition-all duration-300 md:h-2.5 ${
+                  i === index
+                    ? "w-8 bg-barcel-red md:w-10"
+                    : "w-2 bg-grey-200 hover:bg-grey-300 md:w-2.5"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

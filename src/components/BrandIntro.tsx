@@ -2,7 +2,7 @@ export default function BrandIntro() {
   return (
     <section id="sobre-nosotros" className="bg-white py-16 md:py-24">
       <div className="container-page flex flex-col items-center gap-6 text-center">
-        <h2 className="font-display text-3xl font-extrabold uppercase text-barcel-red md:text-4xl">
+        <h2 className="font-teko text-4xl font-bold uppercase text-barcel-red md:text-5xl">
           Sabor y calidad,
           <br className="hidden sm:block" /> ¡así es Barcel<sup className="text-[0.5em]">®</sup>!
         </h2>

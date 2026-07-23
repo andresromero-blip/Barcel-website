@@ -16,7 +16,7 @@ export default function FamilyGrid() {
     <section id="marcas" className="bg-white py-16 md:py-20">
       <div className="container-page mb-10 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h2 className="font-display text-2xl font-extrabold uppercase text-barcel-red md:text-3xl">
+          <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
             Conoce toda nuestra familia
           </h2>
           <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
