@@ -39,19 +39,6 @@ export const brands: Brand[] = [
     logoHover: "/logos/takis-hover.png",
   },
   {
-    slug: "big-mix",
-    name: "Big Mix",
-    tagline: "Mezcla, la fiesta y compartir",
-    description:
-      "Big Mix mezcla sabor, diversión y actitud. Una botana explosiva y social creada para compartir, botanear y prender cualquier momento con variedad y crunch.",
-    bg: "bg-bigmix-blue",
-    logoText: "text-bigmix-yellow",
-    textOnBg: "text-bigmix-blue",
-    imageFirst: true,
-    logo: "/logos/big-mix.png",
-    logoHover: "/logos/big-mix-hover.png",
-  },
-  {
     slug: "runners",
     name: "Runners",
     tagline: "Acelera tu emoción",
@@ -60,9 +47,22 @@ export const brands: Brand[] = [
     bg: "bg-runners-pink",
     logoText: "text-runners-yellow",
     textOnBg: "text-runners-pink",
-    imageFirst: false,
+    imageFirst: true,
     logo: "/logos/runners.png",
     logoHover: "/logos/runners-hover.png",
+  },
+  {
+    slug: "big-mix",
+    name: "Big Mix",
+    tagline: "Mezcla, la fiesta y compartir",
+    description:
+      "Big Mix mezcla sabor, diversión y actitud. Una botana explosiva y social creada para compartir, botanear y prender cualquier momento con variedad y crunch.",
+    bg: "bg-bigmix-blue",
+    logoText: "text-bigmix-yellow",
+    textOnBg: "text-bigmix-blue",
+    imageFirst: false,
+    logo: "/logos/big-mix.png",
+    logoHover: "/logos/big-mix-hover.png",
   },
   {
     slug: "hot-nuts",
