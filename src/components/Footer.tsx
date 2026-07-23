@@ -29,7 +29,7 @@ export default function Footer() {
   return (
     <footer id="contacto" className="bg-barcel-black text-white">
       <div className="container-page flex flex-col gap-8 py-12 md:flex-row md:items-center md:justify-between">
-        <a href="#inicio" className="flex items-center">
+        <a href="/" className="flex items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logos/barcel-logo-horizontal.png"

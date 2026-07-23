@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { brands } from "@/data/brands";
 import BrandCard from "./BrandCard";
 import { useSearch } from "./SearchContext";
@@ -32,15 +33,18 @@ export default function FamilyGrid() {
             </p>
           )}
         </div>
-        <a
-          href="#marcas"
+        <Link
+          href="/marcas"
           className="flex shrink-0 items-center gap-2 bg-barcel-red px-5 py-2.5 font-display text-sm font-bold text-white transition-transform hover:scale-[1.04] active:scale-95"
         >
           Nuestras botanas
+          {/* Flecha hacia la derecha — mismo lenguaje visual que "Ver todos
+              los productos →" en cada tarjeta de marca, ya que esto también
+              navega hacia adelante (al catálogo completo en /marcas). */}
           <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="m6 9 6 6 6-6" />
+            <path d="m9 6 6 6-6 6" />
           </svg>
-        </a>
+        </Link>
       </div>
 
       <div className="flex flex-col divide-y divide-black/5">

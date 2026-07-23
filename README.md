@@ -110,7 +110,9 @@ src/
   oscuro).
 - **Páginas internas**: este repo está preparado para escalar a Inicio →
   Marcas → Sobre nosotros → Novedades (próximo orden de prioridad según el
-  cliente), agregando rutas dentro de `src/app/`.
+  cliente), agregando rutas dentro de `src/app/`. **`/marcas` ya existe**
+  (ver ronda 7 más abajo); Sobre nosotros y Novedades siguen siendo
+  secciones ancla dentro del Home.
 - **Página de detalle de producto**: pendiente de construir.
 - Revisar el build de producción (`npm run build`) en un entorno con
   recursos completos — se verificó tipado con `tsc --noEmit` (sin errores) y
@@ -144,6 +146,43 @@ src/
   la flecha "Anterior" se ocultaba en mobile y "Siguiente" quedaba visible;
   ahora ambas se ocultan de forma consistente por debajo de `md` (los dots
   y el autoplay cubren la navegación en pantallas chicas).
+
+## Ronda 5 y 6: orden de marcas y fix de orden en mobile
+
+- Se reordenaron las marcas en "Conoce toda nuestra familia": Chip's, Takis,
+  Runners, Big Mix, Hot Nuts, Golden Nuts.
+- **Bug encontrado al reordenar**: `BrandCard` decidía el orden del tile de
+  color/logo vs. el tile de texto en el DOM según `brand.imageFirst`, y esa
+  alternancia también aplicaba en mobile (una sola columna), así que las
+  marcas con `imageFirst: false` mostraban el texto **antes** que el tile de
+  color — rompiendo el patrón consistente del diseño aprobado ("tile de
+  color siempre primero" en mobile).
+- **Fix**: el DOM ahora siempre renderiza el tile de color antes que el de
+  texto. `imageFirst` solo controla qué lado (izquierda/derecha) ocupa cada
+  tile en el grid de 2 columnas de desktop, vía `md:order-1`/`md:order-2` —
+  sin tocar el orden real en mobile.
+
+## Ronda 7: página `/marcas` y coherencia del CTA "Nuestras botanas"
+
+- **Problema detectado**: el botón "Nuestras botanas" en "Conoce toda
+  nuestra familia" apuntaba a `#marcas`, el mismo `id` de la sección donde
+  ya estaba — un anchor que se referencia a sí mismo, así que el clic no
+  hacía nada. Además usaba una flecha hacia abajo (⌄, lenguaje de
+  "expandir"), inconsistente con la flecha → que usa "Ver todos los
+  productos" en cada tarjeta de marca para la misma acción de navegar.
+- **Fix**: se construyó la página `/marcas` (`src/app/marcas/page.tsx` +
+  `src/components/MarcasCatalog.tsx`) — un catálogo completo reutilizando
+  `BrandCard` (mismos estilos, hover, orden), con el mismo buscador del
+  Header filtrando en vivo. El botón "Nuestras botanas" y el "Ver todos los
+  productos →" de cada tarjeta ahora usan `next/link` hacia `/marcas`, con
+  ícono de flecha → coherente en ambos.
+- **Nav global actualizada para funcionar entre páginas**: antes los links
+  del Header eran fragmentos sueltos (`#inicio`, `#marcas`, etc.), que solo
+  funcionan correctamente estando ya en el Home. Ahora son rutas
+  raíz-relativas: `Inicio` → `/`, `Marcas` → `/marcas` (página real),
+  `Sobre nosotros`/`Novedades` → `/#seccion` (navegan al Home y bajan al
+  anchor). El subrayado activo del nav ahora se calcula con `usePathname()`
+  en vez de estar fijo en "Inicio".
 
 ## Deploy en Vercel
 

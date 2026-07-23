@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Brand } from "@/data/brands";
 
 export default function BrandCard({
@@ -66,13 +67,13 @@ export default function BrandCard({
       <p className="font-body text-sm leading-relaxed text-barcel-black/70">
         {brand.description}
       </p>
-      <a
-        href="#marcas"
+      <Link
+        href="/marcas"
         className="group mt-2 inline-flex w-fit items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-barcel-black"
       >
         Ver todos los productos
         <span className="transition-transform group-hover:translate-x-1">→</span>
-      </a>
+      </Link>
     </div>
   );
 

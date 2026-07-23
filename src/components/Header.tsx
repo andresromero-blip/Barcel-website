@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useSearch } from "./SearchContext";
 
+// Rutas raíz-relativas (no fragmentos sueltos) para que la nav funcione
+// igual desde cualquier página: "/#seccion" navega al Home y baja al
+// anchor; "/marcas" es una página real independiente.
 const NAV_LINKS = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Sobre nosotros", href: "#sobre-nosotros" },
-  { label: "Marcas", href: "#marcas" },
-  { label: "Novedades", href: "#novedades" },
+  { label: "Inicio", href: "/" },
+  { label: "Sobre nosotros", href: "/#sobre-nosotros" },
+  { label: "Marcas", href: "/marcas" },
+  { label: "Novedades", href: "/#novedades" },
 ];
 
 function MailIcon() {
@@ -24,6 +28,11 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const { query, setQuery } = useSearch();
+  const pathname = usePathname();
+
+  // Solo las páginas reales (sin #) marcan el subrayado activo — los
+  // anchors de sección (Sobre nosotros, Novedades) no hacen scroll-spy.
+  const isActive = (href: string) => !href.includes("#") && pathname === href;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -50,7 +59,7 @@ export default function Header() {
     >
       <div className="container-page flex h-16 items-center justify-between gap-4 md:h-20">
         {/* Logo */}
-        <a href="#inicio" className="flex shrink-0 items-center">
+        <a href="/" className="flex shrink-0 items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logos/barcel-logo-horizontal.png"
@@ -61,7 +70,7 @@ export default function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-7 lg:flex">
-          {NAV_LINKS.map((link, i) => (
+          {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -70,7 +79,7 @@ export default function Header() {
               {link.label}
               <span
                 className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full ${
-                  i === 0 ? "w-full" : "w-0"
+                  isActive(link.href) ? "w-full" : "w-0"
                 }`}
               />
             </a>
