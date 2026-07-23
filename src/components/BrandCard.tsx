@@ -11,9 +11,15 @@ export default function BrandCard({
 }) {
   const hasRealLogo = Boolean(brand.logo && brand.logoHover);
 
+  // En mobile (una sola columna) el tile de color/logo SIEMPRE va primero,
+  // sin importar imageFirst — así lo requiere el diseño aprobado. imageFirst
+  // solo decide el lado (izquierda/derecha) en el grid de 2 columnas de
+  // desktop, usando md:order-* en vez de reordenar el DOM.
   const imageTile = (
     <div
-      className={`group relative flex min-h-[220px] items-center justify-center overflow-hidden p-8 md:min-h-[300px] ${brand.bg}`}
+      className={`group relative flex min-h-[220px] items-center justify-center overflow-hidden p-8 md:min-h-[300px] ${
+        brand.imageFirst ? "" : "md:order-2"
+      } ${brand.bg}`}
     >
       {hasRealLogo ? (
         <>
@@ -45,7 +51,11 @@ export default function BrandCard({
   );
 
   const textTile = (
-    <div className="flex flex-col justify-center gap-3 bg-white p-8 md:p-12">
+    <div
+      className={`flex flex-col justify-center gap-3 bg-white p-8 md:p-12 ${
+        brand.imageFirst ? "" : "md:order-1"
+      }`}
+    >
       <h3 className="font-display text-2xl font-extrabold text-barcel-black md:text-3xl">
         {brand.name}
         <sup className="text-[0.45em]">®</sup>
@@ -73,17 +83,8 @@ export default function BrandCard({
         dimmed ? "opacity-30 saturate-50" : "opacity-100"
       } ${highlighted ? "ring-4 ring-barcel-red ring-offset-2" : ""}`}
     >
-      {brand.imageFirst ? (
-        <>
-          {imageTile}
-          {textTile}
-        </>
-      ) : (
-        <>
-          {textTile}
-          {imageTile}
-        </>
-      )}
+      {imageTile}
+      {textTile}
     </article>
   );
 }
