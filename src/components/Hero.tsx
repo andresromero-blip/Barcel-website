@@ -75,9 +75,12 @@ export default function Hero() {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Alturas fijas por breakpoint (no aspect-ratio) para que el banner
-          nunca se deforme ni el contenido se desborde en mobile. */}
-      <div className="relative h-[420px] w-full sm:h-[480px] md:h-[560px] lg:h-[640px] xl:h-[700px]">
+      {/* Los banners son composiciones anchas (1440x900, contenido —texto y
+          producto— repartido en todo el ancho). Usamos su misma proporción
+          en TODOS los breakpoints (mobile-first) para que la imagen nunca
+          se recorte: en pantallas angostas la altura baja proporcionalmente
+          en vez de forzar un alto fijo que recortaba los laterales. */}
+      <div className="relative aspect-[1440/900] w-full">
         {SLIDES.map((s, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -92,7 +95,8 @@ export default function Hero() {
           />
         ))}
 
-        {/* arrow nav */}
+        {/* arrow nav — ocultas en mobile (los dots + swipe/autoplay ya
+            cubren la navegación ahí); visibles desde md hacia arriba */}
         <button
           type="button"
           aria-label="Anterior"
@@ -105,24 +109,28 @@ export default function Hero() {
           type="button"
           aria-label="Siguiente"
           onClick={next}
-          className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:right-4 md:h-11 md:w-11"
+          className="absolute right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:right-4 md:flex md:h-11 md:w-11"
         >
           ›
         </button>
 
-        {/* CTA + dots apilados en flujo normal — nunca se solapan ni se
-            deforman, sin importar el tamaño de pantalla. */}
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 px-4 pb-4 sm:gap-4 sm:pb-6 md:pb-8">
+        {/* CTA + dots apilados en flujo normal — al conservar la proporción
+            real de la imagen (arriba) siempre quedan sobre la franja
+            inferior de la composición, sin taparse ni deformarse en
+            ningún ancho de pantalla. Tamaños reducidos en el breakpoint
+            base (mobile) porque ahí el banner es más bajo en términos
+            absolutos. */}
+        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1.5 px-3 pb-2 xs:gap-2 xs:pb-3 sm:gap-3 sm:px-4 sm:pb-4 md:gap-4 md:pb-6 lg:pb-8">
           <a
             href={slide.cta.href}
-            className={`flex min-h-[44px] items-center justify-center gap-1.5 bg-white px-5 py-3 text-center font-display text-xs font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 sm:text-sm md:px-7 md:text-base ${slide.cta.variant}`}
+            className={`flex min-h-[44px] items-center justify-center gap-1 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
           >
             {slide.cta.label}
             <span aria-hidden>↗</span>
           </a>
 
           {/* dots — único elemento interactivo con corner radius (1:1 con el diseño) */}
-          <div className="flex items-center gap-2 rounded-xl bg-white px-4 py-3 shadow-sm md:gap-2.5 md:rounded-2xl md:px-5 md:py-4">
+          <div className="flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 shadow-sm xs:gap-2 xs:px-3 xs:py-2 sm:rounded-xl sm:px-4 sm:py-3 md:gap-2.5 md:rounded-2xl md:px-5 md:py-4">
             {SLIDES.map((s, i) => (
               <button
                 key={s.id}
@@ -130,10 +138,10 @@ export default function Hero() {
                 aria-label={`Ir al slide ${i + 1}`}
                 aria-current={i === index}
                 onClick={() => goTo(i)}
-                className={`h-2 rounded-full transition-all duration-300 md:h-2.5 ${
+                className={`h-1.5 rounded-full transition-all duration-300 sm:h-2 md:h-2.5 ${
                   i === index
-                    ? "w-8 bg-barcel-red md:w-10"
-                    : "w-2 bg-grey-200 hover:bg-grey-300 md:w-2.5"
+                    ? "w-6 bg-barcel-red sm:w-8 md:w-10"
+                    : "w-1.5 bg-grey-200 hover:bg-grey-300 sm:w-2 md:w-2.5"
                 }`}
               />
             ))}

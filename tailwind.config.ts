@@ -6,6 +6,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        // Breakpoint extra angosto (mobile-first) para graduar el tamaño
+        // del CTA/dots del Hero entre el mínimo (320px) y sm (640px).
+        xs: "400px",
+      },
       colors: {
         // Tokens reales extraidos de Figma (get_variable_defs) — Prototipo Barcel
         barcel: {

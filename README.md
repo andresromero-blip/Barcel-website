@@ -119,6 +119,32 @@ src/
   entorno por límite de tiempo, pero no hay motivo para que falle en
   Vercel o en una máquina local.
 
+## Ronda 4 de feedback: Hero verdaderamente mobile-first
+
+- **Causa raíz del banner "roto" en mobile**: los 3 slides son imágenes de
+  1440×900 (proporción 1.6:1) con el contenido —headline, empaques,
+  producto— repartido en **todo el ancho**. El Hero usaba una altura fija en
+  px por breakpoint (ej. 420px en mobile) independiente del ancho real de la
+  pantalla; con `object-cover`, eso forzaba a recortar ~44% de cada lado de
+  la imagen en un teléfono angosto, cortando literalmente la mitad del
+  headline y de los productos — de ahí que la información se viera
+  desorganizada.
+- **Fix**: el contenedor del Hero ahora usa `aspect-[1440/900]` — la misma
+  proporción de la imagen — como única regla, sin excepciones por
+  breakpoint. Así la imagen se ve **siempre completa, sin recortes**, en
+  cualquier ancho de pantalla; el alto simplemente escala junto con el
+  ancho. Es mobile-first en el sentido estricto: una sola regla que funciona
+  en todos los tamaños, no un valor pensado para desktop y "parcheado" hacia
+  abajo.
+- Se agregó un breakpoint adicional `xs` (400px) para escalar el tamaño del
+  CTA y los dots de forma proporcional a la altura, más baja en mobile por
+  el cambio anterior — manteniendo siempre el tap target mínimo accesible
+  de 44px.
+- Se corrigió una inconsistencia en las flechas de navegación: antes solo
+  la flecha "Anterior" se ocultaba en mobile y "Siguiente" quedaba visible;
+  ahora ambas se ocultan de forma consistente por debajo de `md` (los dots
+  y el autoplay cubren la navegación en pantallas chicas).
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
