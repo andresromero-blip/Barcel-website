@@ -6,9 +6,13 @@ import type { Flavor } from "@/data/brands";
 export default function ProductSlider({
   brandName,
   flavors,
+  hoverBg,
+  hoverText,
 }: {
   brandName: string;
   flavors: Flavor[];
+  hoverBg: string;
+  hoverText: string;
 }) {
   const [active, setActive] = useState<Flavor | null>(null);
 
@@ -22,26 +26,26 @@ export default function ProductSlider({
   return (
     <>
       <div className="overflow-hidden">
-        <div className="flex w-max animate-marquee items-stretch gap-5 py-2 hover:[animation-play-state:paused]">
+        <div className="flex w-max animate-marquee items-stretch gap-6 py-2 hover:[animation-play-state:paused] sm:gap-8">
           {loop.map((flavor, i) => (
             <button
               key={`${flavor.name}-${i}`}
               type="button"
               onClick={() => setActive(flavor)}
               aria-label={`Ver ${brandName} ${flavor.name}`}
-              className="group flex w-40 shrink-0 flex-col items-center gap-3 border border-barcel-black/10 bg-white p-5 text-center transition-all duration-300 hover:-translate-y-1 hover:border-barcel-black hover:shadow-lg focus-visible:-translate-y-1 focus-visible:border-barcel-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-48"
+              className={`group flex w-60 shrink-0 flex-col items-center gap-4 bg-white p-6 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-80 sm:p-8 md:w-[28rem] md:p-10 ${hoverBg} ${hoverText}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={flavor.image}
                 alt=""
                 aria-hidden="true"
-                className="h-28 w-auto object-contain transition-transform duration-300 group-hover:scale-110 sm:h-32"
+                className="h-44 w-auto object-contain transition-transform duration-300 group-hover:scale-110 sm:h-60 md:h-80"
               />
-              <span className="font-display text-xs font-bold uppercase leading-tight text-barcel-black">
+              <span className="font-display text-base font-bold uppercase leading-tight sm:text-lg md:text-xl">
                 {flavor.name}
               </span>
-              <span className="flex h-3 items-center gap-1 font-display text-[10px] font-bold uppercase tracking-wide text-barcel-red opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <span className="flex h-4 items-center gap-1 font-display text-xs font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-sm">
                 Ver detalle
                 <span aria-hidden>→</span>
               </span>

@@ -294,6 +294,39 @@ src/
   reales de cada marca; el diseño y la ubicación ya quedan resueltos para
   cuando se compartan los links.
 
+## Ronda 11: pulido del slider, hero y hover con color de marca
+
+- **Sin bordes en los SKU**: se quitó el `border` de cada tarjeta del
+  carrusel — ahora se distinguen solo por espaciado y por su propia
+  microinteracción de hover.
+- **Hover del SKU con el color del hero de esa marca**: en vez de un
+  borde/sombra genéricos, cada tarjeta toma como fondo el mismo color
+  sólido del hero banner de la marca al pasar el cursor. Esto obligó a
+  resolver contraste de texto por marca — se agregaron `hoverBg`/`hoverText`
+  a cada marca en `brands.ts` con el color de texto (negro o blanco) ya
+  verificado en AA contra el color de fondo de esa marca específica (ej.
+  Takis usa texto blanco —6.75:1—, las demás usan negro porque sus colores
+  son más claros y el blanco no pasaba AA).
+- **Hero de Takis armonizado con el resto**: antes mostraba solo la foto
+  del producto suelto; ahora compone el logo grande (igual que hacen las
+  demás marcas vía `logoHover`) con la foto real del producto superpuesta
+  encima, en vez de mostrar el producto solo. Se quitó el logo pequeño que
+  se había agregado en la esquina superior del hero en la ronda anterior
+  — quedaba redundante con el logo grande de la nueva composición.
+- **"Explora otras marcas" con el color de esa marca al hover**: mismo
+  mecanismo `hoverBg`/`hoverText` que los SKU — cada pill ahora se pinta
+  con el color propio de la marca a la que enlaza, no con un genérico
+  gris/negro.
+- **Pase de mobile-first**: el wordmark gigante de fondo pasó de un
+  `22vw` fijo (podía verse desproporcionado en pantallas muy angostas o
+  muy anchas) a `clamp(3.5rem, 20vw, 13rem)`, con un piso y un techo
+  explícitos. La nueva composición logo+producto del hero de Takis tiene
+  tamaños base explícitos por breakpoint (incluido el `xs` de 400px) en
+  vez de depender solo de `md:`, para que escale de forma predecible
+  desde el celular más angosto hacia arriba.
+- **SKU del carrusel ~3× más grandes**: de `w-40/h-28` (mobile) y
+  `w-48/h-32` (sm) a `w-60/h-44` → `sm:w-80/h-60` → `md:w-[28rem]/h-80`.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

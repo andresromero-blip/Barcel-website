@@ -30,7 +30,13 @@ export default function BrandPage({
   brand: Brand;
   otherBrands: Brand[];
 }) {
-  const heroSrc = brand.heroImage ?? brand.logoHover ?? brand.logo;
+  // Las marcas sin heroImage propio (foto de producto real) ya muestran
+  // "logo grande + producto asomando" en un solo asset pre-compuesto
+  // (logoHover). Takis sí tiene fotografía real de producto separada del
+  // logo — para que su hero se vea igual de armónico que las demás (logo
+  // grande, no solo el producto suelto) se componen ambos assets juntos
+  // más abajo, en vez de mostrar el producto solo.
+  const fallbackHeroSrc = brand.logoHover ?? brand.logo;
 
   return (
     <>
@@ -40,20 +46,10 @@ export default function BrandPage({
       <section className={`relative overflow-hidden ${brand.bg}`}>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -bottom-6 left-1/2 w-full -translate-x-1/2 select-none whitespace-nowrap text-center font-teko text-[22vw] font-bold uppercase leading-none text-white/15 md:-bottom-10"
+          className="pointer-events-none absolute -bottom-4 left-1/2 w-full -translate-x-1/2 select-none whitespace-nowrap text-center font-teko text-[clamp(3.5rem,20vw,13rem)] font-bold uppercase leading-none text-white/15 md:-bottom-10"
         >
           {brand.name}
         </span>
-
-        {/* Logo real de la marca, esquina superior derecha del banner */}
-        {brand.logo && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={brand.logo}
-            alt={`${brand.name}®`}
-            className="absolute right-5 top-5 z-10 h-8 w-auto object-contain drop-shadow-md sm:right-8 sm:top-8 sm:h-10 md:h-12"
-          />
-        )}
 
         <div className="container-page relative grid gap-8 py-14 md:min-h-[520px] md:grid-cols-2 md:items-center md:gap-12 md:py-20">
           <div
@@ -106,13 +102,36 @@ export default function BrandPage({
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >
-            {heroSrc && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={heroSrc}
-                alt={`${brand.name}®`}
-                className="h-56 w-auto max-w-[75%] object-contain drop-shadow-2xl sm:h-72 md:h-[26rem]"
-              />
+            {brand.heroImage ? (
+              // Logo grande (igual que el resto de marcas) + el producto
+              // real superpuesto de forma armónica, en vez de mostrar solo
+              // el producto suelto.
+              <div className="relative flex h-56 w-56 items-center justify-center xs:h-64 xs:w-64 sm:h-80 sm:w-80 md:h-[26rem] md:w-[26rem]">
+                {brand.logo && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={brand.logo}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 m-auto h-24 w-auto max-w-[70%] object-contain opacity-95 drop-shadow-xl xs:h-28 sm:h-36 md:h-52"
+                  />
+                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={brand.heroImage}
+                  alt={`${brand.name}®`}
+                  className="absolute bottom-0 right-0 h-36 w-auto max-w-[75%] object-contain drop-shadow-2xl xs:h-40 sm:h-52 md:h-72"
+                />
+              </div>
+            ) : (
+              fallbackHeroSrc && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={fallbackHeroSrc}
+                  alt={`${brand.name}®`}
+                  className="h-56 w-auto max-w-[75%] object-contain drop-shadow-2xl sm:h-72 md:h-[26rem]"
+                />
+              )
             )}
           </div>
         </div>
@@ -144,7 +163,12 @@ export default function BrandPage({
 
         {brand.flavors && brand.flavors.length > 0 && (
           <div className="container-page mt-8">
-            <ProductSlider brandName={brand.name} flavors={brand.flavors} />
+            <ProductSlider
+              brandName={brand.name}
+              flavors={brand.flavors}
+              hoverBg={brand.hoverBg}
+              hoverText={brand.hoverText}
+            />
           </div>
         )}
       </section>
@@ -174,7 +198,7 @@ export default function BrandPage({
               <Link
                 key={b.slug}
                 href={`/marcas/${b.slug}`}
-                className="border border-barcel-black/15 px-4 py-2 font-display text-sm font-bold text-barcel-black transition-colors hover:border-barcel-black"
+                className={`border border-barcel-black/15 px-4 py-2 font-display text-sm font-bold text-barcel-black transition-colors hover:border-transparent ${b.hoverBg} ${b.hoverText}`}
               >
                 {b.name}
                 <sup className="text-[0.6em]">®</sup>
