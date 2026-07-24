@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Brand } from "@/data/brands";
-import FireEffect from "./FireEffect";
 import ProductSlider from "./ProductSlider";
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
@@ -154,20 +153,19 @@ export default function BrandPage({
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >
-            {brand.heroEffect === "fire" && <FireEffect />}
             {brand.heroVisual === "logo" ? (
-              // Logo grande + producto SUELTO (heroImage — el mismo
-              // asset que ya usa "sin empaque", no una bolsa/empaque) tilteado
-              // entre las llamas, igual que en el referente de campaña. Sin
-              // bagImages/accentImages: esa composición de empaques es para
-              // las marcas que sí tienen fotografía de bolsa.
-              <div className="relative z-10 flex h-80 w-80 items-center justify-center xs:h-96 xs:w-96 sm:h-[30rem] sm:w-[30rem] md:h-[36rem] md:w-[36rem]">
+              // Logo x3 (a pedido del cliente, sin el efecto de fuego) +
+              // producto SUELTO (heroImage — sin empaque) tilteado junto a
+              // él. Sin bagImages/accentImages: esa composición de
+              // empaques es para las marcas que sí tienen fotografía de
+              // bolsa.
+              <div className="relative z-10 flex h-[36rem] w-[36rem] items-center justify-center xs:h-[42rem] xs:w-[42rem] sm:h-[54rem] sm:w-[54rem] md:h-[64rem] md:w-[64rem]">
                 {(brand.logo ?? brand.logoHover) && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={brand.logo ?? brand.logoHover}
                     alt={`${brand.name}®`}
-                    className="absolute left-1/2 top-4 z-10 h-40 w-auto max-w-none -translate-x-1/2 object-contain drop-shadow-2xl xs:top-6 xs:h-48 sm:top-8 sm:h-64 md:top-10 md:h-80"
+                    className="absolute left-1/2 top-4 z-10 h-[30rem] w-auto max-w-none -translate-x-1/2 object-contain drop-shadow-2xl xs:top-6 xs:h-[36rem] sm:top-8 sm:h-[48rem] md:top-10 md:h-[60rem]"
                   />
                 )}
                 {brand.heroImage && (

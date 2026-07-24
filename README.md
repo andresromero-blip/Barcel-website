@@ -531,6 +531,19 @@ src/
   sobre las chispas ya fotográficas (estáticas) de las imágenes — dan
   el único movimiento adicional ya que las fotos en sí son estáticas.
 
+## Ronda 19: se quita el fuego, logo x3
+
+- **Se elimina el efecto de fuego del hero de Takis** — `FireEffect.tsx`
+  se deprecó (stub, mismo patrón que `MarcasCatalog.tsx`/
+  `BrandShowcase.tsx`: no se puede borrar el archivo en este entorno,
+  así que queda como componente no importado desde ningún lado). El
+  campo `heroEffect` se quitó de `brands.ts`. Los assets de fuego reales
+  (`public/effects/takis/`) se conservan por si se retoma más adelante.
+- **Logo x3**: tanto el contenedor como la imagen del logo en el hero de
+  Takis triplicaron su tamaño en cada breakpoint (ej. `md:h-80` →
+  `md:h-[60rem]`). El producto suelto (`heroImage`) mantiene su tamaño
+  anterior — el pedido fue específicamente sobre el logo.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

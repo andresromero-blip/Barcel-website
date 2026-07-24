@@ -19,7 +19,6 @@ export type Brand = {
   logoHover?: string; // logo real con microinteracción de hover (producto asomando)
   heroImage?: string; // foto de producto suelto a gran escala — usada en /marcas
   flavors?: Flavor[]; // presentaciones/sabores con foto real de empaque — usada en /marcas
-  heroEffect?: "fire"; // efecto decorativo opcional en el hero (por ahora solo Takis) — ver FireEffect.tsx
   heroVisual?: "logo"; // si está presente, el hero muestra el logo (no el producto) — por ahora solo Takis
 };
 
@@ -65,7 +64,6 @@ export const brands: Brand[] = [
     logo: "/logos/takis.png",
     logoHover: "/logos/takis-hover.png",
     heroImage: "/products/takis/hero-dragon.png",
-    heroEffect: "fire",
     heroVisual: "logo",
     flavors: [
       { name: "Fuego", image: "/products/takis/flavors/fuego.png" },
