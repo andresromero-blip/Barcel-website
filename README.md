@@ -458,6 +458,21 @@ src/
   que otras marcas pidan su propio tratamiento visual más adelante sin
   tocar el componente genérico `BrandPage.tsx`.
 
+## Ronda 16: corrección — el hero de Takis va con logo, sin producto
+
+- **Lectura incorrecta del referente de fuego**: en la ronda 15 se
+  agregó el efecto de fuego pero se dejó la composición de producto de
+  la ronda 14 (2-3 empaques apilados). El referente real que se compartió
+  para Takis muestra el logo grande sobre las llamas y **ningún**
+  producto — se corrigió para que coincida 1:1.
+- **Nuevo campo `heroVisual` en `brands.ts`**: opcional; cuando vale
+  `"logo"` el hero muestra el logo de la marca en vez de la composición
+  de empaques. Por ahora solo Takis lo usa — las otras 5 marcas siguen
+  con la composición de producto de la ronda 14, sin cambios (los
+  ajustes de hero se están haciendo marca por marca, no los 6 a la vez).
+  `heroImage`/`flavors` de Takis se conservan intactos para el slider de
+  portafolio más abajo en la página — el cambio es solo en el hero.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

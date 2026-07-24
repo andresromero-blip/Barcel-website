@@ -155,52 +155,66 @@ export default function BrandPage({
             }`}
           >
             {brand.heroEffect === "fire" && <FireEffect />}
-            <div className="relative z-10 flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
-              {bagImages.length >= 2 ? (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={bagImages[0]}
-                    alt=""
-                    aria-hidden="true"
-                    className="absolute left-0 top-6 z-0 h-32 w-auto -rotate-6 object-contain opacity-90 drop-shadow-2xl xs:h-36 sm:h-48 md:h-56"
-                  />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={bagImages[1]}
-                    alt={`${brand.name}®`}
-                    className="absolute bottom-2 right-0 z-10 h-40 w-auto rotate-6 object-contain drop-shadow-2xl xs:h-48 sm:h-64 md:h-72"
-                  />
-                </>
-              ) : (
-                bagImages[0] && (
+            {brand.heroVisual === "logo" ? (
+              // Solo el logo, sin producto — 1:1 con el referente de esta
+              // marca (arte de campaña con el logo grande sobre las
+              // llamas, sin ningún empaque a la vista).
+              (brand.logo ?? brand.logoHover) && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={brand.logo ?? brand.logoHover}
+                  alt={`${brand.name}®`}
+                  className="relative z-10 h-40 w-auto max-w-[78%] object-contain drop-shadow-2xl xs:h-48 sm:h-64 md:h-80"
+                />
+              )
+            ) : (
+              <div className="relative z-10 flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
+                {bagImages.length >= 2 ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={bagImages[0]}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute left-0 top-6 z-0 h-32 w-auto -rotate-6 object-contain opacity-90 drop-shadow-2xl xs:h-36 sm:h-48 md:h-56"
+                    />
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={bagImages[1]}
+                      alt={`${brand.name}®`}
+                      className="absolute bottom-2 right-0 z-10 h-40 w-auto rotate-6 object-contain drop-shadow-2xl xs:h-48 sm:h-64 md:h-72"
+                    />
+                  </>
+                ) : (
+                  bagImages[0] && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={bagImages[0]}
+                      alt={`${brand.name}®`}
+                      className="h-48 w-auto object-contain drop-shadow-2xl xs:h-56 sm:h-72 md:h-80"
+                    />
+                  )
+                )}
+                {accentImages[0] && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={bagImages[0]}
-                    alt={`${brand.name}®`}
-                    className="h-48 w-auto object-contain drop-shadow-2xl xs:h-56 sm:h-72 md:h-80"
+                    src={accentImages[0]}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute -right-2 -top-4 z-20 h-14 w-auto rotate-[18deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
                   />
-                )
-              )}
-              {accentImages[0] && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={accentImages[0]}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute -right-2 -top-4 z-20 h-14 w-auto rotate-[18deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
-                />
-              )}
-              {accentImages[1] && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={accentImages[1]}
-                  alt=""
-                  aria-hidden="true"
-                  className="absolute -bottom-4 -left-2 z-20 h-14 w-auto rotate-[-20deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
-                />
-              )}
-            </div>
+                )}
+                {accentImages[1] && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={accentImages[1]}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute -bottom-4 -left-2 z-20 h-14 w-auto rotate-[-20deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
+                  />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
