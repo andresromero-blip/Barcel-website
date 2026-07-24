@@ -584,6 +584,28 @@ regla, lo que llevaba a iterar a ciegas.
   de cada imagen es siempre una fracción del alto del hero, no un
   valor fijo en rem que puede volverse enorme en pantallas grandes.
 
+## Ronda 21: SKU del portafolio — producto más protagonista
+
+- **Referente compartido**: una tarjeta de producto Takis (imagen de
+  producto dominando la tarjeta, nombre grande debajo, "Ver detalle →"
+  como CTA) sobre el color de marca. El pedido fue replicar ese
+  comportamiento de hover usando el producto suelto que ya tiene cada
+  sabor (no la fotografía de empaque, que no existe como asset para
+  Takis — solo hay renders de producto suelto por sabor).
+- **`ProductSlider.tsx`**: la imagen del producto crece bastante
+  (`h-44→h-56`, `sm:h-60→sm:h-80`, `md:h-80→md:h-[26rem]`) y pasa a ser
+  el elemento dominante de la tarjeta, con menos padding alrededor
+  (`p-6→p-5`, `sm:p-8` igual, `md:p-10` igual) y los textos apilados al
+  fondo (`justify-end`) en vez de centrados en todo el alto. El nombre
+  del sabor también creció (`text-base→text-lg`,
+  `sm:text-lg→sm:text-2xl`, `md:text-xl→md:text-3xl`) para tener más
+  peso visual, igual que en el referente.
+- **Cambio aplicado a las 6 marcas**: a diferencia de los ajustes de
+  hero (que se están haciendo marca por marca), el carrusel de
+  portafolio es un componente compartido por diseño — el mismo trato
+  de tarjeta debe verse igual en las 6 páginas de marca, así que el
+  cambio no se limitó a Takis.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

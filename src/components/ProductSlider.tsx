@@ -33,19 +33,22 @@ export default function ProductSlider({
               type="button"
               onClick={() => setActive(flavor)}
               aria-label={`Ver ${brandName} ${flavor.name}`}
-              className={`group flex w-60 shrink-0 flex-col items-center gap-4 bg-white p-6 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-80 sm:p-8 md:w-[28rem] md:p-10 ${hoverBg} ${hoverText}`}
+              className={`group flex w-64 shrink-0 flex-col items-center justify-end gap-3 bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10 ${hoverBg} ${hoverText}`}
             >
+              {/* Producto suelto de cada sabor, grande y protagonista —
+                  1:1 con la composición del referente (imagen de producto
+                  domina la tarjeta, nombre y CTA compactos debajo). */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={flavor.image}
                 alt=""
                 aria-hidden="true"
-                className="h-44 w-auto object-contain transition-transform duration-300 group-hover:scale-110 sm:h-60 md:h-80"
+                className="h-56 w-auto object-contain transition-transform duration-300 group-hover:scale-110 sm:h-80 md:h-[26rem]"
               />
-              <span className="font-display text-base font-bold uppercase leading-tight sm:text-lg md:text-xl">
+              <span className="font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
                 {flavor.name}
               </span>
-              <span className="flex h-4 items-center gap-1 font-display text-xs font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-sm">
+              <span className="flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
                 Ver detalle
                 <span aria-hidden>→</span>
               </span>
