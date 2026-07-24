@@ -606,6 +606,35 @@ regla, lo que llevaba a iterar a ciegas.
   de tarjeta debe verse igual en las 6 páginas de marca, así que el
   cambio no se limitó a Takis.
 
+## Ronda 22: corrección — los SKU de Takis sí eran empaque, no producto suelto
+
+- **Reporte del cliente con evidencia**: la Ronda 21 afirmó que los 8
+  sabores de Takis ya usaban producto suelto porque "no existe
+  fotografía de empaque como asset". Eso era falso — los 8 archivos en
+  `public/products/takis/flavors/*.png` eran renders de la bolsa
+  completa (logo, sellos de advertencia, etc.), tomados de los
+  archivos "3D TAKIS \*.png" del material compartido. El cliente lo
+  confirmó con una captura de la tarjeta "Huacamoles" mostrando la
+  bolsa.
+- **Corregido para 5 de 8 sabores** (Fuego, Original, Salsa Brava, Blue
+  Heat, Huacamoles): se reemplazaron por los renders reales de
+  producto suelto de la carpeta `PRODUCTO TAKIS SUELTO/`, recortados a
+  su contenido real, redimensionados a 500px de lado mayor (mismo
+  criterio que el resto del sitio) y limpiados de un artefacto de
+  franjas de color residual en píxeles de alpha muy bajo (ruido de
+  canal alfa del archivo original, invisible en un compositor
+  correcto pero visible en algunos visores).
+- **Gap pendiente, sin resolver — 3 de 8 sabores**: Ranch, Chile Limón
+  e Intense Nacho no tienen ningún render de producto suelto en el
+  material compartido (solo existe la bolsa: `3D TAKIS RANCH.png`,
+  `3D TAKIS CHILE LIMON.png`, `3D TAKIS INTENSE NACHO.png`). Para no
+  repetir el mismo error, **esos 3 sabores siguen mostrando la bolsa**
+  hasta que el cliente confirme cómo proceder (proveer el asset de
+  producto suelto, o aceptar la bolsa para esos 3 casos como
+  excepción).
+- El logo del hero (`hero-dragon.png`) se re-verificó por separado:
+  ese sí es producto suelto genuino, no se ve afectado.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
