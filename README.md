@@ -668,6 +668,56 @@ regla, lo que llevaba a iterar a ciegas.
 - Assets nuevos: `public/products/takis/flavors/*.png` (bolsa, las 8)
   y `public/products/takis/flavors-hover/*.png` (producto suelto, 5).
 
+## Ronda 24: endurecer el contenedor del hover del SKU (overflow-hidden)
+
+- El cliente reportó, con dos capturas del sitio corriendo, un
+  comportamiento inconsistente entre sabores: en una tarjeta solo se
+  veía el producto suelto (sin bolsa) y en otra se veían bolsa Y
+  producto suelto superpuestos, invadiendo el texto de abajo. Revisé
+  el código de `ProductSlider.tsx` a fondo contra `BrandCard.tsx` (que
+  usa exactamente el mismo mecanismo en el Home) y la lógica es
+  correcta — mismo patrón `relative` + `absolute` + `opacity`/`scale`
+  en ambos componentes. Reconstruí ambos estados (reposo y hover) de
+  forma aislada con las imágenes reales para verificar, y se ven
+  limpios: la bolsa sola en reposo, el producto suelto solo en hover,
+  sin superposición.
+  - Esto hace pensar que las dos capturas corresponden a **dos
+    versiones distintas** cargadas en el navegador (por ejemplo una
+    pestaña con caché de la Ronda 21/22, donde el SKU sí era solo
+    producto suelto sin bolsa) en vez de un bug real de la Ronda 23.
+  - Aun así, para eliminar cualquier caso límite de la transición,
+    se agregó `overflow-hidden` al contenedor de la imagen del SKU en
+    `ProductSlider.tsx` — evita que cualquier imagen se salga de sus
+    límites durante la animación, pase lo que pase con el tamaño
+    exacto de cada asset.
+- **Para probar en limpio**: usar este zip (v28), correr
+  `npm install && npm run dev` en una carpeta nueva (o borrar
+  `.next/` si se reutiliza una carpeta anterior) y abrir en una
+  pestaña/ventana de incógnito para descartar caché del navegador.
+
+## Ronda 25: corrección real — el hover NO es crossfade, es empaque + producto superpuesto
+
+- El cliente reenvió la misma captura de referencia y aclaró el punto
+  que la Ronda 24 no había entendido bien: no era un bug de caché.
+  El diseño correcto es que **la bolsa se queda siempre visible**
+  (reposo y hover) y el producto suelto se **suma encima** de la
+  bolsa al hacer hover, asomando desde la parte baja — tal como en la
+  referencia (bolsa completa + rollo de producto real superpuesto en
+  la parte inferior). No es un crossfade que reemplaza una imagen por
+  otra.
+- **`ProductSlider.tsx` corregido**: la bolsa ya no tiene transición
+  de opacity/scale — se queda estática, siempre visible. El
+  `hoverImage` (producto suelto) entra desde abajo con
+  `opacity 0→100`, `scale 90%→100%` y un pequeño desplazamiento
+  vertical, posicionado en la parte inferior de la bolsa con un ligero
+  "sangrado" hacia afuera del contenedor (`bottom-[-6%]`,
+  `overflow-visible`) para que se vea integrado/superpuesto como en el
+  referente, no flotando separado.
+- Verificado de forma aislada con las imágenes reales de Original y
+  Huacamoles (bolsa + producto compuestos con Pillow, mismos
+  porcentajes de tamaño/posición que el CSS) antes de entregar — la
+  composición coincide con el referente.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
