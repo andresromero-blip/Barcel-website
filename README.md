@@ -544,6 +544,46 @@ src/
   `md:h-[60rem]`). El producto suelto (`heroImage`) mantiene su tamaño
   anterior — el pedido fue específicamente sobre el logo.
 
+## Ronda 20: regla de altura del hero de marca (UX + accesibilidad)
+
+Antes de seguir iterando visualmente, se definió y validó con el
+cliente una regla explícita de altura para los 6 hero banners de
+marca — hasta ahora la altura la terminaba dictando lo que fuera más
+grande en el momento (el logo x3, el producto, etc.), sin ninguna
+regla, lo que llevaba a iterar a ciegas.
+
+- **`min-height: clamp(480px, 60dvh, 760px)`** en la sección del hero,
+  en vez de una altura fija o `100vh`/`100dvh` completo:
+  - **Piso 480px**: nunca se ve aplastado en celulares en horizontal.
+  - **Medio `60dvh`**: se adapta al alto real del viewport. Se usa
+    `dvh` (dynamic viewport height) y no `vh` a propósito — `vh` no
+    descuenta la barra de direcciones del navegador en mobile, que
+    aparece/desaparece al hacer scroll y hace que un hero en `vh`
+    "salte" de tamaño; `dvh` sí se ajusta a la altura visible real.
+  - **Techo 760px**: en monitores grandes el hero no ocupa toda la
+    pantalla ni esconde la señal de que hay más contenido abajo (el
+    portafolio de productos, que es la razón por la que alguien entra
+    a la página).
+- **Es `min-height`, no una altura fija, por accesibilidad**: WCAG
+  1.4.4 (Resize Text) y 1.4.10 (Reflow) exigen que el contenido nunca
+  se recorte ni se superponga al agrandar el texto o achicar el
+  viewport. Con una altura fija, una descripción más larga (Chip's,
+  la más extensa de las 6) se recortaría o se montaría sobre el
+  producto. Con `min-height`, la sección puede crecer si el contenido
+  lo necesita — nunca se pierde texto.
+- **`flex flex-col justify-center`** en la sección centra el
+  contenido verticalmente dentro de ese espacio garantizado, en vez de
+  dejarlo pegado arriba cuando el contenido es más corto que el
+  mínimo.
+- **Los assets (logo/producto) ahora se ajustan al hero, no al revés**:
+  se reemplazó la escalera de tamaños fijos por breakpoint (`h-40`,
+  `xs:h-48`, `sm:h-64`...) por `max-height` en `clamp()` con unidades
+  `dvh` — atado al mismo alto de viewport que define la sección. Esto
+  es lo que evita que un asset descontrolado (como el logo x3 de la
+  ronda anterior) vuelva a inflar la sección por su cuenta: el techo
+  de cada imagen es siempre una fracción del alto del hero, no un
+  valor fijo en rem que puede volverse enorme en pantallas grandes.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

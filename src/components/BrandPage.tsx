@@ -55,8 +55,28 @@ export default function BrandPage({
           color de marca (sin tarjeta blanca) usando heroText — mismo par
           de contraste AA ya verificado para hoverText/hoverBg. Sin logo
           ni nombre de marca como texto: el producto real (con su propio
-          empaque impreso) es quien comunica la marca. */}
-      <section className={`relative overflow-hidden ${brand.bg}`}>
+          empaque impreso) es quien comunica la marca.
+
+          ALTURA — regla definida y validada con el cliente (no volver a
+          cambiar sin acordarlo de nuevo): min-height fluido con clamp(),
+          NUNCA 100vh/100dvh completo ni una altura fija en px.
+            - Piso 480px: nunca se ve aplastado en celulares en horizontal.
+            - Medio 60dvh: se adapta al viewport real (dvh, no vh — vh
+              "salta" en mobile cuando aparece/desaparece la barra de
+              direcciones del navegador).
+            - Techo 760px: en monitores grandes no ocupa toda la pantalla
+              ni esconde la señal de que hay más contenido abajo.
+          Es min-height (no height fija) a propósito: WCAG 1.4.4 (Resize
+          Text) y 1.4.10 (Reflow) exigen que el contenido nunca se
+          recorte ni se superponga al agrandar el texto o achicar el
+          viewport — si la descripción de una marca es más larga, la
+          sección crece, nunca recorta. `flex flex-col justify-center`
+          centra el contenido verticalmente en ese espacio en vez de
+          dejarlo pegado arriba cuando el contenido es más corto que el
+          mínimo garantizado. */}
+      <section
+        className={`relative flex min-h-[clamp(480px,60dvh,760px)] flex-col justify-center overflow-hidden ${brand.bg}`}
+      >
         <svg
           aria-hidden="true"
           viewBox="0 0 800 500"
@@ -74,7 +94,7 @@ export default function BrandPage({
           </g>
         </svg>
 
-        <div className="container-page relative grid gap-8 py-14 md:min-h-[520px] md:grid-cols-2 md:items-center md:gap-12 md:py-20">
+        <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
           <div
             className={`relative z-10 ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
           >
@@ -153,19 +173,22 @@ export default function BrandPage({
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >
+            {/* Los assets (logo/producto) se ajustan al espacio del hero
+                (arriba) con max-height en dvh — nunca al revés. Así un
+                logo o una foto grande nunca vuelve a inflar la sección,
+                pase lo que pase con el asset de cada marca. */}
             {brand.heroVisual === "logo" ? (
-              // Logo x3 (a pedido del cliente, sin el efecto de fuego) +
-              // producto SUELTO (heroImage — sin empaque) tilteado junto a
-              // él. Sin bagImages/accentImages: esa composición de
-              // empaques es para las marcas que sí tienen fotografía de
-              // bolsa.
-              <div className="relative z-10 flex h-[36rem] w-[36rem] items-center justify-center xs:h-[42rem] xs:w-[42rem] sm:h-[54rem] sm:w-[54rem] md:h-[64rem] md:w-[64rem]">
+              // Logo protagonista + producto SUELTO (heroImage — sin
+              // empaque) tilteado junto a él. Sin bagImages/accentImages:
+              // esa composición de empaques es para las marcas que sí
+              // tienen fotografía de bolsa.
+              <div className="relative z-10 flex items-center justify-center">
                 {(brand.logo ?? brand.logoHover) && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={brand.logo ?? brand.logoHover}
                     alt={`${brand.name}®`}
-                    className="absolute left-1/2 top-4 z-10 h-[30rem] w-auto max-w-none -translate-x-1/2 object-contain drop-shadow-2xl xs:top-6 xs:h-[36rem] sm:top-8 sm:h-[48rem] md:top-10 md:h-[60rem]"
+                    className="h-auto max-h-[clamp(220px,42dvh,460px)] w-auto max-w-[85%] object-contain drop-shadow-2xl"
                   />
                 )}
                 {brand.heroImage && (
@@ -174,12 +197,17 @@ export default function BrandPage({
                     src={brand.heroImage}
                     alt=""
                     aria-hidden="true"
-                    className="absolute bottom-4 right-0 z-20 h-28 w-auto rotate-[24deg] object-contain drop-shadow-2xl xs:h-32 sm:h-44 md:h-56"
+                    className="absolute bottom-2 right-2 z-20 h-auto max-h-[clamp(90px,16dvh,180px)] w-auto rotate-[24deg] object-contain drop-shadow-2xl sm:bottom-4 sm:right-4"
                   />
                 )}
               </div>
             ) : (
-              <div className="relative z-10 flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
+              // Caja con tamaño explícito (a diferencia de la rama del
+              // logo): cuando hay 2 empaques, AMBOS quedan posicionados en
+              // absolute (para apilarlos/inclinarlos), así que ninguno
+              // aporta tamaño natural al contenedor — necesita uno propio
+              // para que el posicionamiento por porcentaje tenga sentido.
+              <div className="relative z-10 flex h-[clamp(240px,44dvh,440px)] w-[clamp(240px,44dvh,440px)] items-center justify-center">
                 {bagImages.length >= 2 ? (
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -187,13 +215,13 @@ export default function BrandPage({
                       src={bagImages[0]}
                       alt=""
                       aria-hidden="true"
-                      className="absolute left-0 top-6 z-0 h-32 w-auto -rotate-6 object-contain opacity-90 drop-shadow-2xl xs:h-36 sm:h-48 md:h-56"
+                      className="absolute left-[8%] top-[10%] z-0 h-auto max-h-[clamp(140px,26dvh,260px)] w-auto -rotate-6 object-contain opacity-90 drop-shadow-2xl"
                     />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={bagImages[1]}
                       alt={`${brand.name}®`}
-                      className="absolute bottom-2 right-0 z-10 h-40 w-auto rotate-6 object-contain drop-shadow-2xl xs:h-48 sm:h-64 md:h-72"
+                      className="absolute bottom-[6%] right-[4%] z-10 h-auto max-h-[clamp(170px,32dvh,320px)] w-auto rotate-6 object-contain drop-shadow-2xl"
                     />
                   </>
                 ) : (
@@ -202,7 +230,7 @@ export default function BrandPage({
                     <img
                       src={bagImages[0]}
                       alt={`${brand.name}®`}
-                      className="h-48 w-auto object-contain drop-shadow-2xl xs:h-56 sm:h-72 md:h-80"
+                      className="h-auto max-h-[clamp(180px,34dvh,340px)] w-auto object-contain drop-shadow-2xl"
                     />
                   )
                 )}
@@ -212,7 +240,7 @@ export default function BrandPage({
                     src={accentImages[0]}
                     alt=""
                     aria-hidden="true"
-                    className="absolute -right-2 -top-4 z-20 h-14 w-auto rotate-[18deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
+                    className="absolute right-[2%] top-[2%] z-20 h-auto max-h-[clamp(70px,14dvh,140px)] w-auto rotate-[18deg] object-contain drop-shadow-xl"
                   />
                 )}
                 {accentImages[1] && (
@@ -221,7 +249,7 @@ export default function BrandPage({
                     src={accentImages[1]}
                     alt=""
                     aria-hidden="true"
-                    className="absolute -bottom-4 -left-2 z-20 h-14 w-auto rotate-[-20deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
+                    className="absolute bottom-[2%] left-[2%] z-20 h-auto max-h-[clamp(70px,14dvh,140px)] w-auto rotate-[-20deg] object-contain drop-shadow-xl"
                   />
                 )}
               </div>
