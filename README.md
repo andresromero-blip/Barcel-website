@@ -263,6 +263,37 @@ src/
   lleva a ningún link roto) pero con el mismo fallback de rondas
   anteriores hasta que se comparta su fotografía de producto.
 
+## Ronda 10: slider de portafolio, logo en el hero, redes de marca
+
+- **Portafolio en slider** (`src/components/ProductSlider.tsx`): el grid
+  estático de SKUs se reemplazó por un carrusel continuo con el mismo
+  mecanismo que el marquee de logos del Home (`animate-marquee`, loop
+  vía CSS, sin JS) y la misma velocidad — "mismo comportamiento" pedido
+  explícitamente. Se pausa por completo al pasar el cursor
+  (`hover:[animation-play-state:paused]`), así el usuario tiene todo el
+  tiempo que necesite para hacer clic sobre el SKU que le interesa antes
+  de que el carrusel siga moviéndose.
+  - **Microinteracción por SKU**: al hover, la tarjeta se eleva
+    (`-translate-y-1`), la imagen del producto escala 110% y aparece un
+    "Ver detalle →" en rojo Barcel — solo entonces, guiando al usuario a
+    que ahí puede hacer clic.
+  - Al hacer clic se abre un modal con el producto en grande y su nombre
+    (mismo patrón que ya usa la sección Novedades del Home) — todavía no
+    existe una página de detalle de producto por SKU.
+  - Texto UX writing arriba del carrusel: "Pasa el cursor para pausar el
+    carrusel y haz clic en tu sabor favorito para verlo de cerca." Para
+    las marcas sin fotos de producto real todavía, un mensaje honesto en
+    vez de una sección vacía: "Muy pronto vas a poder ver aquí todas las
+    presentaciones de [Marca]."
+- **Logo real en la esquina superior derecha del hero** de cada marca
+  (`brand.logo`, sobre el color sólido de fondo).
+- **Redes sociales propias de cada marca** (Instagram, TikTok, Facebook)
+  dentro de la tarjeta blanca del hero, bajo un rótulo "Síguelos" —
+  deliberadamente NO en el Footer, que ya tiene las redes corporativas de
+  Barcel. Son placeholders (`href="#"`) hasta contar con las cuentas
+  reales de cada marca; el diseño y la ubicación ya quedan resueltos para
+  cuando se compartan los links.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
