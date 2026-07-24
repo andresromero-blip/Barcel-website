@@ -1,6 +1,7 @@
 export type Flavor = {
   name: string;
-  image: string;
+  image: string; // empaque/bolsa — estado default de la tarjeta SKU
+  hoverImage?: string; // producto suelto real — microinteracción de hover (igual a logo/logoHover del Home), solo si existe el asset
 };
 
 export type Brand = {
@@ -66,13 +67,37 @@ export const brands: Brand[] = [
     heroImage: "/products/takis/hero-dragon.png",
     heroVisual: "logo",
     flavors: [
-      { name: "Fuego", image: "/products/takis/flavors/fuego.png" },
-      { name: "Original", image: "/products/takis/flavors/original.png" },
-      { name: "Salsa Brava", image: "/products/takis/flavors/salsa-brava.png" },
+      {
+        name: "Fuego",
+        image: "/products/takis/flavors/fuego.png",
+        hoverImage: "/products/takis/flavors-hover/fuego.png",
+      },
+      {
+        name: "Original",
+        image: "/products/takis/flavors/original.png",
+        hoverImage: "/products/takis/flavors-hover/original.png",
+      },
+      {
+        name: "Salsa Brava",
+        image: "/products/takis/flavors/salsa-brava.png",
+        hoverImage: "/products/takis/flavors-hover/salsa-brava.png",
+      },
+      // Ranch, Chile Limón e Intense Nacho: sin hoverImage — el material
+      // compartido no incluye render de producto suelto para estos 3
+      // sabores (solo existe la bolsa). La tarjeta funciona igual, solo
+      // sin la microinteracción de producto asomando.
       { name: "Ranch", image: "/products/takis/flavors/ranch.png" },
       { name: "Chile Limón", image: "/products/takis/flavors/chile-limon.png" },
-      { name: "Huacamoles", image: "/products/takis/flavors/huacamoles.png" },
-      { name: "Blue Heat", image: "/products/takis/flavors/blue-heat.png" },
+      {
+        name: "Huacamoles",
+        image: "/products/takis/flavors/huacamoles.png",
+        hoverImage: "/products/takis/flavors-hover/huacamoles.png",
+      },
+      {
+        name: "Blue Heat",
+        image: "/products/takis/flavors/blue-heat.png",
+        hoverImage: "/products/takis/flavors-hover/blue-heat.png",
+      },
       { name: "Intense Nacho", image: "/products/takis/flavors/intense-nacho.png" },
     ],
   },

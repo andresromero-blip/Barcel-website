@@ -635,6 +635,39 @@ regla, lo que llevaba a iterar a ciegas.
 - El logo del hero (`hero-dragon.png`) se re-verificó por separado:
   ese sí es producto suelto genuino, no se ve afectado.
 
+## Ronda 23: corrección de dirección — el SKU es la bolsa, el producto suelto es el hover
+
+- **La Ronda 22 corrigió en la dirección equivocada**: reemplazó las
+  imágenes de bolsa por producto suelto como imagen PRINCIPAL de la
+  tarjeta. El cliente aclaró con una captura señalada: el SKU debe ser
+  **siempre el empaque** (la bolsa completa), y el producto suelto va
+  únicamente en el **hover**, con la misma microinteracción que ya
+  existe en el Home para las marcas (`BrandCard.tsx`: la imagen
+  default se desvanece y encoge levemente, la imagen de hover crece y
+  aparece por encima — `opacity`/`scale`/`duration-300 ease-out`
+  idénticos en ambos lugares).
+- **`Flavor` (`brands.ts`)**: se agregó `hoverImage?: string`. `image`
+  vuelve a ser siempre la bolsa (`3D TAKIS <SABOR>.png`, procesada a
+  700px de lado mayor por el detalle de texto/sellos). `hoverImage`
+  apunta al producto suelto real (`PRODUCTO TAKIS SUELTO/`, 500px) y
+  solo se definió para los 5 sabores donde ese asset existe: Fuego,
+  Original, Salsa Brava, Blue Heat, Huacamoles.
+- **Gap sin cambios — Ranch, Chile Limón, Intense Nacho**: siguen sin
+  `hoverImage` porque el material compartido no tiene render de
+  producto suelto para ellos (solo la bolsa, confirmado de nuevo en
+  `3D TAKIS RANCH/CHILE LIMON/INTENSE NACHO.png`). Sus tarjetas
+  muestran la bolsa con un `scale-105` simple en hover, sin la
+  microinteracción de producto asomando, hasta que se provea el
+  asset.
+- **`ProductSlider.tsx`**: la tarjeta ahora envuelve la imagen en un
+  contenedor `relative` con dos `<img>` superpuestas (igual patrón que
+  `BrandCard.tsx`) quedando: sin `hoverImage` → solo `scale-105` en la
+  bolsa; con `hoverImage` → bolsa a `opacity-0 scale-95` + producto
+  suelto de `opacity-0 scale-105` a `opacity-100 scale-100`, ambas en
+  300ms ease-out.
+- Assets nuevos: `public/products/takis/flavors/*.png` (bolsa, las 8)
+  y `public/products/takis/flavors-hover/*.png` (producto suelto, 5).
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

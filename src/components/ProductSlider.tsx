@@ -35,16 +35,34 @@ export default function ProductSlider({
               aria-label={`Ver ${brandName} ${flavor.name}`}
               className={`group flex w-64 shrink-0 flex-col items-center justify-end gap-3 bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10 ${hoverBg} ${hoverText}`}
             >
-              {/* Producto suelto de cada sabor, grande y protagonista —
-                  1:1 con la composición del referente (imagen de producto
-                  domina la tarjeta, nombre y CTA compactos debajo). */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={flavor.image}
-                alt=""
-                aria-hidden="true"
-                className="h-56 w-auto object-contain transition-transform duration-300 group-hover:scale-110 sm:h-80 md:h-[26rem]"
-              />
+              {/* SKU = empaque real (bolsa), siempre. La microinteracción de
+                  hover es la MISMA que BrandCard.tsx en el Home
+                  (logo/logoHover): la bolsa se desvanece y encoge un poco,
+                  y el producto suelto real asoma por encima creciendo desde
+                  102% a 100% — mismos valores de opacity/scale/duration que
+                  el Home para que se sienta idéntica. Si el sabor no tiene
+                  hoverImage (no existe ese asset), la tarjeta se queda solo
+                  con la bolsa, sin la microinteracción. */}
+              <div className="relative flex h-56 w-full items-center justify-center sm:h-80 md:h-[26rem]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={flavor.image}
+                  alt=""
+                  aria-hidden="true"
+                  className={`h-full w-auto object-contain transition-all duration-300 ease-out ${
+                    flavor.hoverImage ? "group-hover:scale-95 group-hover:opacity-0" : "group-hover:scale-105"
+                  }`}
+                />
+                {flavor.hoverImage && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={flavor.hoverImage}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute h-[85%] w-auto scale-105 object-contain opacity-0 transition-all duration-300 ease-out group-hover:scale-100 group-hover:opacity-100"
+                  />
+                )}
+              </div>
               <span className="font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
                 {flavor.name}
               </span>
