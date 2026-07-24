@@ -367,6 +367,37 @@ src/
   esta marca, así que continúa usando el placeholder de texto (`logoText`)
   igual que en rondas anteriores.
 
+## Ronda 13: hero de marca — logo protagonista, sin producto dominante
+
+- **Referente compartido**: un banner de campaña (Misfits Cookie Dough)
+  donde el producto va inclinado y el titular/CTA quedan a un lado, sin
+  repetir el nombre de marca como texto separado. Se pidió esa misma
+  lógica de composición para el hero de cada marca, pero dándole el rol
+  protagónico al **logo** en vez de al producto.
+- **Logo grande e inclinado como foco central**: reemplaza la composición
+  anterior (logo de fondo tenue + producto superpuesto). Ahora el logo se
+  muestra a tamaño completo, girado (`-rotate-6`), sin ningún elemento
+  compitiendo por atención en el centro.
+- **El producto pasa a acento secundario**: 1-2 fotos de producto/sabor
+  (la primera desde `heroImage`, la segunda desde el primer sabor
+  disponible en `flavors`) flotan pequeñas e inclinadas en las esquinas
+  superior derecha e inferior izquierda del bloque del logo — visibles,
+  pero claramente subordinadas al logo, igual que las galletas sueltas
+  del referente.
+- **Se elimina el nombre de marca como texto**: se quitaron tanto el
+  wordmark decorativo gigante de fondo como el `<h1>` visible con el
+  nombre — el logo ya lo comunica. Se conserva un `<h1 className="sr-only">`
+  oculto visualmente para no romper accesibilidad/SEO (jerarquía de
+  encabezados, lectores de pantalla).
+- **El tagline pasa a titular grande**: ocupa el lugar del nombre de
+  marca como texto principal de la tarjeta blanca, en Teko a tamaño
+  grande (`text-4xl` → `md:text-6xl`), con el color de marca ya
+  verificado en AA (`textOnBg`).
+- **Nuevo CTA "Ver portafolio"**: solo aparece si la marca ya tiene
+  `flavors` cargados; enlaza por ancla a `#portafolio`, sección a la que
+  se le agregó `scroll-mt-20` para que el header sticky no la tape al
+  hacer scroll.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

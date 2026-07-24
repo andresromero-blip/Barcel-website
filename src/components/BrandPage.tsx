@@ -30,26 +30,31 @@ export default function BrandPage({
   brand: Brand;
   otherBrands: Brand[];
 }) {
-  // Las marcas sin heroImage propio (foto de producto real) ya muestran
-  // "logo grande + producto asomando" en un solo asset pre-compuesto
-  // (logoHover). Takis sí tiene fotografía real de producto separada del
-  // logo — para que su hero se vea igual de armónico que las demás (logo
-  // grande, no solo el producto suelto) se componen ambos assets juntos
-  // más abajo, en vez de mostrar el producto solo.
-  const fallbackHeroSrc = brand.logoHover ?? brand.logo;
+  // El logo es el protagonista del hero (no el producto): se muestra
+  // grande e inclinado, igual que en el layout de referencia. El
+  // producto/sabor pasa a un rol secundario — 1-2 fotos pequeñas,
+  // inclinadas y flotando alrededor del logo, a modo de acento visual,
+  // nunca como elemento dominante ni superpuesto al logo.
+  const logoSrc = brand.logo ?? brand.logoHover;
+  const accentImages = Array.from(
+    new Set(
+      [brand.heroImage, ...(brand.flavors?.map((f) => f.image) ?? [])].filter(
+        (src): src is string => Boolean(src)
+      )
+    )
+  ).slice(0, 2);
 
   return (
     <>
-      {/* Hero — color sólido de marca, wordmark gigante de textura, texto
-          legible siempre dentro de una tarjeta blanca (contraste AA
-          garantizado sin importar el color de cada marca). */}
+      {/* Hero — color sólido de marca. El nombre de la marca ya no se
+          repite como texto (ni como wordmark decorativo ni como h1): el
+          logo, grande e inclinado, es quien lo comunica. Se conserva un
+          h1 visualmente oculto solo para accesibilidad/SEO. */}
       <section className={`relative overflow-hidden ${brand.bg}`}>
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-4 left-1/2 w-full -translate-x-1/2 select-none whitespace-nowrap text-center font-teko text-[clamp(3.5rem,20vw,13rem)] font-bold uppercase leading-none text-white/15 md:-bottom-10"
-        >
+        <h1 className="sr-only">
           {brand.name}
-        </span>
+          <sup>®</sup>
+        </h1>
 
         <div className="container-page relative grid gap-8 py-14 md:min-h-[520px] md:grid-cols-2 md:items-center md:gap-12 md:py-20">
           <div
@@ -63,16 +68,24 @@ export default function BrandPage({
             >
               <span aria-hidden>←</span> Volver al inicio
             </Link>
-            <h1 className="font-display text-3xl font-black text-barcel-black md:text-4xl">
-              {brand.name}
-              <sup className="ml-1 text-[0.4em]">®</sup>
-            </h1>
-            <p className={`mt-2 font-display text-sm font-bold md:text-base ${brand.textOnBg}`}>
+            <p
+              className={`font-teko text-4xl font-bold uppercase leading-[0.92] sm:text-5xl md:text-6xl ${brand.textOnBg}`}
+            >
               {brand.tagline}
             </p>
             <p className="mt-4 font-body text-sm leading-relaxed text-barcel-black/70">
               {brand.description}
             </p>
+
+            {brand.flavors && brand.flavors.length > 0 && (
+              <a
+                href="#portafolio"
+                className="mt-6 inline-flex min-h-[44px] items-center gap-1.5 bg-barcel-black px-6 py-3 font-display text-xs font-extrabold uppercase tracking-wide text-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95"
+              >
+                Ver portafolio
+                <span aria-hidden>→</span>
+              </a>
+            )}
 
             {/* Redes de la marca — distintas a las corporativas de Barcel
                 del Footer. */}
@@ -97,42 +110,42 @@ export default function BrandPage({
             </div>
           </div>
 
+          {/* Logo grande e inclinado como foco central, con 1-2 fotos de
+              producto pequeñas e inclinadas flotando alrededor —
+              composición inspirada en el referente compartido. */}
           <div
-            className={`relative flex items-center justify-center py-6 md:py-0 ${
+            className={`relative flex items-center justify-center py-10 md:py-0 ${
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >
-            {brand.heroImage ? (
-              // Logo grande (igual que el resto de marcas) + el producto
-              // real superpuesto de forma armónica, en vez de mostrar solo
-              // el producto suelto.
-              <div className="relative flex h-56 w-56 items-center justify-center xs:h-64 xs:w-64 sm:h-80 sm:w-80 md:h-[26rem] md:w-[26rem]">
-                {brand.logo && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={brand.logo}
-                    alt=""
-                    aria-hidden="true"
-                    className="absolute inset-0 m-auto h-24 w-auto max-w-[70%] object-contain opacity-95 drop-shadow-xl xs:h-28 sm:h-36 md:h-52"
-                  />
-                )}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={brand.heroImage}
-                  alt={`${brand.name}®`}
-                  className="absolute bottom-0 right-0 h-36 w-auto max-w-[75%] object-contain drop-shadow-2xl xs:h-40 sm:h-52 md:h-72"
-                />
-              </div>
-            ) : (
-              fallbackHeroSrc && (
+            <div className="relative flex h-64 w-64 items-center justify-center xs:h-72 xs:w-72 sm:h-96 sm:w-96 md:h-[30rem] md:w-[30rem]">
+              {logoSrc && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={fallbackHeroSrc}
+                  src={logoSrc}
                   alt={`${brand.name}®`}
-                  className="h-56 w-auto max-w-[75%] object-contain drop-shadow-2xl sm:h-72 md:h-[26rem]"
+                  className="relative z-10 h-36 w-auto max-w-[80%] -rotate-6 object-contain drop-shadow-2xl xs:h-40 sm:h-52 md:h-64"
                 />
-              )
-            )}
+              )}
+              {accentImages[0] && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={accentImages[0]}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute -right-1 -top-2 h-20 w-auto rotate-[14deg] object-contain drop-shadow-xl xs:h-24 xs:-right-2 sm:h-32 sm:-right-4 md:h-40 md:-top-6 md:-right-6"
+                />
+              )}
+              {accentImages[1] && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={accentImages[1]}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute -bottom-2 -left-1 h-16 w-auto rotate-[-16deg] object-contain drop-shadow-xl xs:h-20 xs:-left-2 sm:h-28 sm:-left-4 md:h-36 md:-bottom-4 md:-left-6"
+                />
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -142,7 +155,7 @@ export default function BrandPage({
           página de marca. Slider continuo (mismo mecanismo que el
           marquee de logos del Home), pausa al pasar el cursor para poder
           hacer clic con calma sobre cualquier SKU. */}
-      <section className="bg-white py-16 md:py-20">
+      <section id="portafolio" className="scroll-mt-20 bg-white py-16 md:py-20">
         <div className="container-page">
           <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
             Portafolio de productos
