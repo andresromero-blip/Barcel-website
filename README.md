@@ -506,6 +506,31 @@ src/
   fotografía de empaque; Takis usa una rama distinta (`heroVisual:
   "logo"`) que ahora combina logo + producto suelto.
 
+## Ronda 18: fuego real (foto) en vez de fuego dibujado a mano
+
+- **El fuego dibujado con SVG se veía "de caricatura"** (feedback
+  textual del cliente) — el filtro de turbulencia de la ronda 17
+  mejoraba el borde pero seguía siendo, en el fondo, una forma
+  inventada. El cliente compartió un asset real de fotografía de fuego
+  (`1) Takis/6) Fuego/pf-s114-01.jpg`, una lámina con 11 llamas
+  fotográficas individuales sobre fondo negro).
+- **Se recortaron 2 llamas de esa lámina** (`flame-a.jpg`, `flame-b.jpg`,
+  recorte automático al contenido real con Pillow + numpy para no
+  cargar de más fondo negro, luego redimensionadas a 900px de ancho,
+  ~50-70KB cada una) y se guardaron en `public/effects/takis/`.
+- **Composición con `mix-blend-mode: screen`**: en vez de intentar
+  recortar el fuego de su fondo negro (rotoscopía, nada trivial para
+  una foto real), se usa una técnica estándar de motion graphics — con
+  blend mode "screen" el negro se vuelve transparente automáticamente y
+  solo la luz/color de la llama se mezcla con lo que está debajo. Así
+  el fuego real se integra sobre el morado de Takis sin necesitar una
+  máscara alpha. `FireEffect.tsx` ahora superpone 3 instancias (2 fotos
+  distintas + una espejada con `scale-x-[-1]`) para una base de fuego
+  más ancha sin que se note la repetición.
+- **Las chispas/humo en CSS se conservan** como acento animado extra
+  sobre las chispas ya fotográficas (estáticas) de las imágenes — dan
+  el único movimiento adicional ya que las fotos en sí son estáticas.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
