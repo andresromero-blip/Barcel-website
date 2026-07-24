@@ -156,17 +156,30 @@ export default function BrandPage({
           >
             {brand.heroEffect === "fire" && <FireEffect />}
             {brand.heroVisual === "logo" ? (
-              // Solo el logo, sin producto — 1:1 con el referente de esta
-              // marca (arte de campaña con el logo grande sobre las
-              // llamas, sin ningún empaque a la vista).
-              (brand.logo ?? brand.logoHover) && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={brand.logo ?? brand.logoHover}
-                  alt={`${brand.name}®`}
-                  className="relative z-10 h-40 w-auto max-w-[78%] object-contain drop-shadow-2xl xs:h-48 sm:h-64 md:h-80"
-                />
-              )
+              // Logo grande + producto SUELTO (heroImage — el mismo
+              // asset que ya usa "sin empaque", no una bolsa/empaque) tilteado
+              // entre las llamas, igual que en el referente de campaña. Sin
+              // bagImages/accentImages: esa composición de empaques es para
+              // las marcas que sí tienen fotografía de bolsa.
+              <div className="relative z-10 flex h-80 w-80 items-center justify-center xs:h-96 xs:w-96 sm:h-[30rem] sm:w-[30rem] md:h-[36rem] md:w-[36rem]">
+                {(brand.logo ?? brand.logoHover) && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={brand.logo ?? brand.logoHover}
+                    alt={`${brand.name}®`}
+                    className="absolute left-1/2 top-4 z-10 h-40 w-auto max-w-none -translate-x-1/2 object-contain drop-shadow-2xl xs:top-6 xs:h-48 sm:top-8 sm:h-64 md:top-10 md:h-80"
+                  />
+                )}
+                {brand.heroImage && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={brand.heroImage}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute bottom-4 right-0 z-20 h-28 w-auto rotate-[24deg] object-contain drop-shadow-2xl xs:h-32 sm:h-44 md:h-56"
+                  />
+                )}
+              </div>
             ) : (
               <div className="relative z-10 flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
                 {bagImages.length >= 2 ? (

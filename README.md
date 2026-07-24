@@ -473,6 +473,39 @@ src/
   `heroImage`/`flavors` de Takis se conservan intactos para el slider de
   portafolio más abajo en la página — el cambio es solo en el hero.
 
+## Ronda 17: fuego más realista + logo grande + producto suelto (sin empaque)
+
+- **Comparación explícita antes de tocar código**: a pedido del cliente,
+  antes de este cambio se hizo una comparación punto por punto entre el
+  hero renderizado y el arte de referencia (tabla: forma de las llamas,
+  color/contraste, chispas, humo, integración logo+fuego, fondo, escala)
+  para identificar con precisión qué faltaba en vez de iterar a ciegas.
+- **`FireEffect.tsx` v2**: se reemplazan los dos paths lisos tipo "duna"
+  por tres capas de llama (trasera oscura, media naranja, núcleo
+  amarillo/blanco) con un **filtro SVG de turbulencia**
+  (`feTurbulence` + `feDisplacementMap`) que rompe el borde liso de las
+  curvas bezier en algo irregular — la forma clásica de lengüeta de
+  fuego es muy difícil de lograr a mano con bezier sin poder
+  previsualizar, así que se usa una técnica de SVG que genera esa
+  irregularidad de forma confiable. Gradientes con más contraste
+  (rojo oscuro → naranja → amarillo/blanco) para simular el núcleo
+  caliente. Se agregaron más chispas (14, antes 10) repartidas en un
+  área más amplia (no solo pegadas a la base) y 3 "chispas con estela"
+  (rectángulos angostos girados) para dar sensación de velocidad. El
+  humo ahora es más grande/visible y sale desde la zona donde está el
+  ícono de espiral del logo, no desde un punto genérico.
+- **Logo más grande**: de `h-40 → md:h-80` a `h-40 → md:h-80` dentro de
+  un contenedor más grande (antes `md:h-[30rem]`, ahora `md:h-[36rem]`)
+  — ocupa una proporción del hero más parecida a la del referente.
+- **Se confirma: producto sí, empaque no**: se vuelve a agregar el
+  producto al hero de Takis, pero usando `heroImage`
+  (`hero-dragon.png`) — que ya es una foto del producto suelto (los
+  Takis mismos, sin bolsa), no una fotografía de empaque — tilteado
+  entre las llamas junto al logo. La composición de "bolsas apiladas"
+  de la ronda 14 sigue existiendo para las marcas que sí tienen
+  fotografía de empaque; Takis usa una rama distinta (`heroVisual:
+  "logo"`) que ahora combina logo + producto suelto.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
