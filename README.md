@@ -327,6 +327,46 @@ src/
 - **SKU del carrusel ~3× más grandes**: de `w-40/h-28` (mobile) y
   `w-48/h-32` (sm) a `w-60/h-44` → `sm:w-80/h-60` → `md:w-[28rem]/h-80`.
 
+## Ronda 12: portafolios reales de Chip's, Hot Nuts, Big Mix y Runners
+
+- **Assets reales por marca**: el cliente compartió carpetas de insumos
+  (logos, fotografía de producto, imágenes de acompañamiento y copy
+  aprobado en `.docx`) para Chip's, Hot Nuts, Big Mix y Runners — mismo
+  formato que ya se usó para Takis en la ronda 8. Se procesaron con
+  Pillow (resize a 500-700px del lado mayor, `RGBA` preservando
+  transparencia, `optimize=True`) y se colocaron en
+  `public/products/{slug}/` siguiendo la misma convención de carpetas
+  (`hero-*.png` + `flavors/*.png`) que ya usaba Takis.
+- **Copy real reemplazando el placeholder**: se leyeron con `python-docx`
+  los documentos de copy aprobado de las 5 marcas (incluida Takis, cuyo
+  `description` placeholder de rondas anteriores no era el texto real) y
+  se actualizó `description` en `brands.ts` para las 5 con el texto
+  provisto por el cliente.
+- **Selección de `heroImage` por coherencia de color de marca**: cuando
+  una marca tenía varios sabores disponibles, se eligió como imagen
+  principal del hero el empaque cuyo color coincide con el color de marca
+  ya usado en el sitio (ej. Chip's → Jalapeño, verde; Hot Nuts → Original,
+  naranja; Big Mix → Queso, azul) en vez de elegir uno al azar — mismo
+  criterio armónico ya aplicado al hero de Takis en la ronda anterior.
+- **Chip's (6 sabores)**: Jalapeño, Fuego, Sal, Crema y Especias, y las
+  dos variantes de la línea Toque Maestro (Al Parmesano, Sal y
+  Pimienta). La carpeta de assets traía dos fuentes de imagen para los
+  Toque Maestro (un pack multi-bolsa y una foto de bolsa individual) — se
+  usó la foto de bolsa individual por ser más nítida y consistente con el
+  resto del set.
+- **Hot Nuts (3 sabores)**: Original, Fuego, Enigma.
+- **Big Mix (3 sabores)**: Queso, Fuego, Inglesa Limón. Los 3 zip
+  adicionales de la carpeta de producto (`Fuego.zip`, `Inglesa.zip`,
+  `Queso.zip`) se revisaron y resultaron ser artes de otros productos
+  (Takis, Runners, Tostacho, etc. dentro de un mix) — no imágenes propias
+  de Big Mix, así que no se usaron.
+- **Runners (2 sabores)**: Chile Limón y Fuego. El archivo se llamaba
+  `Nuevo-Original.png` pero el empaque real dice "Sabor Chile Limón" —
+  se nombró según lo que dice el empaque, no según el nombre del archivo.
+- **Golden Nuts sigue sin assets propios** — no se compartió carpeta para
+  esta marca, así que continúa usando el placeholder de texto (`logoText`)
+  igual que en rondas anteriores.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

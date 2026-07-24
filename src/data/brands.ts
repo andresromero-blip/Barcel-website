@@ -26,7 +26,7 @@ export const brands: Brand[] = [
     name: "Chip's",
     tagline: "Antojo picosito",
     description:
-      "Chip's es sabor sin filtro. Una marca intensa, juvenil y explosiva que convierte cada papa en una experiencia llena de crunch, picante y actitud mexicana.",
+      "Chip's se distingue por su corte grueso y su proceso de freído lento, que le dan una textura y sabor únicos. Descubre sus variantes icónicas de Jalapeño y de Fuego, además del NUEVO Crema y Especias, sin olvidar los clásicos Sal y Chipotle para disfrutar cada antojo.",
     bg: "bg-chips-green",
     logoText: "text-chips-brown",
     textOnBg: "text-chips-green-700",
@@ -35,13 +35,22 @@ export const brands: Brand[] = [
     imageFirst: true,
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
+    heroImage: "/products/chips/hero-jalapeno.png",
+    flavors: [
+      { name: "Jalapeño", image: "/products/chips/flavors/jalapeno.png" },
+      { name: "Fuego", image: "/products/chips/flavors/fuego.png" },
+      { name: "Sal", image: "/products/chips/flavors/sal.png" },
+      { name: "Crema y Especias", image: "/products/chips/flavors/crema-especias.png" },
+      { name: "Toque Maestro Al Parmesano", image: "/products/chips/flavors/tm-parmesano.png" },
+      { name: "Toque Maestro Sal y Pimienta", image: "/products/chips/flavors/tm-sal-pimienta.png" },
+    ],
   },
   {
     slug: "takis",
     name: "Takis",
     tagline: "Fuego y sabor sin límites",
     description:
-      "En un mundo obsesionado con la aprobación externa, Takis alimenta el fuego interior de quienes se mantienen fieles a sí mismos. La vida es mejor cuando abres tu propio camino.",
+      "Takis es una botana de maíz reconocida por sus sabores intensos y su experiencia única. Desde opciones sin picante hasta propuestas extremas, su portafolio ofrece botanas crujientes pensadas para quienes buscan intensidad y sabor en cada mordida.",
     bg: "bg-takis-purple",
     logoText: "text-takis-yellow",
     textOnBg: "text-takis-purple",
@@ -67,7 +76,7 @@ export const brands: Brand[] = [
     name: "Runners",
     tagline: "Acelera tu emoción",
     description:
-      "Runners combina crunch, sabor y energía. Una botana dinámica y divertida creada para acompañar momentos rápidos, espontáneos y llenos de emoción con actitud y mucho antojo.",
+      "Runners es la botana que enciende la diversión en cualquier momento. Con su icónica forma de coche, textura crujiente y variedad de sabores, convierte cualquier momento en un juego. Porque con Runners no hay que esperar: abres la bolsa y la diversión arranca.",
     bg: "bg-runners-pink",
     logoText: "text-runners-yellow",
     textOnBg: "text-runners-pink",
@@ -76,13 +85,18 @@ export const brands: Brand[] = [
     imageFirst: true,
     logo: "/logos/runners.png",
     logoHover: "/logos/runners-hover.png",
+    heroImage: "/products/runners/hero-chile-limon.png",
+    flavors: [
+      { name: "Chile Limón", image: "/products/runners/flavors/chile-limon.png" },
+      { name: "Fuego", image: "/products/runners/flavors/fuego.png" },
+    ],
   },
   {
     slug: "big-mix",
     name: "Big Mix",
     tagline: "Mezcla, la fiesta y compartir",
     description:
-      "Big Mix mezcla sabor, diversión y actitud. Una botana explosiva y social creada para compartir, botanear y prender cualquier momento con variedad y crunch.",
+      "Big Mix es la botana ideal para los que quieren todo en un solo snack. Disfruta sabores como Queso, Fuego e Inglesa limón, en una mezcla crujiente, deliciosa y surtida para compartir o disfrutar en cualquier momento. Elige Big Mix y piensa en Big.",
     bg: "bg-bigmix-blue",
     logoText: "text-bigmix-yellow",
     textOnBg: "text-bigmix-blue",
@@ -91,13 +105,19 @@ export const brands: Brand[] = [
     imageFirst: false,
     logo: "/logos/big-mix.png",
     logoHover: "/logos/big-mix-hover.png",
+    heroImage: "/products/big-mix/hero-queso.png",
+    flavors: [
+      { name: "Queso", image: "/products/big-mix/flavors/queso.png" },
+      { name: "Fuego", image: "/products/big-mix/flavors/fuego.png" },
+      { name: "Inglesa Limón", image: "/products/big-mix/flavors/inglesa-limon.png" },
+    ],
   },
   {
     slug: "hot-nuts",
     name: "Hot Nuts",
     tagline: "Picante que engancha",
     description:
-      "Hot Nuts trae el calor directo a tu antojo. Cacahuates cubiertos con un toque picante y crocante, perfectos para quienes buscan intensidad en cada puñado.",
+      "Hot Nuts® Original: cacahuates picositos con capa crujiente que truenan justo como te gustan. Si va a tronar, ¡que truene bien!",
     bg: "bg-hotnuts-orange",
     logoText: "text-white",
     textOnBg: "text-hotnuts-orange",
@@ -106,6 +126,12 @@ export const brands: Brand[] = [
     imageFirst: true,
     logo: "/logos/hot-nuts.png",
     logoHover: "/logos/hot-nuts-hover.png",
+    heroImage: "/products/hot-nuts/hero-original.png",
+    flavors: [
+      { name: "Original", image: "/products/hot-nuts/flavors/original.png" },
+      { name: "Fuego", image: "/products/hot-nuts/flavors/fuego.png" },
+      { name: "Enigma", image: "/products/hot-nuts/flavors/enigma.png" },
+    ],
   },
   {
     slug: "golden-nuts",
