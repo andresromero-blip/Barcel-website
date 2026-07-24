@@ -68,9 +68,34 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        // Efecto de fuego (hero de Takis): las llamas "respiran" con un
+        // ligero cambio de escala/opacidad, las chispas suben y se
+        // desvanecen, el humo se dispersa lento. Todas con
+        // motion-safe: para respetar prefers-reduced-motion.
+        flame: {
+          "0%, 100%": { transform: "scaleY(1) scaleX(1)", opacity: "0.9" },
+          "50%": { transform: "scaleY(1.08) scaleX(0.97)", opacity: "1" },
+        },
+        "flame-fast": {
+          "0%, 100%": { transform: "scaleY(1) translateY(0)", opacity: "0.85" },
+          "50%": { transform: "scaleY(1.14) translateY(-4px)", opacity: "1" },
+        },
+        spark: {
+          "0%": { transform: "translateY(0) translateX(0)", opacity: "0" },
+          "15%": { opacity: "1" },
+          "100%": { transform: "translateY(-140px) translateX(10px)", opacity: "0" },
+        },
+        smoke: {
+          "0%": { transform: "translateY(0) scale(1)", opacity: "0.16" },
+          "100%": { transform: "translateY(-60px) scale(1.7)", opacity: "0" },
+        },
       },
       animation: {
         marquee: "marquee 45s linear infinite",
+        flame: "flame 3.2s ease-in-out infinite",
+        "flame-fast": "flame-fast 2.4s ease-in-out infinite",
+        spark: "spark 2.6s ease-in infinite",
+        smoke: "smoke 6s ease-in-out infinite",
       },
     },
   },

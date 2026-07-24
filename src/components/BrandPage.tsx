@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Brand } from "@/data/brands";
+import FireEffect from "./FireEffect";
 import ProductSlider from "./ProductSlider";
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
@@ -153,7 +154,8 @@ export default function BrandPage({
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >
-            <div className="relative flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
+            {brand.heroEffect === "fire" && <FireEffect />}
+            <div className="relative z-10 flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
               {bagImages.length >= 2 ? (
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}

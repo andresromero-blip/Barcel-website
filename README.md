@@ -431,6 +431,33 @@ src/
   las esquinas del bloque de producto, para dar la sensación de
   variedad del referente sin saturar la composición.
 
+## Ronda 15: efecto de fuego en el hero de Takis
+
+- **Ajuste marca por marca**: a partir de esta ronda los ajustes de hero
+  se hacen uno por uno en vez de aplicarse a las 6 marcas a la vez —
+  empezando por Takis, con un tercer referente compartido (arte oficial
+  de campaña con llamas, chispas y humo sobre fondo morado).
+- **`FireEffect.tsx` (nuevo)**: capas de fuego construidas con
+  degradados SVG (dos llamas superpuestas con distinto tono/velocidad
+  para dar profundidad), un resplandor cálido detrás del producto,
+  chispas ascendentes (puntos con glow que suben y se desvanecen) y
+  humo sutil disipándose. Todo con `motion-safe:` para respetar
+  `prefers-reduced-motion`.
+- **Config de chispas fija, no aleatoria**: las posiciones/tiempos de
+  cada chispa están hardcodeados (no `Math.random()`) para que el HTML
+  que arma el servidor coincida exactamente con el del cliente al
+  hidratar — evita el parpadeo/warning típico de hidratación en Next.js
+  cuando un valor aleatorio difiere entre servidor y cliente.
+- **Efecto acotado a la columna de producto, nunca a la de texto**: se
+  monta dentro del contenedor de producto (no de toda la sección) para
+  que las llamas nunca se superpongan al texto — así el contraste AA ya
+  verificado (`heroText` sobre `bg-takis-purple`) queda intacto sin
+  necesidad de volver a auditarlo.
+- **Nuevo campo `heroEffect` en `brands.ts`**: opcional, por ahora solo
+  Takis lo tiene (`heroEffect: "fire"`). Deja el mecanismo listo para
+  que otras marcas pidan su propio tratamiento visual más adelante sin
+  tocar el componente genérico `BrandPage.tsx`.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
