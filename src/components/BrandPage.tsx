@@ -57,25 +57,25 @@ export default function BrandPage({
           ni nombre de marca como texto: el producto real (con su propio
           empaque impreso) es quien comunica la marca.
 
-          ALTURA — regla definida y validada con el cliente (no volver a
-          cambiar sin acordarlo de nuevo): min-height fluido con clamp(),
-          NUNCA 100vh/100dvh completo ni una altura fija en px.
-            - Piso 480px: nunca se ve aplastado en celulares en horizontal.
-            - Medio 60dvh: se adapta al viewport real (dvh, no vh — vh
-              "salta" en mobile cuando aparece/desaparece la barra de
-              direcciones del navegador).
-            - Techo 760px: en monitores grandes no ocupa toda la pantalla
-              ni esconde la señal de que hay más contenido abajo.
-          Es min-height (no height fija) a propósito: WCAG 1.4.4 (Resize
-          Text) y 1.4.10 (Reflow) exigen que el contenido nunca se
+          ALTURA — ajustada en la Ronda 26 (el cliente la sintió muy alta
+          incluso ya sin CTA/logo gigante): mismo mecanismo min-height +
+          clamp() de la Ronda 20, solo que con valores más bajos. Sigue
+          siendo min-height (no height fija) a propósito: WCAG 1.4.4
+          (Resize Text) y 1.4.10 (Reflow) exigen que el contenido nunca se
           recorte ni se superponga al agrandar el texto o achicar el
           viewport — si la descripción de una marca es más larga, la
-          sección crece, nunca recorta. `flex flex-col justify-center`
-          centra el contenido verticalmente en ese espacio en vez de
-          dejarlo pegado arriba cuando el contenido es más corto que el
-          mínimo garantizado. */}
+          sección crece, nunca recorta.
+            - Piso 400px: nunca se ve aplastado en celulares en horizontal.
+            - Medio 46dvh (antes 60dvh): bajamos el peso del viewport real
+              para que el hero ya no domine la pantalla completa en la
+              mayoría de celulares/laptops.
+            - Techo 600px (antes 760px): en monitores grandes ocupa
+              claramente menos que la mitad de la pantalla.
+          `flex flex-col justify-center` centra el contenido verticalmente
+          en ese espacio en vez de dejarlo pegado arriba cuando el
+          contenido es más corto que el mínimo garantizado. */}
       <section
-        className={`relative flex min-h-[clamp(480px,60dvh,760px)] flex-col justify-center overflow-hidden ${brand.bg}`}
+        className={`relative flex min-h-[clamp(400px,46dvh,600px)] flex-col justify-center overflow-hidden ${brand.bg}`}
       >
         <svg
           aria-hidden="true"
@@ -96,7 +96,7 @@ export default function BrandPage({
 
         <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
           <div
-            className={`relative z-10 ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
+            className={`relative z-10 order-2 ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
           >
             <Link
               href="/"
@@ -120,16 +120,6 @@ export default function BrandPage({
             >
               {brand.description}
             </p>
-
-            {brand.flavors && brand.flavors.length > 0 && (
-              <a
-                href="#portafolio"
-                className={`mt-6 inline-flex min-h-[44px] items-center gap-1.5 bg-white px-6 py-3 font-display text-xs font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95 ${brand.textOnBg}`}
-              >
-                Ver portafolio
-                <span aria-hidden>→</span>
-              </a>
-            )}
 
             {/* Redes de la marca — distintas a las corporativas de Barcel
                 del Footer. */}
@@ -169,7 +159,7 @@ export default function BrandPage({
               otro al frente/grande), con 1-2 sabores más flotando
               sueltos en las esquinas si hay assets disponibles. */}
           <div
-            className={`relative flex items-center justify-center py-10 md:py-0 ${
+            className={`relative order-1 flex items-center justify-center py-10 md:py-0 ${
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >

@@ -718,6 +718,28 @@ regla, lo que llevaba a iterar a ciegas.
   porcentajes de tamaño/posición que el CSS) antes de entregar — la
   composición coincide con el referente.
 
+## Ronda 26: hero más bajo, sin CTA, logo primero en mobile
+
+- **Altura**: el cliente sintió el hero todavía muy alto pese a la
+  regla de la Ronda 20. Se bajaron los tres valores del `clamp()` en
+  `BrandPage.tsx`: piso 480px→400px, medio 60dvh→46dvh, techo
+  760px→600px. Sigue siendo `min-height` con `clamp()` (nunca altura
+  fija ni 100dvh) por la misma razón de accesibilidad de la Ronda 20
+  (WCAG 1.4.4/1.4.10) — solo cambian los números, no el mecanismo.
+- **CTA eliminado**: se quitó el botón "Ver portafolio" del hero. La
+  sección de portafolio sigue debajo en la misma página, con su propio
+  encabezado — no hace falta un botón extra empujando el hero hacia
+  abajo.
+- **Mobile: logo/producto primero, texto después**: antes, en mobile,
+  el DOM ponía primero el bloque de texto (tagline, descripción,
+  redes) y después el logo/producto — en desktop el orden lo decidía
+  `imageFirst` vía `md:order-*`, pero en mobile no había ningún
+  `order` explícito, así que caía en el orden del DOM (texto primero).
+  Se agregó `order-1` a la columna de imagen y `order-2` a la de texto
+  como base (mobile), dejando que `md:order-1`/`md:order-2`
+  (controlados por `imageFirst`) sigan mandando en desktop sin
+  cambios — mismo patrón ya usado en el resto del sitio.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
