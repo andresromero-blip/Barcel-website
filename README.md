@@ -398,6 +398,39 @@ src/
   se le agregó `scroll-mt-20` para que el header sticky no la tape al
   hacer scroll.
 
+## Ronda 14: hero de marca — composición 1:1 con producto real (sin logo)
+
+- **Segundo referente compartido** (banner de campaña Lay's): dos
+  empaques reales superpuestos e inclinados como foco visual, texto
+  grande directo sobre el color de fondo (sin tarjeta blanca), CTA con
+  flecha y formas onduladas sutiles de textura detrás. Se pidió
+  replicar esa composición 1:1, quitando el logo del hero por completo
+  y usando los productos reales de cada marca en su lugar.
+- **Se quita el logo del hero**: el producto (empaque real, que ya trae
+  el logo impreso) vuelve a ser el protagonista — pero ahora en dos
+  piezas apiladas e inclinadas (una atrás/chica, otra al frente/grande),
+  no como elemento único centrado.
+- **Se detecta y evita el sabor duplicado**: `heroImage` y `flavors[0]`
+  suelen ser el mismo sabor en dos archivos distintos (pensados para
+  tamaños distintos) — se compara el nombre de archivo para no mostrar
+  el mismo sabor dos veces en la composición de dos empaques.
+- **Texto directo sobre el color de marca**: se quitó la tarjeta blanca
+  que envolvía el texto — ahora usa un nuevo campo `heroText` en
+  `brands.ts` (blanco o negro, mismo par de contraste AA ya verificado
+  para `hoverText`/`hoverBg`, solo que sin el prefijo `hover:`). Los
+  bloques de redes sociales y el link "Volver al inicio" se adaptaron
+  para verse bien tanto sobre fondos donde el texto es blanco como
+  donde es negro.
+- **Formas decorativas de fondo**: dos trazos ondulados en SVG, en un
+  tono translúcido del mismo color de marca (blanco/10 o negro/10 según
+  corresponda), inspirados en las líneas del referente — sin necesidad
+  de definir un tono nuevo por marca, ya que la superposición
+  translúcida siempre da una variación tonal del mismo color de fondo.
+- **1-2 sabores adicionales como acento suelto**: cuando hay más de 2
+  sabores disponibles, los siguientes se muestran pequeños y girados en
+  las esquinas del bloque de producto, para dar la sensación de
+  variedad del referente sin saturar la composición.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

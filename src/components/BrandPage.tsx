@@ -30,57 +30,81 @@ export default function BrandPage({
   brand: Brand;
   otherBrands: Brand[];
 }) {
-  // El logo es el protagonista del hero (no el producto): se muestra
-  // grande e inclinado, igual que en el layout de referencia. El
-  // producto/sabor pasa a un rol secundario — 1-2 fotos pequeñas,
-  // inclinadas y flotando alrededor del logo, a modo de acento visual,
-  // nunca como elemento dominante ni superpuesto al logo.
-  const logoSrc = brand.logo ?? brand.logoHover;
-  const accentImages = Array.from(
-    new Set(
-      [brand.heroImage, ...(brand.flavors?.map((f) => f.image) ?? [])].filter(
-        (src): src is string => Boolean(src)
-      )
-    )
-  ).slice(0, 2);
+  // Composición 1:1 con el referente compartido (banner Lay's): sin logo
+  // en el hero — el producto (empaque real) es el protagonista, en dos
+  // piezas apiladas/inclinadas, con 1-2 fotos sueltas de más sabores
+  // flotando alrededor a modo de acento. heroImage suele repetir el
+  // mismo sabor que flavors[0] (mismo pack, archivo distinto pensado
+  // para otro tamaño) — se detecta y se salta para no mostrar el mismo
+  // sabor dos veces.
+  const heroFlavorStem = brand.heroImage?.match(/hero-([a-z0-9-]+)\.png$/)?.[1];
+  const remainingFlavors = heroFlavorStem
+    ? (brand.flavors ?? []).filter((f) => !f.image.endsWith(`/${heroFlavorStem}.png`))
+    : brand.flavors ?? [];
+  const bagImages = [brand.heroImage, remainingFlavors[0]?.image].filter(
+    (src): src is string => Boolean(src)
+  );
+  const accentImages = remainingFlavors.slice(1, 3).map((f) => f.image);
+  const isLightText = brand.heroText === "text-white";
 
   return (
     <>
-      {/* Hero — color sólido de marca. El nombre de la marca ya no se
-          repite como texto (ni como wordmark decorativo ni como h1): el
-          logo, grande e inclinado, es quien lo comunica. Se conserva un
-          h1 visualmente oculto solo para accesibilidad/SEO. */}
+      {/* Hero — color sólido de marca con formas decorativas sutiles de
+          fondo (mismo tono, solo una capa translúcida más para dar
+          textura, igual que el referente). El texto va directo sobre el
+          color de marca (sin tarjeta blanca) usando heroText — mismo par
+          de contraste AA ya verificado para hoverText/hoverBg. Sin logo
+          ni nombre de marca como texto: el producto real (con su propio
+          empaque impreso) es quien comunica la marca. */}
       <section className={`relative overflow-hidden ${brand.bg}`}>
-        <h1 className="sr-only">
-          {brand.name}
-          <sup>®</sup>
-        </h1>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 800 500"
+          preserveAspectRatio="none"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <g
+            className={isLightText ? "stroke-white/10" : "stroke-black/10"}
+            fill="none"
+            strokeWidth="60"
+            strokeLinecap="round"
+          >
+            <path d="M-50 420 C 200 320, 350 480, 620 360 S 900 260, 900 260" />
+            <path d="M-80 120 C 150 40, 300 180, 560 80 S 880 -20, 880 -20" />
+          </g>
+        </svg>
 
         <div className="container-page relative grid gap-8 py-14 md:min-h-[520px] md:grid-cols-2 md:items-center md:gap-12 md:py-20">
           <div
-            className={`relative bg-white p-7 shadow-xl md:p-10 ${
-              brand.imageFirst ? "md:order-2" : "md:order-1"
-            }`}
+            className={`relative z-10 ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
           >
             <Link
               href="/"
-              className="mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-barcel-black/50 transition-colors hover:text-barcel-red"
+              className={`mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide transition-colors ${
+                isLightText
+                  ? "text-white/60 hover:text-white"
+                  : "text-barcel-black/50 hover:text-barcel-black"
+              }`}
             >
               <span aria-hidden>←</span> Volver al inicio
             </Link>
-            <p
-              className={`font-teko text-4xl font-bold uppercase leading-[0.92] sm:text-5xl md:text-6xl ${brand.textOnBg}`}
+            <h1
+              className={`font-teko text-5xl font-bold uppercase leading-[0.9] sm:text-6xl md:text-7xl ${brand.heroText}`}
             >
               {brand.tagline}
-            </p>
-            <p className="mt-4 font-body text-sm leading-relaxed text-barcel-black/70">
+            </h1>
+            <p
+              className={`mt-4 max-w-sm font-body text-sm leading-relaxed ${
+                isLightText ? "text-white/80" : "text-barcel-black/70"
+              }`}
+            >
               {brand.description}
             </p>
 
             {brand.flavors && brand.flavors.length > 0 && (
               <a
                 href="#portafolio"
-                className="mt-6 inline-flex min-h-[44px] items-center gap-1.5 bg-barcel-black px-6 py-3 font-display text-xs font-extrabold uppercase tracking-wide text-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95"
+                className={`mt-6 inline-flex min-h-[44px] items-center gap-1.5 bg-white px-6 py-3 font-display text-xs font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:scale-95 ${brand.textOnBg}`}
               >
                 Ver portafolio
                 <span aria-hidden>→</span>
@@ -89,8 +113,14 @@ export default function BrandPage({
 
             {/* Redes de la marca — distintas a las corporativas de Barcel
                 del Footer. */}
-            <div className="mt-6 border-t border-barcel-black/10 pt-5">
-              <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-wide text-barcel-black/50">
+            <div
+              className={`mt-6 border-t pt-5 ${isLightText ? "border-white/20" : "border-barcel-black/15"}`}
+            >
+              <p
+                className={`mb-3 font-display text-[11px] font-bold uppercase tracking-wide ${
+                  isLightText ? "text-white/60" : "text-barcel-black/50"
+                }`}
+              >
                 Síguelos
               </p>
               <div className="flex items-center gap-2.5">
@@ -99,7 +129,11 @@ export default function BrandPage({
                     key={social.label}
                     href={social.href}
                     aria-label={`${social.label} de ${brand.name}`}
-                    className="flex h-9 w-9 items-center justify-center bg-barcel-black/5 text-barcel-black transition-colors hover:bg-barcel-black hover:text-white"
+                    className={
+                      isLightText
+                        ? "flex h-9 w-9 items-center justify-center bg-white/10 text-white transition-colors hover:bg-white hover:text-barcel-black"
+                        : "flex h-9 w-9 items-center justify-center bg-barcel-black/10 text-barcel-black transition-colors hover:bg-barcel-black hover:text-white"
+                    }
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
                       <path d={social.path} />
@@ -110,22 +144,41 @@ export default function BrandPage({
             </div>
           </div>
 
-          {/* Logo grande e inclinado como foco central, con 1-2 fotos de
-              producto pequeñas e inclinadas flotando alrededor —
-              composición inspirada en el referente compartido. */}
+          {/* Productos reales, apilados e inclinados — mismo esquema que
+              el referente (dos empaques superpuestos, uno atrás/chico y
+              otro al frente/grande), con 1-2 sabores más flotando
+              sueltos en las esquinas si hay assets disponibles. */}
           <div
             className={`relative flex items-center justify-center py-10 md:py-0 ${
               brand.imageFirst ? "md:order-1" : "md:order-2"
             }`}
           >
-            <div className="relative flex h-64 w-64 items-center justify-center xs:h-72 xs:w-72 sm:h-96 sm:w-96 md:h-[30rem] md:w-[30rem]">
-              {logoSrc && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={logoSrc}
-                  alt={`${brand.name}®`}
-                  className="relative z-10 h-36 w-auto max-w-[80%] -rotate-6 object-contain drop-shadow-2xl xs:h-40 sm:h-52 md:h-64"
-                />
+            <div className="relative flex h-72 w-72 items-center justify-center xs:h-80 xs:w-80 sm:h-[26rem] sm:w-[26rem] md:h-[30rem] md:w-[30rem]">
+              {bagImages.length >= 2 ? (
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={bagImages[0]}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute left-0 top-6 z-0 h-32 w-auto -rotate-6 object-contain opacity-90 drop-shadow-2xl xs:h-36 sm:h-48 md:h-56"
+                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={bagImages[1]}
+                    alt={`${brand.name}®`}
+                    className="absolute bottom-2 right-0 z-10 h-40 w-auto rotate-6 object-contain drop-shadow-2xl xs:h-48 sm:h-64 md:h-72"
+                  />
+                </>
+              ) : (
+                bagImages[0] && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={bagImages[0]}
+                    alt={`${brand.name}®`}
+                    className="h-48 w-auto object-contain drop-shadow-2xl xs:h-56 sm:h-72 md:h-80"
+                  />
+                )
               )}
               {accentImages[0] && (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -133,7 +186,7 @@ export default function BrandPage({
                   src={accentImages[0]}
                   alt=""
                   aria-hidden="true"
-                  className="absolute -right-1 -top-2 h-20 w-auto rotate-[14deg] object-contain drop-shadow-xl xs:h-24 xs:-right-2 sm:h-32 sm:-right-4 md:h-40 md:-top-6 md:-right-6"
+                  className="absolute -right-2 -top-4 z-20 h-14 w-auto rotate-[18deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
                 />
               )}
               {accentImages[1] && (
@@ -142,7 +195,7 @@ export default function BrandPage({
                   src={accentImages[1]}
                   alt=""
                   aria-hidden="true"
-                  className="absolute -bottom-2 -left-1 h-16 w-auto rotate-[-16deg] object-contain drop-shadow-xl xs:h-20 xs:-left-2 sm:h-28 sm:-left-4 md:h-36 md:-bottom-4 md:-left-6"
+                  className="absolute -bottom-4 -left-2 z-20 h-14 w-auto rotate-[-20deg] object-contain drop-shadow-xl xs:h-16 sm:h-24 md:h-28"
                 />
               )}
             </div>

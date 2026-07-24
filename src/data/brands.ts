@@ -13,6 +13,7 @@ export type Brand = {
   textOnBg: string; // tailwind text color for tagline on white tile
   hoverBg: string; // tailwind "hover:bg-..." — color de la marca para estados hover (SKUs, selector de otras marcas)
   hoverText: string; // tailwind "hover:text-..." — contraste AA verificado contra hoverBg
+  heroText: string; // tailwind "text-..." — mismo par de contraste que hoverText/hoverBg, sin el prefijo hover: (texto directo sobre bg en el hero de marca)
   imageFirst: boolean; // whether the color tile is on the left (desktop)
   logo?: string; // logo real (estado default)
   logoHover?: string; // logo real con microinteracción de hover (producto asomando)
@@ -32,6 +33,7 @@ export const brands: Brand[] = [
     textOnBg: "text-chips-green-700",
     hoverBg: "hover:bg-chips-green",
     hoverText: "hover:text-barcel-black", // 9.1:1 sobre chips-green — AA
+    heroText: "text-barcel-black",
     imageFirst: true,
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
@@ -56,6 +58,7 @@ export const brands: Brand[] = [
     textOnBg: "text-takis-purple",
     hoverBg: "hover:bg-takis-purple",
     hoverText: "hover:text-white", // 6.75:1 sobre takis-purple — AA
+    heroText: "text-white",
     imageFirst: false,
     logo: "/logos/takis.png",
     logoHover: "/logos/takis-hover.png",
@@ -82,6 +85,7 @@ export const brands: Brand[] = [
     textOnBg: "text-runners-pink",
     hoverBg: "hover:bg-runners-pink",
     hoverText: "hover:text-barcel-black", // 4.6:1 sobre runners-pink — AA
+    heroText: "text-barcel-black",
     imageFirst: true,
     logo: "/logos/runners.png",
     logoHover: "/logos/runners-hover.png",
@@ -102,6 +106,7 @@ export const brands: Brand[] = [
     textOnBg: "text-bigmix-blue",
     hoverBg: "hover:bg-bigmix-blue",
     hoverText: "hover:text-barcel-black", // 5.25:1 sobre bigmix-blue — AA
+    heroText: "text-barcel-black",
     imageFirst: false,
     logo: "/logos/big-mix.png",
     logoHover: "/logos/big-mix-hover.png",
@@ -123,6 +128,7 @@ export const brands: Brand[] = [
     textOnBg: "text-hotnuts-orange",
     hoverBg: "hover:bg-hotnuts-orange",
     hoverText: "hover:text-barcel-black", // 6:1 sobre hotnuts-orange — AA
+    heroText: "text-barcel-black",
     imageFirst: true,
     logo: "/logos/hot-nuts.png",
     logoHover: "/logos/hot-nuts-hover.png",
@@ -144,6 +150,7 @@ export const brands: Brand[] = [
     textOnBg: "text-goldennuts-gold",
     hoverBg: "hover:bg-goldennuts-gold",
     hoverText: "hover:text-barcel-black", // 8.1:1 sobre goldennuts-gold — AA
+    heroText: "text-barcel-black",
     imageFirst: false,
     // Sin logo real todavía — usa el placeholder de texto hasta que se comparta el asset.
   },
