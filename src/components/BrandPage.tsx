@@ -50,7 +50,12 @@ export default function BrandPage({
     (src): src is string => Boolean(src)
   );
   const accentImages = remainingFlavors.slice(1, 3).map((f) => f.image);
-  const isLightText = brand.heroText === "text-white";
+  // Ronda 36: antes se inferia de heroText === "text-white", pero ahora
+  // heroText puede ser un acento de marca (café, amarillo...) para el H1
+  // sin que eso signifique que el texto de apoyo (párrafo/redes/
+  // breadcrumb) también deba ser claro — ese texto exige 4.5:1 (no 3:1) y
+  // sigue el campo explícito lightHero, no el color del H1.
+  const isLightText = brand.lightHero;
 
   return (
     <>

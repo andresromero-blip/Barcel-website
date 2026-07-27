@@ -18,7 +18,8 @@ export type Brand = {
   hoverBg: string; // tailwind "hover:bg-..." — color de la marca para estados hover (SKUs, selector de otras marcas)
   hoverText: string; // tailwind "hover:text-..." — contraste AA verificado contra hoverBg, para cuando el hover va en el MISMO elemento que el texto
   groupHoverText: string; // tailwind "group-hover:text-..." — mismo par de contraste, para textos hijos con color propio (ej. label de marca) dentro de una tarjeta que solo tiene `group` + hoverBg en el contenedor
-  heroText: string; // tailwind "text-..." — mismo par de contraste que hoverText/hoverBg, sin el prefijo hover: (texto directo sobre bg en el hero de marca)
+  heroText: string; // tailwind "text-..." — color del H1 del hero. A diferencia de hoverText/groupHoverText, este SÍ puede usar el umbral de "texto grande" de WCAG (3:1 en vez de 4.5:1: el H1 es font-teko text-5xl+ bold, muy por encima del piso de 24px) — por eso puede ser un acento de marca en vez de negro/blanco plano. Ver nota Ronda 36 más abajo.
+  lightHero: boolean; // true si el hero usa texto/elementos claros (blanco) en vez de oscuros — controla párrafo, "Volver al inicio", "Síguelos", redes y las formas decorativas del fondo (todo texto DE APOYO, que sí necesita 4.5:1 y por eso se queda en blanco/negro puro, nunca en un acento de color)
   imageFirst: boolean; // whether the color tile is on the left (desktop)
   logo?: string; // logo real (estado default)
   logoHover?: string; // logo real con microinteracción de hover (producto asomando)
@@ -40,7 +41,14 @@ export const brands: Brand[] = [
     hoverBg: "hover:bg-chips-green",
     hoverText: "hover:text-black", // 9.07:1 sobre chips-green — AA (negro puro, no barcel-black — ver nota en Runners)
     groupHoverText: "group-hover:text-black",
-    heroText: "text-black",
+    // Ronda 36: negro plano le quitaba personalidad al H1 (feedback del
+    // cliente — la marca es dinámica, dirigida a audiencia adolescente).
+    // El H1 es texto grande (WCAG 3:1, no 4.5:1), así que hay margen para
+    // usar el mismo café de la marca (ya usado en logoText) en vez de
+    // negro puro: 4.40:1 sobre chips-green — AA-grande con margen de
+    // sobra, y es color real de marca, no negro genérico.
+    heroText: "text-chips-brown",
+    lightHero: false,
     imageFirst: true,
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
@@ -67,6 +75,7 @@ export const brands: Brand[] = [
     hoverText: "hover:text-white", // 6.74:1 sobre takis-purple — AA
     groupHoverText: "group-hover:text-white",
     heroText: "text-white",
+    lightHero: true,
     imageFirst: false,
     logo: "/logos/takis.png",
     logoHover: "/logos/takis-hover.png",
@@ -176,7 +185,12 @@ export const brands: Brand[] = [
     hoverBg: "hover:bg-runners-pink",
     hoverText: "hover:text-black", // 4.64:1 sobre runners-pink — AA (negro puro, ver nota arriba)
     groupHoverText: "group-hover:text-black",
-    heroText: "text-black",
+    // Ronda 36: negro plano en el H1 no encajaba con una marca pensada
+    // para audiencia adolescente. El H1 es texto grande (WCAG 3:1), así
+    // que se usa el amarillo de marca (ya usado en logoText) en vez de
+    // negro: 3.61:1 sobre runners-pink — AA-grande con margen cómodo.
+    heroText: "text-runners-yellow",
+    lightHero: false,
     imageFirst: true,
     logo: "/logos/runners.png",
     logoHover: "/logos/runners-hover.png",
@@ -200,7 +214,11 @@ export const brands: Brand[] = [
     hoverBg: "hover:bg-bigmix-blue",
     hoverText: "hover:text-black", // 5.26:1 sobre bigmix-blue — AA
     groupHoverText: "group-hover:text-black",
-    heroText: "text-black",
+    // Ronda 36: mismo criterio que Chip's/Runners — el H1 es texto grande
+    // (WCAG 3:1), así que usa el amarillo de marca (ya usado en logoText)
+    // en vez de negro plano: 3.18:1 sobre bigmix-blue — AA-grande.
+    heroText: "text-bigmix-yellow",
+    lightHero: false,
     imageFirst: false,
     logo: "/logos/big-mix.png",
     logoHover: "/logos/big-mix-hover.png",
@@ -225,7 +243,16 @@ export const brands: Brand[] = [
     hoverBg: "hover:bg-hotnuts-orange",
     hoverText: "hover:text-black", // 6.00:1 sobre hotnuts-orange — AA
     groupHoverText: "group-hover:text-black",
-    heroText: "text-black",
+    // Ronda 36: blanco (ya usado en logoText de esta marca) en vez de
+    // negro para el H1 — texto grande (WCAG 3:1): 3.50:1 sobre
+    // hotnuts-orange — AA-grande, y más "picante"/dinámico sobre el
+    // naranja que el negro plano. OJO: blanco NO alcanza para el texto
+    // de apoyo (párrafo/redes/breadcrumb) — ahí exige 4.5:1 normal y
+    // blanco solo da 3.50:1. Por eso lightHero se queda en false: el H1
+    // usa blanco, pero el texto de apoyo se queda en negro (6.00:1 —
+    // única opción que sí pasa AA-normal en este fondo).
+    heroText: "text-white",
+    lightHero: false,
     imageFirst: true,
     logo: "/logos/hot-nuts.png",
     logoHover: "/logos/hot-nuts-hover.png",
@@ -251,7 +278,13 @@ export const brands: Brand[] = [
     hoverBg: "hover:bg-goldennuts-gold",
     hoverText: "hover:text-black", // 8.09:1 sobre goldennuts-gold — AA
     groupHoverText: "group-hover:text-black",
+    // Ronda 36: a diferencia de las otras marcas, aquí SÍ se deja negro
+    // en el H1 — no es un negro genérico "por default", es el color real
+    // del wordmark de Golden Nuts (logo negro limpio, ver nota más abajo),
+    // así que negro es el tratamiento más fiel a la marca, no un
+    // compromiso. 8.09:1 sobre goldennuts-gold — AA con margen de sobra.
     heroText: "text-black",
+    lightHero: false,
     imageFirst: false,
     // Ronda 31: logo real + portafolio (carpeta "7) Golden Nuts 2" del
     // material compartido). logo = wordmark negro limpio (GN_LOGO_SIN_SOMBRA,

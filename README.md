@@ -1028,6 +1028,42 @@ regla, lo que llevaba a iterar a ciegas.
   se dejaron igual, ya que WCAG no exige un ratio mínimo para separadores
   puramente decorativos).
 
+## Ronda 36: recuperar personalidad de marca sin perder AA
+
+- **Feedback del cliente**: "el negro le quita personalidad a estas marcas
+  que son tan dinámicas y dirigidas a una audiencia adolescente" — al
+  volver negro plano el H1 de cada hero (Ronda 35), la corrección de
+  contraste terminó aplanando visualmente marcas que se apoyan mucho en
+  su color.
+- **Ajuste**: WCAG define dos umbrales distintos según el tamaño del
+  texto — 4.5:1 para texto normal, pero solo 3:1 para texto grande
+  (≥18.66px bold o ≥24px regular). El H1 de cada hero es
+  `font-teko text-5xl` (48px) `font-bold`, muy por encima de ese piso, así
+  que califica como texto grande y tiene mucho más margen de color que el
+  texto de apoyo (párrafo, breadcrumb, "Síguelos", redes), que sigue
+  necesitando 4.5:1 y se queda en negro/blanco sólido. Con ese margen, el
+  H1 de cada marca pasa a usar el acento de color ya existente en su
+  propio sistema (el mismo que usa `logoText`), en vez de negro genérico:
+  - **Chip's**: `text-chips-brown` (el café real del wordmark) — 4.40:1
+    sobre `chips-green`.
+  - **Runners**: `text-runners-yellow` — 3.61:1 sobre `runners-pink`.
+  - **Big Mix**: `text-bigmix-yellow` — 3.18:1 sobre `bigmix-blue`.
+  - **Hot Nuts**: `text-white` — 3.50:1 sobre `hotnuts-orange`. Aquí el H1
+    y el texto de apoyo quedan en colores distintos a propósito: blanco no
+    alcanza el 4.5:1 que exige el texto de apoyo en este fondo (solo da
+    3.50:1), así que el párrafo/redes se quedan en negro (6.00:1).
+  - **Golden Nuts**: se queda en `text-black` — no es un negro genérico,
+    es el color real del wordmark de la marca (logo negro limpio), así
+    que aquí negro sí es el tratamiento más fiel a la marca. 8.09:1.
+  - **Takis**: sin cambios — ya usaba blanco (6.74:1), que es su propio
+    tratamiento de marca (fuego + logo blanco).
+- **Cambio de datos**: `Brand.heroText` pasa a poder ser un acento de
+  color (no solo negro/blanco). Se agrega `Brand.lightHero: boolean`
+  explícito para separar el color del H1 del color del texto de
+  apoyo — antes `BrandPage.tsx` inferia "texto claro" comparando
+  `heroText === "text-white"`, lo cual ya no es válido ahora que
+  `heroText` puede ser amarillo o café.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
