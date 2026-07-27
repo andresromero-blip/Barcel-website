@@ -38,9 +38,9 @@ export const brands: Brand[] = [
     logoText: "text-chips-brown",
     textOnBg: "text-chips-green-700",
     hoverBg: "hover:bg-chips-green",
-    hoverText: "hover:text-barcel-black", // 9.1:1 sobre chips-green — AA
-    groupHoverText: "group-hover:text-barcel-black",
-    heroText: "text-barcel-black",
+    hoverText: "hover:text-black", // 9.07:1 sobre chips-green — AA (negro puro, no barcel-black — ver nota en Runners)
+    groupHoverText: "group-hover:text-black",
+    heroText: "text-black",
     imageFirst: true,
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
@@ -64,7 +64,7 @@ export const brands: Brand[] = [
     logoText: "text-takis-yellow",
     textOnBg: "text-takis-purple",
     hoverBg: "hover:bg-takis-purple",
-    hoverText: "hover:text-white", // 6.75:1 sobre takis-purple — AA
+    hoverText: "hover:text-white", // 6.74:1 sobre takis-purple — AA
     groupHoverText: "group-hover:text-white",
     heroText: "text-white",
     imageFirst: false,
@@ -164,11 +164,19 @@ export const brands: Brand[] = [
       "Runners es la botana que enciende la diversión en cualquier momento. Con su icónica forma de coche, textura crujiente y variedad de sabores, convierte cualquier momento en un juego. Porque con Runners no hay que esperar: abres la bolsa y la diversión arranca.",
     bg: "bg-runners-pink",
     logoText: "text-runners-yellow",
-    textOnBg: "text-runners-pink",
+    // Ronda 35: runners-pink es la marca con menos margen de contraste del
+    // sitio. text-barcel-black (#0f0f0f) sobre runners-pink solo da
+    // 4.23:1 — no pasa el 4.5:1 que exige AA para texto normal (el
+    // comentario original decía "4.6:1", pero medido correctamente con la
+    // fórmula WCAG da menos). Con negro puro (#000, text-black) sube a
+    // 4.64:1 y sí pasa. Mismo motivo para textOnBg: el rosa base solo da
+    // 4.53:1 sobre blanco (4.26:1 sobre cream, ya no pasa) — se usa
+    // runners-pink-700, un tono más oscuro con 5.04:1 garantizado.
+    textOnBg: "text-runners-pink-700",
     hoverBg: "hover:bg-runners-pink",
-    hoverText: "hover:text-barcel-black", // 4.6:1 sobre runners-pink — AA
-    groupHoverText: "group-hover:text-barcel-black",
-    heroText: "text-barcel-black",
+    hoverText: "hover:text-black", // 4.64:1 sobre runners-pink — AA (negro puro, ver nota arriba)
+    groupHoverText: "group-hover:text-black",
+    heroText: "text-black",
     imageFirst: true,
     logo: "/logos/runners.png",
     logoHover: "/logos/runners-hover.png",
@@ -186,11 +194,13 @@ export const brands: Brand[] = [
       "Big Mix es la botana ideal para los que quieren todo en un solo snack. Disfruta sabores como Queso, Fuego e Inglesa limón, en una mezcla crujiente, deliciosa y surtida para compartir o disfrutar en cualquier momento. Elige Big Mix y piensa en Big.",
     bg: "bg-bigmix-blue",
     logoText: "text-bigmix-yellow",
-    textOnBg: "text-bigmix-blue",
+    // Ronda 35: bigmix-blue base solo da 4.00:1 sobre blanco (no pasa
+    // AA) — se usa bigmix-blue-700 (5.09:1) para textOnBg.
+    textOnBg: "text-bigmix-blue-700",
     hoverBg: "hover:bg-bigmix-blue",
-    hoverText: "hover:text-barcel-black", // 5.25:1 sobre bigmix-blue — AA
-    groupHoverText: "group-hover:text-barcel-black",
-    heroText: "text-barcel-black",
+    hoverText: "hover:text-black", // 5.26:1 sobre bigmix-blue — AA
+    groupHoverText: "group-hover:text-black",
+    heroText: "text-black",
     imageFirst: false,
     logo: "/logos/big-mix.png",
     logoHover: "/logos/big-mix-hover.png",
@@ -209,11 +219,13 @@ export const brands: Brand[] = [
       "Hot Nuts® Original: cacahuates picositos con capa crujiente que truenan justo como te gustan. Si va a tronar, ¡que truene bien!",
     bg: "bg-hotnuts-orange",
     logoText: "text-white",
-    textOnBg: "text-hotnuts-orange",
+    // Ronda 35: hotnuts-orange base solo da 3.50:1 sobre blanco (no pasa
+    // AA) — se usa hotnuts-orange-700 (5.06:1) para textOnBg.
+    textOnBg: "text-hotnuts-orange-700",
     hoverBg: "hover:bg-hotnuts-orange",
-    hoverText: "hover:text-barcel-black", // 6:1 sobre hotnuts-orange — AA
-    groupHoverText: "group-hover:text-barcel-black",
-    heroText: "text-barcel-black",
+    hoverText: "hover:text-black", // 6.00:1 sobre hotnuts-orange — AA
+    groupHoverText: "group-hover:text-black",
+    heroText: "text-black",
     imageFirst: true,
     logo: "/logos/hot-nuts.png",
     logoHover: "/logos/hot-nuts-hover.png",
@@ -232,11 +244,14 @@ export const brands: Brand[] = [
       "Golden Nuts es el clásico que nunca falla. Cacahuates japoneses con el crunch perfecto para disfrutar solos, en mezcla o para compartir en cualquier momento.",
     bg: "bg-goldennuts-gold",
     logoText: "text-white",
-    textOnBg: "text-goldennuts-gold",
+    // Ronda 35: goldennuts-gold base solo da 2.60:1 sobre blanco (no pasa
+    // AA, ni siquiera para texto grande) — se usa goldennuts-gold-700
+    // (5.06:1) para textOnBg.
+    textOnBg: "text-goldennuts-gold-700",
     hoverBg: "hover:bg-goldennuts-gold",
-    hoverText: "hover:text-barcel-black", // 8.1:1 sobre goldennuts-gold — AA
-    groupHoverText: "group-hover:text-barcel-black",
-    heroText: "text-barcel-black",
+    hoverText: "hover:text-black", // 8.09:1 sobre goldennuts-gold — AA
+    groupHoverText: "group-hover:text-black",
+    heroText: "text-black",
     imageFirst: false,
     // Ronda 31: logo real + portafolio (carpeta "7) Golden Nuts 2" del
     // material compartido). logo = wordmark negro limpio (GN_LOGO_SIN_SOMBRA,

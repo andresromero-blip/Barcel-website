@@ -973,6 +973,61 @@ regla, lo que llevaba a iterar a ciegas.
   thumb, etc.) — verificado midiendo cada nodo del wireframe, no solo a
   ojo.
 
+## Ronda 35: contraste y accesibilidad en todas las páginas de marca
+
+- **Bug reportado**: en el hero de marca (p.ej. Chip's), el texto se veía
+  poco legible sobre el fondo de color — el cliente señaló específicamente
+  el párrafo de descripción "perdiéndose" contra el verde.
+- **Auditoría real (no a ojo)**: se midió el ratio de contraste WCAG de
+  cada combinación texto/fondo usada en las páginas de marca (hero,
+  detalle de producto, modal "¿Dónde comprar?") contra el color real de
+  cada una de las 6 marcas. Aparecieron dos problemas, uno visible (el que
+  reportó el cliente) y uno más grave que no se veía a simple vista:
+  1. **Opacidad excesiva sobre fondos de color**: "Volver al inicio" y
+     "Síguelos" usaban negro/blanco al 50-60% de opacidad. Sobre un fondo
+     saturado eso da contrastes de 2.3–3.3:1 — muy por debajo del 4.5:1
+     que exige AA para texto normal. La descripción (black/70) solo
+     pasaba en Chip's (4.76:1); en las otras 4 marcas de texto oscuro caía
+     a 3.2–4.4:1. Mismo patrón en breadcrumb y disclaimer de
+     `ProductDetail.tsx` (/50 y /40 sobre blanco: 3.59:1 y 2.65:1).
+  2. **Colores de marca como texto sobre blanco**: `textOnBg` (el tagline
+     bajo el nombre de marca, usado en la home, en el detalle de producto
+     y en "También te puede antojar") usaba el color base de cada marca
+     directo como texto. Contra blanco: Big Mix 4.00:1, Hot Nuts 3.50:1 y
+     Golden Nuts 2.60:1 — ninguno pasa AA (Golden Nuts ni siquiera pasa el
+     3:1 de texto grande). Runners quedaba en 4.53:1, técnicamente al
+     límite pero sin margen (baja a 4.26:1 sobre cream).
+  3. **Caso límite adicional**: `text-barcel-black` (#0f0f0f, el negro de
+     marca de Figma) sobre `runners-pink` da 4.23:1 — no pasa 4.5:1 pese a
+     que el comentario original decía "4.6:1 — AA". Se corrigió midiendo
+     con la fórmula WCAG real en vez de aproximar.
+- **Fix**:
+  - Se agregaron tonos `-700` (más oscuros, mismo criterio que
+    `chips-green-700` que ya existía) para Big Mix, Hot Nuts, Golden Nuts
+    y Runners — todos ≥5:1 sobre blanco — y `textOnBg` de esas 4 marcas
+    ahora usa el tono `-700` en vez del color base.
+  - `heroText` / `hoverText` / `groupHoverText` de las 5 marcas de texto
+    oscuro pasan de `text-barcel-black` a `text-black` (negro puro): mismo
+    negro visualmente, pero cierra el caso límite de Runners (4.23:1 →
+    4.64:1).
+  - En el hero de marca (`BrandPage.tsx`), el párrafo de descripción, el
+    link "Volver al inicio" y el label "Síguelos" dejan de usar opacidad
+    reducida sobre el fondo de color — quedan en negro/blanco sólido (o
+    white/80, que sí pasa AA en Takis). La jerarquía visual con el heading
+    ahora viene del tamaño y peso tipográfico, no de la opacidad; el hover
+    del link usa `underline` en vez de "oscurecer más" (ya no hay margen
+    para oscurecer un negro sólido).
+  - Breadcrumb y disclaimer de `ProductDetail.tsx` (antes /50 y /40) y la
+    flecha externa de `WhereToBuyModal.tsx` (antes /40) suben a /70 y /60
+    respectivamente, en línea con el resto del texto secundario del sitio
+    que ya usaba esos valores con éxito.
+- **Alcance**: se revisaron también `ProductSlider.tsx`,
+  `RelatedProductsSlider.tsx`, `BrandCard.tsx`, `SizePicker.tsx`,
+  `Accordion.tsx` y `ProductGallery.tsx` — el resto del texto en esos
+  componentes ya pasaba AA (bordes/anillos decorativos con opacidad baja
+  se dejaron igual, ya que WCAG no exige un ratio mínimo para separadores
+  puramente decorativos).
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

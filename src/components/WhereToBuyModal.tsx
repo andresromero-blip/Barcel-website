@@ -89,7 +89,10 @@ export default function WhereToBuyModal() {
                   >
                     {retailer.name}
                   </span>
-                  <span aria-hidden="true" className="text-barcel-black/40">
+                  {/* Ronda 35: /40 sobre blanco da 2.65:1, por debajo del
+                      3:1 mínimo para elementos gráficos (WCAG 1.4.11).
+                      /60 (5.0:1+, igual que el párrafo de arriba) sí pasa. */}
+                  <span aria-hidden="true" className="text-barcel-black/60">
                     ↗
                   </span>
                 </a>

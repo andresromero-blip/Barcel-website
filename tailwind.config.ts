@@ -43,17 +43,21 @@ const config: Config = {
         bigmix: {
           blue: "#1E7FE8", // color de marca (referencia visual del diseño aprobado)
           "blue-600": "#1569C4",
+          "blue-700": "#1A6ECA", // 5.09:1 sobre blanco — AA (blue-base solo da 4.00:1, no pasa)
           yellow: "#FCE838",
         },
         runners: {
           pink: "#E8144C", // color de marca (referencia visual del diseño aprobado)
+          "pink-700": "#DA1347", // 5.04:1 sobre blanco — AA (pink-base da 4.53:1, muy al límite; en cream baja a 4.26:1 y ya no pasa)
           yellow: "#FCE838",
         },
         hotnuts: {
           orange: "#E85D0E",
+          "orange-700": "#BC4B0B", // 5.06:1 sobre blanco — AA (orange-base solo da 3.50:1, no pasa)
         },
         goldennuts: {
           gold: "#C79A2E",
+          "gold-700": "#896A20", // 5.06:1 sobre blanco — AA (gold-base solo da 2.60:1, no pasa)
         },
       },
       fontFamily: {

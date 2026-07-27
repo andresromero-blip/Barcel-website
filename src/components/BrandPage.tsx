@@ -103,12 +103,21 @@ export default function BrandPage({
           <div
             className={`relative z-10 order-2 ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
           >
+            {/* Ronda 35: contraste AA. El link y el label "Síguelos" iban a
+                /50 (dark) o /60 (light) de opacidad — contra un fondo de
+                marca saturado eso cae a ~2.3–3.3:1, muy por debajo del
+                4.5:1 que exige AA para texto normal. Como el texto ya usa
+                el negro/blanco más oscuro/claro disponible, no hay margen
+                para "atenuar" con opacidad: baja de 100% (dark) u 80%
+                (light) y deja de pasar en casi todas las marcas (medido
+                contra cada color real, no aproximado). La jerarquía visual
+                con el heading ahora viene del tamaño/peso, no del color; el
+                hover usa underline en vez de "oscurecer más" (ya no hay a
+                dónde oscurecer). */}
             <Link
               href="/"
-              className={`mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide transition-colors ${
-                isLightText
-                  ? "text-white/60 hover:text-white"
-                  : "text-barcel-black/50 hover:text-barcel-black"
+              className={`mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide transition-colors hover:underline ${
+                isLightText ? "text-white/80 hover:text-white" : "text-black"
               }`}
             >
               <span aria-hidden>←</span> Volver al inicio
@@ -120,7 +129,7 @@ export default function BrandPage({
             </h1>
             <p
               className={`mt-4 max-w-sm font-body text-sm leading-relaxed ${
-                isLightText ? "text-white/80" : "text-barcel-black/70"
+                isLightText ? "text-white/80" : "text-black"
               }`}
             >
               {brand.description}
@@ -133,7 +142,7 @@ export default function BrandPage({
             >
               <p
                 className={`mb-3 font-display text-[11px] font-bold uppercase tracking-wide ${
-                  isLightText ? "text-white/60" : "text-barcel-black/50"
+                  isLightText ? "text-white/80" : "text-black"
                 }`}
               >
                 Síguelos
@@ -147,7 +156,7 @@ export default function BrandPage({
                     className={
                       isLightText
                         ? "flex h-9 w-9 items-center justify-center bg-white/10 text-white transition-colors hover:bg-white hover:text-barcel-black"
-                        : "flex h-9 w-9 items-center justify-center bg-barcel-black/10 text-barcel-black transition-colors hover:bg-barcel-black hover:text-white"
+                        : "flex h-9 w-9 items-center justify-center bg-barcel-black/10 text-black transition-colors hover:bg-black hover:text-white"
                     }
                   >
                     <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">

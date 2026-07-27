@@ -32,9 +32,13 @@ export default function ProductDetail({
 
   return (
     <>
+      {/* Ronda 35: contraste AA. /50 sobre blanco da 3.59:1 — no pasa el
+          4.5:1 que exige AA para texto normal. /70 (mismo valor que ya
+          usa la descripción de abajo, igual de "secundaria" en jerarquía)
+          da 7.0:1+, con margen de sobra. */}
       <nav
         aria-label="Ruta de navegación"
-        className="container-page flex flex-wrap items-center gap-1.5 pb-2 pt-8 font-body text-xs text-barcel-black/50 md:text-sm"
+        className="container-page flex flex-wrap items-center gap-1.5 pb-2 pt-8 font-body text-xs text-barcel-black/70 md:text-sm"
       >
         <Link href="/" className="transition-colors hover:text-barcel-black">
           Inicio
@@ -75,7 +79,10 @@ export default function ProductDetail({
                 Presentaciones
               </p>
               <SizePicker sizes={flavor.sizes} />
-              <p className="mt-2 font-body text-xs text-barcel-black/40">
+              {/* Ronda 35: /40 sobre blanco da 2.65:1 — muy por debajo de
+                  AA. Sube a /70 (7.0:1+) igual que el resto de texto
+                  secundario de esta página. */}
+              <p className="mt-2 font-body text-xs text-barcel-black/70">
                 * Presentaciones de ejemplo — pendientes de confirmar con
                 Barcel.
               </p>
