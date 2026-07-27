@@ -48,7 +48,14 @@ export default function SearchOverlay() {
   return (
     <div className="fixed inset-0 z-[70] flex flex-col">
       <div className="max-h-[100dvh] overflow-y-auto bg-white">
-        <div className="container-page flex flex-col gap-6 py-6 md:gap-8 md:py-12">
+        {/* Ancho del panel: Figma mide el contenido en 898px dentro de un
+            lienzo de 1440 (271px de inset a cada lado, ~18.8%) — mucho más
+            angosto que el container-page estándar del sitio (max-w-1280px).
+            Reusar container-page hacía que el panel se viera estirado en
+            desktop frente al wireframe; max-w-[898px] + mx-auto replica esa
+            proporción en pantallas grandes, con el mismo padding lateral
+            mobile (px-5) que el resto del sitio en viewports angostos. */}
+        <div className="mx-auto flex max-w-[898px] flex-col gap-6 px-5 py-6 md:px-10 md:py-12">
           {/* Input + cerrar */}
           <div className="flex items-center gap-4 md:gap-6">
             <div className="flex flex-1 items-center gap-3 bg-barcel-black/[0.04] px-4 py-3.5 md:gap-4 md:px-6 md:py-5">
@@ -109,7 +116,7 @@ export default function SearchOverlay() {
               Resultados rápidos
             </p>
             {results.length > 0 ? (
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {results.map((result) => (
                   <Link
                     key={result.key}

@@ -951,6 +951,28 @@ regla, lo que llevaba a iterar a ciegas.
   — sigue funcionando igual, ahora como complemento del overlay, no en
   su reemplazo.
 
+## Ronda 34: precisión de medidas del buscador overlay (1:1 con Figma en desktop)
+
+- **Bug**: `SearchOverlay.tsx` reusaba la clase `container-page` del
+  sitio (ancho máximo 1280px) para el panel del buscador. El wireframe
+  de Figma (node 107:2968) mide el contenido en **898px** dentro de un
+  lienzo de 1440px (271px de inset a cada lado, ~18.8%) — bastante más
+  angosto que 1280px. En monitores grandes el panel se veía notoriamente
+  más ancho/estirado que el diseño.
+- **Fix**: el panel ahora usa `max-w-[898px] mx-auto` con el mismo
+  padding lateral del resto del sitio (`px-5` en mobile, `px-10` en
+  desktop) en vez de `container-page` — en pantallas grandes centra el
+  contenido a 898px igual que Figma; en pantallas angostas se comporta
+  igual que antes (el padding evita que toque los bordes).
+- **Otros ajustes medidos directamente contra el nodo de Figma** (no
+  aproximaciones): separación entre "Input+cerrar" / "Búsquedas
+  populares" / "Resultados rápidos" es 24px consistente en las tres
+  (antes crecía a 32px en desktop); separación entre filas de
+  "Resultados rápidos" es 12px (antes 8px). El resto de medidas ya
+  coincidía (gap del botón cerrar, padding de las chips, tamaño del
+  thumb, etc.) — verificado midiendo cada nodo del wireframe, no solo a
+  ojo.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.
