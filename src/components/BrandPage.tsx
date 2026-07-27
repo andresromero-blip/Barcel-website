@@ -132,8 +132,18 @@ export default function BrandPage({
             >
               {brand.tagline}
             </h1>
+            {/* Ronda 37: el ratio de contraste (4.5:1+, ya verificado en la
+                Ronda 35) es una condición NECESARIA pero no SUFICIENTE
+                para que el texto se lea bien — un peso regular (400) a
+                14px sobre un color de marca muy saturado (sobre todo
+                rosa/magenta, el caso de Runners) es perceptualmente
+                difícil de leer aunque el número pase AA: los trazos
+                finos "vibran" ópticamente contra el color de fondo. Se
+                sube a font-medium (500, cargado en layout.tsx — no es
+                bold falso del navegador) + text-base (antes text-sm),
+                igual para las 6 marcas ya que es el mismo componente. */}
             <p
-              className={`mt-4 max-w-sm font-body text-sm leading-relaxed ${
+              className={`mt-4 max-w-sm font-body text-base font-medium leading-relaxed ${
                 isLightText ? "text-white/80" : "text-black"
               }`}
             >
