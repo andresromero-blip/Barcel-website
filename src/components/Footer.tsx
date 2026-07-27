@@ -1,5 +1,7 @@
 const FOOTER_LINKS = [
-  { label: "Contáctanos", href: "#contacto" },
+  // Ronda 41: "Contáctanos" pasa de anchor (scrolleaba al propio footer)
+  // a la página real /contacto ("¡Hablemos!").
+  { label: "Contáctanos", href: "/contacto" },
   { label: "Términos y condiciones", href: "#terminos" },
   { label: "Políticas de tratamientos de Datos personales", href: "#privacidad" },
   { label: "Política de cookies", href: "#cookies" },

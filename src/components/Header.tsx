@@ -212,7 +212,7 @@ export default function Header() {
             </svg>
           </div>
           <a
-            href="#contacto"
+            href="/contacto"
             className="flex items-center gap-2 bg-barcel-black px-5 py-2.5 font-display text-sm font-bold text-white transition-transform hover:scale-[1.04] hover:bg-black active:scale-95"
           >
             Contáctanos
@@ -333,7 +333,7 @@ export default function Header() {
             {NAV_LINKS[2].label}
           </a>
           <a
-            href="#contacto"
+            href="/contacto"
             onClick={handleNavClick}
             className="mt-2 flex items-center justify-center gap-2 bg-barcel-black px-5 py-3 text-center font-display text-sm font-bold text-white"
           >

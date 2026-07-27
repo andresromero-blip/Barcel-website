@@ -1103,10 +1103,40 @@ regla, lo que llevaba a iterar a ciegas.
   el equipo de marca]` del wireframe — se conserva visible a propósito,
   mismo criterio que los placeholders de Ingredientes/Información
   nutrimental en la página de producto.
-- **Pendiente**: la página de Contacto (el segundo link que pidió el
-  cliente) — el link de Figma compartido apuntaba al mismo frame que
-  Quiénes somos por duplicado; falta el node-id correcto para
-  construirla.
+- **Contacto**: ver Ronda 41 — el link que se había compartido para esta
+  página apuntaba por error al mismo frame que Quiénes somos.
+
+## Ronda 41: página /contacto (¡Hablemos!)
+
+- **Fuente**: 1:1 con el frame de Figma "¡Hablemos!" (node 117:2833,
+  archivo `wfwMlqro1DvC40m12MHzM0` "Prototipo Barcel") — el link
+  correcto, después de que el primero compartido apuntara por
+  duplicado al frame de Quiénes somos (ver Ronda 40).
+- **Ruta nueva**: `src/app/contacto/page.tsx` (contenido en
+  `src/components/ContactPage.tsx`), mismo patrón que
+  `/sobre-nosotros`: `SearchProvider` + `Header` + `main` + `Footer`
+  por página, no en `layout.tsx`.
+- **CTAs actualizados de `#contacto` a `/contacto`**: el botón "Contáctanos"
+  del Header (desktop y mobile) y el link "Contáctanos" del Footer
+  apuntaban a un anchor (`#contacto`) que hacía scroll al propio
+  footer. Ahora navegan a la página real.
+- **Contraste del hero**: mismo problema y misma corrección que en
+  Ronda 40 — el wireframe degrada de `red-dark` (#ce0728) a `red-600`
+  (#f5173c), y blanco sobre `red-600` da 4.14:1 (no pasa AA-normal
+  para el subtítulo). Se usa el mismo degradado seguro `red-950` →
+  `red-dark` (15.77:1–5.70:1).
+- **"Canales de contacto"**: los 4 valores (línea de atención, correo,
+  horario, redes) se conservan tal cual del wireframe, incluidos los
+  placeholders entre corchetes (`[Número por definir con el cliente]`,
+  etc.) — son marcadores explícitos de contenido pendiente del lado
+  del cliente, mismo criterio que el resto de placeholders del sitio.
+- **Formulario**: controlado con React state, validación nativa HTML
+  (`required`) en nombre/correo/asunto/mensaje/consentimiento,
+  confirmación en pantalla (`role="status"`, "¡Gracias!") al enviar.
+  Todavía **no está conectado a un backend** — no existe aún un API
+  route ni un proveedor de email dado de alta, y tampoco hay un correo
+  real de destino definido por el cliente. Se documenta esto en el
+  código en vez de simular un envío exitoso.
 
 ## Deploy en Vercel
 
