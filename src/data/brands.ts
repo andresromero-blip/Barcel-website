@@ -19,7 +19,9 @@ export type Brand = {
   hoverText: string; // tailwind "hover:text-..." — contraste AA verificado contra hoverBg, para cuando el hover va en el MISMO elemento que el texto
   groupHoverText: string; // tailwind "group-hover:text-..." — mismo par de contraste, para textos hijos con color propio (ej. label de marca) dentro de una tarjeta que solo tiene `group` + hoverBg en el contenedor
   heroText: string; // tailwind "text-..." — color del H1 del hero. A diferencia de hoverText/groupHoverText, este SÍ puede usar el umbral de "texto grande" de WCAG (3:1 en vez de 4.5:1: el H1 es font-teko text-5xl+ bold, muy por encima del piso de 24px) — por eso puede ser un acento de marca en vez de negro/blanco plano. Ver nota Ronda 36 más abajo.
-  lightHero: boolean; // true si el hero usa texto/elementos claros (blanco) en vez de oscuros — controla párrafo, "Volver al inicio", "Síguelos", redes y las formas decorativas del fondo (todo texto DE APOYO, que sí necesita 4.5:1 y por eso se queda en blanco/negro puro, nunca en un acento de color)
+  lightHero: boolean; // true si el hero usa texto/elementos claros (blanco) en vez de oscuros — controla párrafo, "Volver al inicio", "Síguelos" y las formas decorativas del fondo (todo texto DE APOYO, que sí necesita 4.5:1 y por eso se queda en blanco/negro puro, nunca en un acento de color)
+  socialBg: string; // tailwind "bg-..." — caja de los íconos de redes. Ronda 39: mismo acento de marca que heroText (no negro/blanco genérico) para que "resalte con el color del logo" — el ícono SÍ es un elemento gráfico pequeño así que necesita su propio par de contraste (socialIcon) verificado aparte del texto.
+  socialIcon: string; // tailwind "text-..." — color del ícono (glifo) dentro de socialBg, con contraste AA-gráfico (3:1+) verificado contra ese fondo específico
   imageFirst: boolean; // whether the color tile is on the left (desktop)
   logo?: string; // logo real (estado default)
   logoHover?: string; // logo real con microinteracción de hover (producto asomando)
@@ -49,6 +51,11 @@ export const brands: Brand[] = [
     // sobra, y es color real de marca, no negro genérico.
     heroText: "text-chips-brown",
     lightHero: false,
+    // Ronda 39: caja de redes con el mismo café que el H1 (no negro
+    // genérico) — 4.40:1 contra chips-green (igual que heroText, mismo
+    // color) y el ícono blanco da 10.18:1 contra esa caja.
+    socialBg: "bg-chips-brown",
+    socialIcon: "text-white",
     imageFirst: true,
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
@@ -76,6 +83,11 @@ export const brands: Brand[] = [
     groupHoverText: "group-hover:text-white",
     heroText: "text-white",
     lightHero: true,
+    // Ronda 39: Takis ya usaba blanco como su propio acento (heroText),
+    // así que la caja de redes se queda igual — blanco (6.74:1 contra
+    // takis-purple) con ícono oscuro (19.17:1 contra la caja).
+    socialBg: "bg-white",
+    socialIcon: "text-barcel-black",
     imageFirst: false,
     logo: "/logos/takis.png",
     logoHover: "/logos/takis-hover.png",
@@ -191,6 +203,11 @@ export const brands: Brand[] = [
     // negro: 3.61:1 sobre runners-pink — AA-grande con margen cómodo.
     heroText: "text-runners-yellow",
     lightHero: false,
+    // Ronda 39: caja de redes con el amarillo de marca (mismo que el H1)
+    // en vez de negro genérico — 3.61:1 contra runners-pink, e ícono
+    // negro da 16.74:1 contra esa caja.
+    socialBg: "bg-runners-yellow",
+    socialIcon: "text-black",
     imageFirst: true,
     logo: "/logos/runners.png",
     logoHover: "/logos/runners-hover.png",
@@ -219,6 +236,10 @@ export const brands: Brand[] = [
     // en vez de negro plano: 3.18:1 sobre bigmix-blue — AA-grande.
     heroText: "text-bigmix-yellow",
     lightHero: false,
+    // Ronda 39: mismo criterio — amarillo de marca en vez de negro:
+    // 3.18:1 contra bigmix-blue, ícono negro da 16.74:1 contra la caja.
+    socialBg: "bg-bigmix-yellow",
+    socialIcon: "text-black",
     imageFirst: false,
     logo: "/logos/big-mix.png",
     logoHover: "/logos/big-mix-hover.png",
@@ -253,6 +274,14 @@ export const brands: Brand[] = [
     // única opción que sí pasa AA-normal en este fondo).
     heroText: "text-white",
     lightHero: false,
+    // Ronda 39: la caja de redes pasa a blanco (el acento real de esta
+    // marca, igual que heroText) en vez del negro que usaba el texto de
+    // apoyo — 3.50:1 contra hotnuts-orange, ícono oscuro da 19.17:1
+    // contra la caja. OJO: esto es distinto de lightHero (que sigue en
+    // false porque el párrafo/redes-label sí necesitan quedarse en negro,
+    // ver nota de heroText arriba) — socialBg es solo la caja del ícono.
+    socialBg: "bg-white",
+    socialIcon: "text-barcel-black",
     imageFirst: true,
     logo: "/logos/hot-nuts.png",
     logoHover: "/logos/hot-nuts-hover.png",
@@ -285,6 +314,11 @@ export const brands: Brand[] = [
     // compromiso. 8.09:1 sobre goldennuts-gold — AA con margen de sobra.
     heroText: "text-black",
     lightHero: false,
+    // Ronda 39: caja de redes negra (igual que heroText — el negro real
+    // del wordmark, no genérico) — 8.09:1 contra goldennuts-gold, ícono
+    // blanco da 21:1 contra la caja.
+    socialBg: "bg-black",
+    socialIcon: "text-white",
     imageFirst: false,
     // Ronda 31: logo real + portafolio (carpeta "7) Golden Nuts 2" del
     // material compartido). logo = wordmark negro limpio (GN_LOGO_SIN_SOMBRA,

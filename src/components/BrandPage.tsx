@@ -163,31 +163,22 @@ export default function BrandPage({
                 Síguelos
               </p>
               {/* Ronda 38: los botones de redes con caja al 10% de opacidad
-                  (bg-barcel-black/10 o bg-white/10) casi no se distinguen
-                  del propio color de marca detrás — pasan desapercibidos y
-                  no leen como botón. Se pasa a caja SÓLIDA (opaca), sin
-                  opacidad: negra con ícono blanco para 5 de las 6 marcas
-                  (negro contra el color de marca da 4.64:1–9.07:1, todas
-                  por encima del 3:1 que exige WCAG 1.4.11 para elementos
-                  gráficos) y blanca con ícono oscuro solo para Takis, la
-                  única marca con fondo lo bastante oscuro como para que el
-                  negro se pierda (negro solo da 3.11:1 sobre
-                  takis-purple; blanco da 6.74:1). Mismo criterio que ya
-                  usa lightHero. El hover ahora es un scale/sombra en vez
-                  de invertir color, para no reintroducir la misma
-                  ambigüedad de contraste en el estado hover. Ícono sube de
-                  h-4 a h-5 para más presencia. */}
+                  pasaban desapercibidos — se resolvió con caja sólida
+                  negra/blanca (ver historial). Ronda 39: el cliente pidió
+                  ir más lejos — que la caja "resalte con el color del
+                  logo" en vez de negro genérico (ej. amarillo en Runners).
+                  Se usa brand.socialBg/socialIcon (mismo acento que
+                  heroText, ver Ronda 36), cada par con su propio
+                  contraste AA-gráfico verificado contra ESE fondo
+                  específico — no es el mismo negro/blanco reciclado de
+                  antes, cada marca tiene su combo propio. */}
               <div className="flex items-center gap-2.5">
                 {BRAND_SOCIALS.map((social) => (
                   <a
                     key={social.label}
                     href={social.href}
                     aria-label={`${social.label} de ${brand.name}`}
-                    className={
-                      isLightText
-                        ? "flex h-9 w-9 items-center justify-center bg-white text-barcel-black shadow-sm transition-transform hover:scale-110"
-                        : "flex h-9 w-9 items-center justify-center bg-black text-white shadow-sm transition-transform hover:scale-110"
-                    }
+                    className={`flex h-9 w-9 items-center justify-center shadow-sm transition-transform hover:scale-110 ${brand.socialBg} ${brand.socialIcon}`}
                   >
                     <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
                       <path d={social.path} />
