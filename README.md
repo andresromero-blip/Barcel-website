@@ -1064,6 +1064,50 @@ regla, lo que llevaba a iterar a ciegas.
   `heroText === "text-white"`, lo cual ya no es válido ahora que
   `heroText` puede ser amarillo o café.
 
+## Ronda 40: página /sobre-nosotros (Quiénes somos)
+
+- **Fuente**: 1:1 con el frame de Figma "Quiénes somos – Desktop" (node
+  117:2789, archivo `wfwMlqro1DvC40m12MHzM0` "Prototipo Barcel"),
+  adaptado a los componentes y tokens ya establecidos del sitio (Header
+  y Footer reales, no los del código exportado de Figma; fuentes
+  Teko/Raleway; paleta `barcel-red`/`grey` ya existente en
+  `tailwind.config.ts`).
+- **Ruta nueva**: `src/app/sobre-nosotros/page.tsx` (contenido en
+  `src/components/AboutPage.tsx`). El nav "Sobre nosotros" pasa de
+  anchor de home (`/#sobre-nosotros`) a página propia, mismo criterio
+  que "Marcas" (ya son páginas reales, no anchors). El teaser corto que
+  vive en home (`BrandIntro.tsx`) se queda igual — no es redundante,
+  es la versión resumida de portada.
+- **Contraste del hero**: el wireframe usa un degradado de `red-dark`
+  (#ce0728) a `red-600` (#f5173c). Medido con la fórmula WCAG: texto
+  blanco sobre `red-dark` da 5.70:1 (AA), pero sobre `red-600` solo
+  4.14:1 — no pasa el 4.5:1 que exige el subtítulo (texto normal, a
+  diferencia del H1 que sí calificaría como texto grande). Se cambia el
+  extremo claro del degradado a `red-950` → `red-dark` (nuevo token
+  `barcel-red-900` = #8c1025 agregado solo para el banner final, no para
+  el hero) para que todo el rango quede en zona segura (15.77:1–5.70:1).
+- **"Marcas icónicas"**: el wireframe trae "5" como copy de ejemplo,
+  pero el sitio ya tiene 6 marcas reales en `brands.ts` — se usa
+  `brands.length` en vez del número fijo para que nunca quede
+  desactualizado.
+- **Banner "¡Orgullosamente botaneros!"**: el wireframe usa una
+  ilustración de recorte (aros de cebolla, cacahuates, autos Runners,
+  papas) que solo existe como asset temporal de Figma (URLs con
+  vencimiento de 7 días, no descargables desde este entorno). Se
+  reemplaza por fotos reales de producto ya existentes en el proyecto
+  (`/products/.../flavors/*.png`) dispersas como acento decorativo —
+  mismo espíritu del mensaje (mostrar el portafolio real) sin depender
+  de un asset externo que va a expirar.
+- **Nota de contenido**: el copy de "Sabor con historia" trae textual la
+  marca `[Contenido referencial — pendiente de validar y reemplazar por
+  el equipo de marca]` del wireframe — se conserva visible a propósito,
+  mismo criterio que los placeholders de Ingredientes/Información
+  nutrimental en la página de producto.
+- **Pendiente**: la página de Contacto (el segundo link que pidió el
+  cliente) — el link de Figma compartido apuntaba al mismo frame que
+  Quiénes somos por duplicado; falta el node-id correcto para
+  construirla.
+
 ## Deploy en Vercel
 
 1. Subir este repo a GitHub.

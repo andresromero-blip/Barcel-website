@@ -17,6 +17,7 @@ const config: Config = {
           red: "#ff2d50", // Colors base/Primary/500 · Red/500
           "red-600": "#f5173c", // Colors base/Primary/600*
           "red-dark": "#ce0728", // Colors base/Primary/700 · Red/700
+          "red-900": "#8c1025", // Red/900 — banner "Orgullosamente botaneros" en /sobre-nosotros (Figma 117:2810)
           "red-950": "#4d020f", // Red/950
           black: "#0f0f0f", // Grey/950
           cream: "#FFF7EC",

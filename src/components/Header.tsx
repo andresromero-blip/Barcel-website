@@ -10,9 +10,16 @@ import { brands } from "@/data/brands";
 // igual desde cualquier página: "/#seccion" navega al Home y baja al
 // anchor. "Marcas" no es un link directo — es un desplegable con acceso a
 // cada marca (/marcas/[slug]); no existe una página "hub" intermedia.
+//
+// Ronda 40: "Sobre nosotros" pasa de anchor de home (#sobre-nosotros) a
+// página propia (/sobre-nosotros, ver AboutPage.tsx) — mismo criterio que
+// "Marcas", que ya son páginas reales y no anchors. El resumen corto que
+// vivía en home (BrandIntro.tsx, sección "Sabor y calidad") se queda
+// donde está como teaser de la portada; no es redundante con la página
+// nueva, que es el desarrollo completo de esa idea.
 const NAV_LINKS = [
   { label: "Inicio", href: "/" },
-  { label: "Sobre nosotros", href: "/#sobre-nosotros" },
+  { label: "Sobre nosotros", href: "/sobre-nosotros" },
   { label: "Novedades", href: "/#novedades" },
 ];
 
@@ -130,7 +137,11 @@ export default function Header() {
             className="group relative font-body text-sm font-semibold text-white/90 transition-colors hover:text-white"
           >
             {NAV_LINKS[1].label}
-            <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-white transition-all duration-200 group-hover:w-full" />
+            <span
+              className={`absolute -bottom-1 left-0 h-0.5 bg-white transition-all duration-200 group-hover:w-full ${
+                isActive(NAV_LINKS[1].href) ? "w-full" : "w-0"
+              }`}
+            />
           </a>
 
           {/* Marcas — desplegable, no un link directo (no hay página hub) */}
