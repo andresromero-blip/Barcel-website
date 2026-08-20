@@ -5,6 +5,7 @@ import SizePicker from "./SizePicker";
 import Accordion from "./Accordion";
 import RelatedProductsSlider from "./RelatedProductsSlider";
 import WhereToBuyModal from "./WhereToBuyModal";
+import Picometro from "./Picometro";
 
 // Página de detalle de producto — 1:1 con el wireframe de Figma
 // (node 107:2838), adaptado a los tokens/patrones ya establecidos en
@@ -71,6 +72,19 @@ export default function ProductDetail({
             <p className="max-w-md font-body text-base leading-relaxed text-barcel-black/70">
               {flavor.description ?? brand.description}
             </p>
+          )}
+
+          {flavor.spiceLevel && (
+            <div className="w-full border-y border-black/10 py-4">
+              <Picometro level={flavor.spiceLevel} />
+              {/* Ronda 43: mismo criterio que "Presentaciones de ejemplo" abajo —
+                  el cliente entregó los 5 assets del picómetro pero no una tabla
+                  oficial de sabor→nivel. Nivel ESTIMADO, no se marca como dato
+                  final hasta que Barcel lo confirme. */}
+              <p className="mt-3 font-body text-xs text-barcel-black/70">
+                * Nivel de picante estimado — pendiente de confirmar con Barcel.
+              </p>
+            </div>
           )}
 
           {flavor.sizes && flavor.sizes.length > 0 && (

@@ -5,6 +5,11 @@ export type Flavor = {
   slug?: string; // segmento de URL para /marcas/[marca]/[slug] — la página de detalle de producto. Sin slug = ese sabor todavía no tiene página propia (el SKU sigue abriendo el modal rápido del slider).
   description?: string; // copy real del producto para la página de detalle (Ronda 27, wireframe de Figma).
   sizes?: string[]; // presentaciones/peso — EJEMPLO pendiente de confirmar con Barcel, ver nota en ProductDetail.tsx.
+  // Ronda 43: nivel del "Picómetro" (feedback de cliente). El cliente
+  // entregó los 5 assets del picómetro pero no una tabla oficial
+  // sabor→nivel — valor ESTIMADO a partir del copy de marca ya aprobado,
+  // pendiente de confirmar con Barcel (ver nota en ProductDetail.tsx).
+  spiceLevel?: "cero" | "bajo" | "medio" | "picante" | "extremo";
 };
 
 export type Brand = {
@@ -108,6 +113,7 @@ export const brands: Brand[] = [
         description:
           "El rolling picante que encendió a toda una generación. Sabor intenso a chile y limón, crunch inconfundible y cero medias tintas. Si puedes con el fuego, este es tu antojo.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "picante",
       },
       {
         name: "Original",
@@ -117,6 +123,7 @@ export const brands: Brand[] = [
         description:
           "El clásico que lo empezó todo. Chile y limón en su punto justo, con el crunch que hizo famosos a los rollos más picosos del mercado.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "bajo",
       },
       {
         name: "Salsa Brava",
@@ -126,6 +133,7 @@ export const brands: Brand[] = [
         description:
           "Un toque de salsa picante que sube la temperatura desde el primer bocado. Para quienes ya se les quedó chico el picante normal.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "picante",
       },
       // Ranch, Chile Limón e Intense Nacho: sin hoverImage — el material
       // compartido no incluye render de producto suelto para estos 3
@@ -140,6 +148,7 @@ export const brands: Brand[] = [
         description:
           "El cremoso encuentro entre el picante y el ranch. Un giro distinto al Takis de siempre, sin perder el crunch que los caracteriza.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "bajo",
       },
       {
         name: "Chile Limón",
@@ -148,6 +157,7 @@ export const brands: Brand[] = [
         description:
           "Ácido, salado y picoso en un solo rollo. La combinación clásica de chile y limón llevada al extremo.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "medio",
       },
       {
         name: "Huacamoles",
@@ -157,6 +167,7 @@ export const brands: Brand[] = [
         description:
           "Sabor a guacamole con el picor de siempre. Una mezcla fresca y picante que rompe con lo esperado.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "medio",
       },
       {
         name: "Blue Heat",
@@ -166,6 +177,7 @@ export const brands: Brand[] = [
         description:
           "Picante azul, intensidad real. Un sabor atrevido para quienes buscan algo distinto sin bajarle al fuego.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "extremo",
       },
       {
         name: "Intense Nacho",
@@ -174,6 +186,7 @@ export const brands: Brand[] = [
         description:
           "Todo el sabor del nacho con la intensidad picante de Takis. Queso, especias y crunch en cada mordida.",
         sizes: ["62 g", "90 g", "280 g"],
+        spiceLevel: "medio",
       },
     ],
   },
