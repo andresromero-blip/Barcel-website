@@ -41,7 +41,58 @@ const MOBILE_SWIRL_SPOTS = [
 // morado incluso cuando la descripción es larga — el impreso es estático
 // y no tiene este problema, la web sí.
 const DESKTOP_PURPLE_POLYGON = "0% 0%, 100% 0%, 100% 32%, 55% 58%, 0% 72%";
-const DESKTOP_SEAM_PATH = "M 100 32 L 55 58 L 0 72";
+
+// Ronda 46, 2° intento: el borde punteado tipo semitono se había hecho con
+// un <svg> (viewBox 0 0 100 100 + preserveAspectRatio="none" + trazo
+// discontinuo) siguiendo el mismo path que el clip-path — en teoría debía
+// quedar pegado al corte, pero vector-effect="non-scaling-stroke" dentro
+// de un viewBox escalado de forma no-uniforme no se renderiza de forma
+// consistente entre navegadores (el trazo terminó invisible en producción).
+// Se reemplaza por puntos reales (<span> redondos posicionados con
+// top/left en %), la misma técnica ya probada y funcionando para las
+// espirales — nada de SVG, cero dependencia de vector-effect.
+function buildSeamDots() {
+  const points: [number, number][] = [
+    [100, 32],
+    [55, 58],
+    [0, 72],
+  ];
+  const segLengths = points.slice(1).map((p, i) => {
+    const [x0, y0] = points[i];
+    const [x1, y1] = p;
+    return Math.hypot(x1 - x0, y1 - y0);
+  });
+  const total = segLengths.reduce((a, b) => a + b, 0);
+  const count = 46;
+  const dots: { top: string; left: string; size: number; tone: "purple" | "yellow" }[] = [];
+  for (let i = 0; i < count; i++) {
+    const t = i / (count - 1); // 0 (borde derecho, punta) → 1 (borde izquierdo)
+    let dist = t * total;
+    let segIndex = 0;
+    while (segIndex < segLengths.length - 1 && dist > segLengths[segIndex]) {
+      dist -= segLengths[segIndex];
+      segIndex++;
+    }
+    const [x0, y0] = points[segIndex];
+    const [x1, y1] = points[segIndex + 1];
+    const segT = segLengths[segIndex] === 0 ? 0 : dist / segLengths[segIndex];
+    const x = x0 + (x1 - x0) * segT;
+    const y = y0 + (y1 - y0) * segT;
+    // jitter perpendicular alternado (imita el borde "rasgado", no una
+    // línea perfecta) + tamaño creciente hacia el lado amarillo (i par/impar
+    // alterna un poco de lado para dar grosor a la banda, como el original).
+    const jitter = (i % 2 === 0 ? 1 : -1) * (0.6 + (i % 5) * 0.3);
+    const size = 3 + t * 7 + (i % 3);
+    dots.push({
+      top: `${(y + jitter).toFixed(2)}%`,
+      left: `${x.toFixed(2)}%`,
+      size,
+      tone: i % 7 === 0 ? "yellow" : "purple",
+    });
+  }
+  return dots;
+}
+const DESKTOP_SEAM_DOTS = buildSeamDots();
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
 // viven en el Footer). Placeholders (#) hasta contar con las cuentas
@@ -198,49 +249,24 @@ export default function BrandPage({
                 />
               ))}
               {/* Borde "semitono" del corte — el original impreso usa una
-                  línea de puntos que crecen de chico a grande sobre el
-                  corte diagonal (textura de spray/rasgado). Se aproxima
-                  con 3 trazos punteados superpuestos (distinto tamaño de
-                  punto cada uno) siguiendo EXACTAMENTE el mismo path que
-                  el clip-path de arriba (DESKTOP_SEAM_PATH), en un SVG con
-                  el mismo sistema de coordenadas 0–100 no-uniforme, así
-                  quedan siempre pegados al corte sin importar el ancho
-                  real de la sección. */}
-              <svg
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                className="absolute inset-0 h-full w-full"
-              >
-                <path
-                  d={DESKTOP_SEAM_PATH}
-                  fill="none"
-                  stroke="#570f8b"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeDasharray="0.4 2.2"
-                  vectorEffect="non-scaling-stroke"
+                  línea de puntos sobre el corte diagonal (textura de
+                  spray/rasgado). Puntos reales posicionados en % (ver
+                  buildSeamDots arriba) en vez de trazo SVG. */}
+              {DESKTOP_SEAM_DOTS.map((dot, i) => (
+                <span
+                  key={i}
+                  className={`absolute rounded-full ${
+                    dot.tone === "yellow" ? "bg-takis-yellow" : "bg-takis-purple"
+                  }`}
+                  style={{
+                    top: dot.top,
+                    left: dot.left,
+                    width: `${dot.size}px`,
+                    height: `${dot.size}px`,
+                    transform: "translate(-50%, -50%)",
+                  }}
                 />
-                <path
-                  d={DESKTOP_SEAM_PATH}
-                  fill="none"
-                  stroke="#570f8b"
-                  strokeWidth="0.9"
-                  strokeLinecap="round"
-                  strokeDasharray="0.2 1.1"
-                  transform="translate(0, -1.4)"
-                  vectorEffect="non-scaling-stroke"
-                />
-                <path
-                  d={DESKTOP_SEAM_PATH}
-                  fill="none"
-                  stroke="#fff200"
-                  strokeWidth="0.7"
-                  strokeLinecap="round"
-                  strokeDasharray="0.2 1.6"
-                  transform="translate(0, 1.2)"
-                  vectorEffect="non-scaling-stroke"
-                />
-              </svg>
+              ))}
             </div>
           </>
         ) : (
