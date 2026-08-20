@@ -127,8 +127,18 @@ export default function BrandPage({
             >
               <span aria-hidden>←</span> Volver al inicio
             </Link>
+            {/* Ronda 44: Takis usa font-takisDisplay (sustituto libre de
+                Veneer, ver globals.css) en vez de la Teko compartida por
+                el resto del sitio — así el manual de marca diferencia su
+                tipografía de comunicación sin tocar las otras 5 marcas.
+                Bungee es más ancha que Teko: baja un escalón de tamaño
+                para no desbordar en mobile. */}
             <h1
-              className={`font-teko text-5xl font-bold uppercase leading-[0.9] sm:text-6xl md:text-7xl ${brand.heroText}`}
+              className={`${
+                brand.slug === "takis"
+                  ? "font-takisDisplay text-4xl leading-[1.05] sm:text-5xl md:text-6xl"
+                  : "font-teko text-5xl leading-[0.9] sm:text-6xl md:text-7xl"
+              } font-bold uppercase ${brand.heroText}`}
             >
               {brand.tagline}
             </h1>

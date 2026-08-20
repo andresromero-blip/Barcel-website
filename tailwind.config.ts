@@ -37,9 +37,16 @@ const config: Config = {
           brown: "#5A3A22",
         },
         takis: {
-          purple: "#7B1FE0", // color de marca (referencia visual del diseño aprobado)
-          "purple-600": "#6B1FD0",
-          yellow: "#FBE733",
+          // Ronda 44: reemplaza el morado/amarillo "de referencia visual"
+          // aprobados en Figma por los valores OFICIALES del Takis Global
+          // Brandbook 2025 (03.2 Brand Color Palette, pág. 28): PMS 2597
+          // (#570f8b) y amarillo #fff200. El cambio en realidad SUBE el
+          // contraste en todos los usos existentes (texto/fondo blanco):
+          // 6.74:1 → 11.37:1 — sigue AA (de sobra) sin tocar ningún par
+          // texto/fondo.
+          purple: "#570f8b", // PMS 2597 — Takis Global Brandbook 2025, pág. 28
+          "purple-600": "#4a0d78", // variante -600 derivada, sin uso actual
+          yellow: "#fff200", // Takis Global Brandbook 2025, pág. 28
         },
         bigmix: {
           blue: "#1E7FE8", // color de marca (referencia visual del diseño aprobado)
@@ -67,6 +74,11 @@ const config: Config = {
         body: ["var(--font-body)", "sans-serif"],
         // Teko: fuente condensada para los títulos de sección (H2)
         teko: ["var(--font-teko)", "sans-serif"],
+        // Ronda 44: tipografía exclusiva de Takis (Brandbook 03.4) — ver
+        // nota completa en globals.css. Solo se usa dentro de la sección
+        // Takis, nunca en el resto del sitio.
+        takisDisplay: ["var(--font-takis-display)", "sans-serif"],
+        takisMark: ["var(--font-takis-mark)", "sans-serif"],
       },
       keyframes: {
         marquee: {

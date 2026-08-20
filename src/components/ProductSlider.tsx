@@ -7,7 +7,7 @@ import type { Flavor } from "@/data/brands";
 const CARD_CLASSNAME =
   "group flex w-64 shrink-0 flex-col items-center justify-end gap-3 bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
 
-function CardContent({ flavor }: { flavor: Flavor }) {
+function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) {
   return (
     <>
       {/* SKU = empaque real (bolsa), SIEMPRE visible, en reposo y en
@@ -36,7 +36,16 @@ function CardContent({ flavor }: { flavor: Flavor }) {
           />
         )}
       </div>
-      <span className="font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
+      {/* Ronda 44: nombre de sabor en font-takisMark (sustituto de la
+          "TAKIS® Font" del brandbook, ver globals.css) solo para Takis —
+          Permanent Marker es de un solo peso, sin font-extrabold falso. */}
+      <span
+        className={
+          isTakis
+            ? "font-takisMark text-base uppercase leading-tight sm:text-xl md:text-2xl"
+            : "font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl"
+        }
+      >
         {flavor.name}
       </span>
       <span className="flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
@@ -68,6 +77,7 @@ export default function ProductSlider({
   // cuanto lo detiene. 4 copias son de sobra para que el loop de -50%
   // nunca deje ver un hueco, incluso en monitores anchos.
   const loop = Array.from({ length: 4 }, () => flavors).flat();
+  const isTakis = brandSlug === "takis";
 
   return (
     <>
@@ -84,7 +94,7 @@ export default function ProductSlider({
                 aria-label={`Ver ${brandName} ${flavor.name}`}
                 className={`${CARD_CLASSNAME} ${hoverBg} ${hoverText}`}
               >
-                <CardContent flavor={flavor} />
+                <CardContent flavor={flavor} isTakis={isTakis} />
               </Link>
             ) : (
               <button
@@ -94,7 +104,7 @@ export default function ProductSlider({
                 aria-label={`Ver ${brandName} ${flavor.name}`}
                 className={`${CARD_CLASSNAME} ${hoverBg} ${hoverText}`}
               >
-                <CardContent flavor={flavor} />
+                <CardContent flavor={flavor} isTakis={isTakis} />
               </button>
             )
           )}

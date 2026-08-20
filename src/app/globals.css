@@ -8,6 +8,22 @@
   --font-body: "Raleway", ui-sans-serif, system-ui, sans-serif;
   /* Teko: fuente condensada para títulos de sección (H2) */
   --font-teko: "Teko", ui-sans-serif, system-ui, sans-serif;
+
+  /* Ronda 44 — Takis Global Brandbook 2025 (03.4 Typography, pág. 37-38).
+     El manual pide dos fuentes exclusivas de Takis: "TAKIS® Font" (custom
+     brushstroke, solo para nombres de sabor) y "Veneer" (headlines de
+     comunicación). Ninguna de las dos está disponible para uso comercial
+     sin licencia propia de Barcel/Takis (Veneer es de pago fuera de uso
+     personal; la fuente TAKIS® es un asset custom del brandbook, no un
+     archivo de fuente entregado) — no se puede autoinstalar de sitios de
+     "fuentes gratis" sin infringir esa licencia. Se usan sustitutos
+     gratuitos (Google Fonts, licencia OFL) visualmente cercanos, SOLO
+     dentro de la sección Takis, para diferenciar su tipografía del resto
+     del sitio (que comparte Teko) tal como pide el manual — si Barcel
+     llega a tener los archivos reales con licencia, solo hay que
+     reemplazar estas dos variables. */
+  --font-takis-display: "Bungee", ui-sans-serif, system-ui, sans-serif; /* sustituto de Veneer */
+  --font-takis-mark: "Permanent Marker", ui-sans-serif, system-ui, sans-serif; /* sustituto de TAKIS® Font */
 }
 
 html {

@@ -65,7 +65,21 @@ export default function ProductDetail({
           >
             {brand.name}
           </p>
-          <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black sm:text-7xl md:text-8xl">
+          {/* Ronda 44: nombre de sabor con font-takisMark (sustituto libre
+              de la "TAKIS® Font" del brandbook — pág. 37, ese asset SÍ
+              está pensado exactamente para nombrar variedades de producto)
+              en vez de Teko, solo para Takis. Permanent Marker es de un
+              solo peso (no hay bold real) — se quita font-bold para no
+              forzar un bold sintético del navegador, y baja 1-2 escalones
+              de tamaño porque el trazo es visualmente más pesado que Teko
+              a igual tamaño de fuente. */}
+          <h1
+            className={
+              brand.slug === "takis"
+                ? "font-takisMark text-4xl uppercase leading-tight text-barcel-black sm:text-5xl md:text-6xl"
+                : "font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black sm:text-7xl md:text-8xl"
+            }
+          >
             {fullName}
           </h1>
           {(flavor.description ?? brand.description) && (
@@ -77,13 +91,20 @@ export default function ProductDetail({
           {flavor.spiceLevel && (
             <div className="w-full border-y border-black/10 py-4">
               <Picometro level={flavor.spiceLevel} />
-              {/* Ronda 43: mismo criterio que "Presentaciones de ejemplo" abajo —
-                  el cliente entregó los 5 assets del picómetro pero no una tabla
-                  oficial de sabor→nivel. Nivel ESTIMADO, no se marca como dato
-                  final hasta que Barcel lo confirme. */}
-              <p className="mt-3 font-body text-xs text-barcel-black/70">
-                * Nivel de picante estimado — pendiente de confirmar con Barcel.
-              </p>
+              {/* Ronda 44: el Takis Global Brandbook 2025 (subido por el cliente)
+                  trae el Heat-o-Meter oficial y varias páginas (74, 82, 96)
+                  muestran el nivel real ya aplicado a Fuego, Blue Heat, Original,
+                  Chile Limón, Huakamoles e Intense Nacho — para esos 6 el dato
+                  queda confirmado, sin nota. Salsa Brava no tiene equivalente en
+                  el portafolio global del manual, así que se queda como
+                  estimación marcada (mismo criterio que "Presentaciones de
+                  ejemplo" abajo). */}
+              {!flavor.spiceLevelConfirmed && (
+                <p className="mt-3 font-body text-xs text-barcel-black/70">
+                  * Nivel de picante estimado — pendiente de confirmar con Barcel
+                  (sin equivalente en el Takis Global Brandbook 2025).
+                </p>
+              )}
             </div>
           )}
 

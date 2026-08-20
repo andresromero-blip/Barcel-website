@@ -5,11 +5,22 @@ export type Flavor = {
   slug?: string; // segmento de URL para /marcas/[marca]/[slug] — la página de detalle de producto. Sin slug = ese sabor todavía no tiene página propia (el SKU sigue abriendo el modal rápido del slider).
   description?: string; // copy real del producto para la página de detalle (Ronda 27, wireframe de Figma).
   sizes?: string[]; // presentaciones/peso — EJEMPLO pendiente de confirmar con Barcel, ver nota en ProductDetail.tsx.
-  // Ronda 43: nivel del "Picómetro" (feedback de cliente). El cliente
-  // entregó los 5 assets del picómetro pero no una tabla oficial
-  // sabor→nivel — valor ESTIMADO a partir del copy de marca ya aprobado,
-  // pendiente de confirmar con Barcel (ver nota en ProductDetail.tsx).
+  // Ronda 43/44: nivel del "Picómetro" (feedback de cliente + Takis Global
+  // Brandbook 2025, subido en Ronda 44). El brandbook trae el Heat-o-Meter
+  // oficial (04.4) con la escala Cero Picante/Bajo Picante/Medio/Picante/
+  // Extremo, y varias páginas (74 Zero Heat Products, 82 Key Visual, 96
+  // Ecommerce) muestran el nivel real ya aplicado sobre el empaque de
+  // Fuego, Blue Heat, Original, Chile Limón, Huakamoles e Intense Nacho —
+  // esos 6 quedan con el valor CONFIRMADO por el manual. Salsa Brava no
+  // tiene equivalente en el portafolio global del brandbook (parece
+  // exclusivo de México), así que se queda como estimación a partir del
+  // copy de marca, pendiente de confirmar con Barcel (ver nota en
+  // ProductDetail.tsx).
   spiceLevel?: "cero" | "bajo" | "medio" | "picante" | "extremo";
+  // true = nivel confirmado por el Takis Global Brandbook 2025 (páginas 74,
+  // 82, 96). false/undefined = estimación propia (solo Salsa Brava, sin
+  // equivalente en el brandbook global) — ver nota en ProductDetail.tsx.
+  spiceLevelConfirmed?: boolean;
 };
 
 export type Brand = {
@@ -113,7 +124,8 @@ export const brands: Brand[] = [
         description:
           "El rolling picante que encendió a toda una generación. Sabor intenso a chile y limón, crunch inconfundible y cero medias tintas. Si puedes con el fuego, este es tu antojo.",
         sizes: ["62 g", "90 g", "280 g"],
-        spiceLevel: "picante",
+        spiceLevel: "extremo",
+        spiceLevelConfirmed: true,
       },
       {
         name: "Original",
@@ -124,6 +136,7 @@ export const brands: Brand[] = [
           "El clásico que lo empezó todo. Chile y limón en su punto justo, con el crunch que hizo famosos a los rollos más picosos del mercado.",
         sizes: ["62 g", "90 g", "280 g"],
         spiceLevel: "bajo",
+        spiceLevelConfirmed: true,
       },
       {
         name: "Salsa Brava",
@@ -148,7 +161,8 @@ export const brands: Brand[] = [
         description:
           "El cremoso encuentro entre el picante y el ranch. Un giro distinto al Takis de siempre, sin perder el crunch que los caracteriza.",
         sizes: ["62 g", "90 g", "280 g"],
-        spiceLevel: "bajo",
+        spiceLevel: "cero",
+        spiceLevelConfirmed: true,
       },
       {
         name: "Chile Limón",
@@ -157,7 +171,8 @@ export const brands: Brand[] = [
         description:
           "Ácido, salado y picoso en un solo rollo. La combinación clásica de chile y limón llevada al extremo.",
         sizes: ["62 g", "90 g", "280 g"],
-        spiceLevel: "medio",
+        spiceLevel: "bajo",
+        spiceLevelConfirmed: true,
       },
       {
         name: "Huacamoles",
@@ -167,7 +182,8 @@ export const brands: Brand[] = [
         description:
           "Sabor a guacamole con el picor de siempre. Una mezcla fresca y picante que rompe con lo esperado.",
         sizes: ["62 g", "90 g", "280 g"],
-        spiceLevel: "medio",
+        spiceLevel: "picante",
+        spiceLevelConfirmed: true,
       },
       {
         name: "Blue Heat",
@@ -178,15 +194,17 @@ export const brands: Brand[] = [
           "Picante azul, intensidad real. Un sabor atrevido para quienes buscan algo distinto sin bajarle al fuego.",
         sizes: ["62 g", "90 g", "280 g"],
         spiceLevel: "extremo",
+        spiceLevelConfirmed: true,
       },
       {
         name: "Intense Nacho",
         image: "/products/takis/flavors/intense-nacho.png",
         slug: "intense-nacho",
         description:
-          "Todo el sabor del nacho con la intensidad picante de Takis. Queso, especias y crunch en cada mordida.",
+          "Todo el sabor del queso nacho, sin nada de picor. Intenso en sabor, no en picante — crunch inconfundible para quienes quieren todo el antojo de Takis sin el fuego.",
         sizes: ["62 g", "90 g", "280 g"],
-        spiceLevel: "medio",
+        spiceLevel: "cero",
+        spiceLevelConfirmed: true,
       },
     ],
   },
