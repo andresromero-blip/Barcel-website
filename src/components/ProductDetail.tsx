@@ -6,6 +6,7 @@ import Accordion from "./Accordion";
 import RelatedProductsSlider from "./RelatedProductsSlider";
 import WhereToBuyModal from "./WhereToBuyModal";
 import Picometro from "./Picometro";
+import TakisTape from "./TakisTape";
 
 // Página de detalle de producto — 1:1 con el wireframe de Figma
 // (node 107:2838), adaptado a los tokens/patrones ya establecidos en
@@ -72,16 +73,24 @@ export default function ProductDetail({
               solo peso (no hay bold real) — se quita font-bold para no
               forzar un bold sintético del navegador, y baja 1-2 escalones
               de tamaño porque el trazo es visualmente más pesado que Teko
-              a igual tamaño de fuente. */}
-          <h1
-            className={
-              brand.slug === "takis"
-                ? "font-takisMark text-4xl uppercase leading-tight text-barcel-black sm:text-5xl md:text-6xl"
-                : "font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black sm:text-7xl md:text-8xl"
-            }
-          >
-            {fullName}
-          </h1>
+              a igual tamaño de fuente.
+              Ronda 45: el manual exige el nombre de sabor SIEMPRE dentro
+              del manchón amarillo (TakisTape) — el H1 se divide en dos
+              nodos (marca visualmente oculta porque ya la muestra el
+              label de arriba + el sabor en la cinta) pero fullName se
+              mantiene como texto accesible para lectores de pantalla. */}
+          {brand.slug === "takis" ? (
+            <h1 className="text-4xl uppercase leading-tight text-barcel-black sm:text-5xl md:text-6xl">
+              <span className="sr-only">{fullName}</span>
+              <TakisTape aria-hidden="true" className="px-4 py-1.5">
+                <span className="font-takisMark">{flavor.name}</span>
+              </TakisTape>
+            </h1>
+          ) : (
+            <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black sm:text-7xl md:text-8xl">
+              {fullName}
+            </h1>
+          )}
           {(flavor.description ?? brand.description) && (
             <p className="max-w-md font-body text-base leading-relaxed text-barcel-black/70">
               {flavor.description ?? brand.description}

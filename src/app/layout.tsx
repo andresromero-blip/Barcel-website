@@ -22,7 +22,7 @@ export default function RootLayout({
       <head>
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&family=Teko:wght@400;500;600;700&family=Bungee&family=Permanent+Marker&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&family=Teko:wght@400;500;600;700&family=Anton&family=Permanent+Marker&display=swap"
         />
       </head>
       <body className="font-body antialiased bg-white">{children}</body>

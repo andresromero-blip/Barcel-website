@@ -22,7 +22,14 @@
      del sitio (que comparte Teko) tal como pide el manual — si Barcel
      llega a tener los archivos reales con licencia, solo hay que
      reemplazar estas dos variables. */
-  --font-takis-display: "Bungee", ui-sans-serif, system-ui, sans-serif; /* sustituto de Veneer */
+  /* Ronda 45: cambia de Bungee a Anton — el cliente mostró la portada real
+     del brandbook (título "BRAND ASSETS & APPLICATIONS", pág. 4) y pidió
+     acercarse a ese estilo: pincelada blanca, bold, alto impacto. Bungee
+     es demasiado redonda/bloque; Anton es la alternativa gratuita (Google
+     Fonts, OFL) más usada para exactamente este tipo de titular de
+     poster/alta energía — se le suma sombra + leve inclinación por CSS en
+     el H1 para acercarse más a la pincelada del original (ver BrandPage.tsx). */
+  --font-takis-display: "Anton", ui-sans-serif, system-ui, sans-serif; /* sustituto de Veneer */
   --font-takis-mark: "Permanent Marker", ui-sans-serif, system-ui, sans-serif; /* sustituto de TAKIS® Font */
 }
 

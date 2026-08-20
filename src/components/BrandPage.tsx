@@ -1,6 +1,19 @@
 import Link from "next/link";
 import type { Brand } from "@/data/brands";
 import ProductSlider from "./ProductSlider";
+import TakisSwirl from "./TakisSwirl";
+
+// Ronda 45: posiciones de las espirales decorativas del hero de Takis —
+// cuadrante superior-derecho a propósito (ver comentario junto al <section>
+// más abajo): cae sobre el bloque amarillo tanto en el layout diagonal de
+// desktop como en el apilado horizontal de mobile.
+const TAKIS_SWIRL_SPOTS = [
+  { top: "6%", left: "58%", size: "56px", opacity: "opacity-20" },
+  { top: "34%", left: "82%", size: "40px", opacity: "opacity-25" },
+  { top: "2%", left: "88%", size: "34px", opacity: "opacity-20" },
+  { top: "58%", left: "68%", size: "30px", opacity: "opacity-15" },
+  { top: "22%", left: "70%", size: "22px", opacity: "opacity-20" },
+];
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
 // viven en el Footer). Placeholders (#) hasta contar con las cuentas
@@ -56,6 +69,7 @@ export default function BrandPage({
   // breadcrumb) también deba ser claro — ese texto exige 4.5:1 (no 3:1) y
   // sigue el campo explícito lightHero, no el color del H1.
   const isLightText = brand.lightHero;
+  const isTakis = brand.slug === "takis";
 
   return (
     <>
@@ -85,24 +99,62 @@ export default function BrandPage({
           en ese espacio en vez de dejarlo pegado arriba cuando el
           contenido es más corto que el mínimo garantizado. */}
       <section
-        className={`relative flex min-h-[clamp(400px,46dvh,600px)] flex-col justify-center overflow-hidden ${brand.bg}`}
+        className={`relative flex min-h-[clamp(400px,46dvh,600px)] flex-col justify-center overflow-hidden ${
+          isTakis ? "bg-takis-yellow" : brand.bg
+        }`}
       >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 800 500"
-          preserveAspectRatio="none"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-        >
-          <g
-            className={isLightText ? "stroke-white/10" : "stroke-black/10"}
-            fill="none"
-            strokeWidth="60"
-            strokeLinecap="round"
+        {isTakis ? (
+          // Ronda 45: fondo diagonal morado/amarillo + espirales — replica
+          // la portada del brandbook (04 Brand Assets & Applications, morado
+          // arriba-izquierda, amarillo con espirales abajo-derecha). El
+          // corte cambia de horizontal (mobile, sigue el orden apilado:
+          // visual arriba/amarillo, texto abajo/morado) a diagonal (desktop
+          // md+, sigue las 2 columnas: texto a la izquierda/morado, producto
+          // a la derecha/amarillo) — mismo criterio de layout ya usado en
+          // el resto de la sección (order-1/2 según breakpoint).
+          <>
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 block bg-takis-purple md:hidden"
+              style={{
+                clipPath: "polygon(0% 38%, 100% 26%, 100% 100%, 0% 100%)",
+              }}
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 hidden bg-takis-purple md:block"
+              style={{
+                clipPath: "polygon(0% 0%, 58% 0%, 44% 100%, 0% 100%)",
+              }}
+            />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+              {TAKIS_SWIRL_SPOTS.map((spot, i) => (
+                <TakisSwirl
+                  key={i}
+                  className={`absolute text-takis-purple ${spot.opacity}`}
+                  style={{ top: spot.top, left: spot.left, width: spot.size, height: spot.size }}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 800 500"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute inset-0 h-full w-full"
           >
-            <path d="M-50 420 C 200 320, 350 480, 620 360 S 900 260, 900 260" />
-            <path d="M-80 120 C 150 40, 300 180, 560 80 S 880 -20, 880 -20" />
-          </g>
-        </svg>
+            <g
+              className={isLightText ? "stroke-white/10" : "stroke-black/10"}
+              fill="none"
+              strokeWidth="60"
+              strokeLinecap="round"
+            >
+              <path d="M-50 420 C 200 320, 350 480, 620 360 S 900 260, 900 260" />
+              <path d="M-80 120 C 150 40, 300 180, 560 80 S 880 -20, 880 -20" />
+            </g>
+          </svg>
+        )}
 
         <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
           <div
@@ -131,14 +183,27 @@ export default function BrandPage({
                 Veneer, ver globals.css) en vez de la Teko compartida por
                 el resto del sitio — así el manual de marca diferencia su
                 tipografía de comunicación sin tocar las otras 5 marcas.
-                Bungee es más ancha que Teko: baja un escalón de tamaño
-                para no desbordar en mobile. */}
+                Ronda 45: cambia de Bungee a Anton (ver globals.css) y se
+                le suma un leve -2° de inclinación + text-shadow doble
+                (offset sólido, sin blur — imita el efecto de una segunda
+                pasada de pincel/impresión ligeramente desfasada, no un
+                drop-shadow difuminado) para acercarse a la pincelada de
+                alto impacto de la portada del brandbook (pág. 4). Solo en
+                Takis: las otras 5 marcas mantienen Teko sin inclinar. */}
             <h1
               className={`${
                 brand.slug === "takis"
-                  ? "font-takisDisplay text-4xl leading-[1.05] sm:text-5xl md:text-6xl"
+                  ? "font-takisDisplay text-4xl leading-[1.05] tracking-wide sm:text-5xl md:text-6xl"
                   : "font-teko text-5xl leading-[0.9] sm:text-6xl md:text-7xl"
               } font-bold uppercase ${brand.heroText}`}
+              style={
+                brand.slug === "takis"
+                  ? {
+                      transform: "rotate(-2deg)",
+                      textShadow: "3px 3px 0 rgba(87, 15, 139, 0.5)",
+                    }
+                  : undefined
+              }
             >
               {brand.tagline}
             </h1>

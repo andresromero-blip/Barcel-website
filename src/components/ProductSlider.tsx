@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Flavor } from "@/data/brands";
+import TakisTape from "./TakisTape";
 
 const CARD_CLASSNAME =
   "group flex w-64 shrink-0 flex-col items-center justify-end gap-3 bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
@@ -38,16 +39,20 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
       </div>
       {/* Ronda 44: nombre de sabor en font-takisMark (sustituto de la
           "TAKIS® Font" del brandbook, ver globals.css) solo para Takis —
-          Permanent Marker es de un solo peso, sin font-extrabold falso. */}
-      <span
-        className={
-          isTakis
-            ? "font-takisMark text-base uppercase leading-tight sm:text-xl md:text-2xl"
-            : "font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl"
-        }
-      >
-        {flavor.name}
-      </span>
+          Permanent Marker es de un solo peso, sin font-extrabold falso.
+          Ronda 45: el manual (03.4, pág. 37) exige que ese nombre vaya
+          siempre dentro del "manchón" amarillo — TakisTape. */}
+      {isTakis ? (
+        <TakisTape className="px-3 py-1">
+          <span className="font-takisMark text-base uppercase leading-tight sm:text-xl md:text-2xl">
+            {flavor.name}
+          </span>
+        </TakisTape>
+      ) : (
+        <span className="font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
+          {flavor.name}
+        </span>
+      )}
       <span className="flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
         Ver detalle
         <span aria-hidden>→</span>
