@@ -78,6 +78,7 @@ const config: Config = {
         // nota completa en globals.css. Solo se usa dentro de la sección
         // Takis, nunca en el resto del sitio.
         takisDisplay: ["var(--font-takis-display)", "sans-serif"],
+        takisBody: ["var(--font-takis-body)", "sans-serif"],
         takisMark: ["var(--font-takis-mark)", "sans-serif"],
       },
       keyframes: {

@@ -92,7 +92,11 @@ export default function ProductDetail({
             </h1>
           )}
           {(flavor.description ?? brand.description) && (
-            <p className="max-w-md font-body text-base leading-relaxed text-barcel-black/70">
+            <p
+              className={`max-w-md text-base leading-relaxed text-barcel-black/70 ${
+                brand.slug === "takis" ? "font-takisBody" : "font-body"
+              }`}
+            >
               {flavor.description ?? brand.description}
             </p>
           )}

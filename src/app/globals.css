@@ -10,27 +10,23 @@
   --font-teko: "Teko", ui-sans-serif, system-ui, sans-serif;
 
   /* Ronda 44 — Takis Global Brandbook 2025 (03.4 Typography, pág. 37-38).
-     El manual pide dos fuentes exclusivas de Takis: "TAKIS® Font" (custom
-     brushstroke, solo para nombres de sabor) y "Veneer" (headlines de
-     comunicación). Ninguna de las dos está disponible para uso comercial
-     sin licencia propia de Barcel/Takis (Veneer es de pago fuera de uso
-     personal; la fuente TAKIS® es un asset custom del brandbook, no un
-     archivo de fuente entregado) — no se puede autoinstalar de sitios de
-     "fuentes gratis" sin infringir esa licencia. Se usan sustitutos
-     gratuitos (Google Fonts, licencia OFL) visualmente cercanos, SOLO
-     dentro de la sección Takis, para diferenciar su tipografía del resto
-     del sitio (que comparte Teko) tal como pide el manual — si Barcel
-     llega a tener los archivos reales con licencia, solo hay que
-     reemplazar estas dos variables. */
-  /* Ronda 45: cambia de Bungee a Anton — el cliente mostró la portada real
-     del brandbook (título "BRAND ASSETS & APPLICATIONS", pág. 4) y pidió
-     acercarse a ese estilo: pincelada blanca, bold, alto impacto. Bungee
-     es demasiado redonda/bloque; Anton es la alternativa gratuita (Google
-     Fonts, OFL) más usada para exactamente este tipo de titular de
-     poster/alta energía — se le suma sombra + leve inclinación por CSS en
-     el H1 para acercarse más a la pincelada del original (ver BrandPage.tsx). */
-  --font-takis-display: "Anton", ui-sans-serif, system-ui, sans-serif; /* sustituto de Veneer */
-  --font-takis-mark: "Permanent Marker", ui-sans-serif, system-ui, sans-serif; /* sustituto de TAKIS® Font */
+     El manual pide tres fuentes: "TAKIS® Font" (custom brushstroke, solo
+     para nombres de sabor — sigue sin archivo entregado, es un asset
+     custom del brandbook, no una fuente instalable), "Veneer" (headlines
+     de comunicación) y "Acumin Pro" (cuerpo de texto, packaging +
+     comunicación). Ronda 45 usó sustitutos gratuitos (Google Fonts, OFL)
+     para las tres mientras no había licencia.
+     Ronda 47: el cliente dio acceso a su cuenta de Adobe Fonts/Creative
+     Cloud y generamos un kit web real (proyecto "Barcel Website" en
+     fonts.adobe.com, ver <link> en layout.tsx) con Veneer y Acumin Pro
+     licenciadas de verdad — ya NO son sustitutos. Los nombres de familia
+     que da Adobe son "veneer" y "acumin-pro"; se dejan Anton/Raleway como
+     fallback por si el kit tarda en cargar o falla la red, no como
+     sustituto permanente. TAKIS® Font (nombres de sabor) sigue sin
+     equivalente real — se mantiene Permanent Marker como sustituto. */
+  --font-takis-display: "veneer", "Anton", ui-sans-serif, system-ui, sans-serif;
+  --font-takis-body: "acumin-pro", "Raleway", ui-sans-serif, system-ui, sans-serif;
+  --font-takis-mark: "Permanent Marker", ui-sans-serif, system-ui, sans-serif; /* sustituto de TAKIS® Font — sin licencia real disponible */
 }
 
 html {

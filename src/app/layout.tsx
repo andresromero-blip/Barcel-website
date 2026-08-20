@@ -24,6 +24,14 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&family=Teko:wght@400;500;600;700&family=Anton&family=Permanent+Marker&display=swap"
         />
+        {/* Ronda 47: kit web de Adobe Fonts del cliente (fonts.adobe.com,
+            proyecto "Barcel Website") — trae las fuentes REALES del Takis
+            Global Brandbook 2025 (Veneer para headlines, Acumin Pro para
+            cuerpo de texto), con licencia activa vía su cuenta de Creative
+            Cloud. Reemplaza a Anton/Permanent Marker como sustitutos (ver
+            globals.css) — esos quedan solo como fallback si el kit no
+            carga. */}
+        <link rel="stylesheet" href="https://use.typekit.net/zib0uot.css" />
       </head>
       <body className="font-body antialiased bg-white">{children}</body>
     </html>

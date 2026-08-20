@@ -349,10 +349,15 @@ export default function BrandPage({
                 sube a font-medium (500, cargado en layout.tsx — no es
                 bold falso del navegador) + text-base (antes text-sm),
                 igual para las 6 marcas ya que es el mismo componente. */}
+            {/* Ronda 47: cuerpo de texto de Takis usa font-takisBody (Acumin
+                Pro real, vía kit de Adobe Fonts del cliente — ver
+                globals.css/layout.tsx) en vez de la Raleway compartida por
+                el resto del sitio, igual que el H1 ya usa font-takisDisplay
+                solo para Takis. */}
             <p
-              className={`mt-4 max-w-sm font-body text-base font-medium leading-relaxed ${
-                isLightText ? "text-white/80" : "text-black"
-              }`}
+              className={`mt-4 max-w-sm text-base font-medium leading-relaxed ${
+                isTakis ? "font-takisBody" : "font-body"
+              } ${isLightText ? "text-white/80" : "text-black"}`}
             >
               {brand.description}
             </p>
