@@ -289,8 +289,28 @@ export default function BrandPage({
         )}
 
         <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
+          {/* Ronda 48 (bug reportado por el cliente): el fondo diagonal de
+              Ronda 46 usa un clip-path en % — que asume una altura de
+              contenido "típica". Con una descripción más larga (o con
+              zoom/reflow de WCAG 1.4.10, que agranda el texto), la columna
+              de texto crece más de lo previsto y el bloque "Síguelos" +
+              iconos termina cayendo sobre la franja AMARILLA del fondo,
+              mientras el texto sigue pintado en blanco (isLightText, pensado
+              para el morado) — el amarillo se vuelve invisible. La causa de
+              fondo es que el contraste dependía de una posición en % de un
+              fondo decorativo, no del contenido real: cualquier texto más
+              largo que el "caso típico" puede volver a romperlo.
+              Fix: en vez de perseguir el % exacto, la columna de texto de
+              Takis lleva su propio respaldo sólido bg-takis-purple (con
+              padding), por ENCIMA de la capa decorativa (z-10) — así el
+              contraste queda garantizado sin importar cuántas líneas mida
+              la descripción real, sea cual sea el idioma o el zoom del
+              usuario. El morado sólido además es fiel al color base del
+              brandbook (mismo tono que ya usa la mitad superior). */}
           <div
-            className={`relative z-10 order-2 ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
+            className={`relative z-10 order-2 ${
+              isTakis ? "bg-takis-purple px-4 py-5 sm:px-6 sm:py-6" : ""
+            } ${brand.imageFirst ? "md:order-2" : "md:order-1"}`}
           >
             {/* Ronda 35: contraste AA. El link y el label "Síguelos" iban a
                 /50 (dark) o /60 (light) de opacidad — contra un fondo de
