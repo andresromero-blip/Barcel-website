@@ -1,19 +1,47 @@
 import Link from "next/link";
 import type { Brand } from "@/data/brands";
 import ProductSlider from "./ProductSlider";
-import TakisSwirl from "./TakisSwirl";
 
-// Ronda 45: posiciones de las espirales decorativas del hero de Takis —
-// cuadrante superior-derecho a propósito (ver comentario junto al <section>
-// más abajo): cae sobre el bloque amarillo tanto en el layout diagonal de
-// desktop como en el apilado horizontal de mobile.
-const TAKIS_SWIRL_SPOTS = [
-  { top: "6%", left: "58%", size: "56px", opacity: "opacity-20" },
-  { top: "34%", left: "82%", size: "40px", opacity: "opacity-25" },
-  { top: "2%", left: "88%", size: "34px", opacity: "opacity-20" },
-  { top: "58%", left: "68%", size: "30px", opacity: "opacity-15" },
-  { top: "22%", left: "70%", size: "22px", opacity: "opacity-20" },
+// Ronda 46: el cliente mandó el asset oficial de la espiral (PNG con
+// transparencia, trazo morado + relleno amarillo) para reemplazar la
+// aproximación geométrica en SVG de la Ronda 45 — ver
+// public/takis/swirl-oficial.png. Se usa como <img>, a tamaño/rotación
+// variable, en vez de un componente vectorial propio.
+const TAKIS_SWIRL_SRC = "/takis/swirl-oficial.png";
+
+// Ronda 46: coordenadas verificadas contra el polígono morado de desktop
+// (ver DESKTOP_PURPLE_POLYGON más abajo) para que NINGUNA espiral caiga
+// del lado morado — todas quedan dentro de la franja amarilla, igual que
+// en la página 39/42 del Takis Global Brandbook 2025 (varias espirales,
+// tamaños distintos, algunas "sangrando" fuera del borde de la sección).
+const DESKTOP_SWIRL_SPOTS = [
+  { top: "70%", left: "85%", size: "220px", rotate: "-10deg" },
+  { top: "45%", left: "93%", size: "85px", rotate: "22deg" },
+  { top: "88%", left: "60%", size: "150px", rotate: "-15deg" },
+  { top: "92%", left: "26%", size: "70px", rotate: "8deg" },
+  { top: "60%", left: "76%", size: "55px", rotate: "35deg" },
+  { top: "63%", left: "62%", size: "45px", rotate: "-25deg" },
 ];
+
+// Espirales de mobile: el corte es horizontal (amarillo arriba, morado
+// abajo — ver clip-path de mobile), así que solo caben en la franja
+// superior angosta.
+const MOBILE_SWIRL_SPOTS = [
+  { top: "4%", left: "58%", size: "72px", rotate: "10deg" },
+  { top: "0%", left: "84%", size: "50px", rotate: "-15deg" },
+  { top: "13%", left: "76%", size: "38px", rotate: "25deg" },
+];
+
+// Ronda 46: mismo polígono morado usado en el clip-path de desktop y en
+// el <path> del halftone de abajo — un solo lugar de verdad para que el
+// borde punteado quede pegado exactamente al corte de color (evita que
+// se desalineen si alguien cambia uno y no el otro). Puntos "doblados"
+// (no una diagonal recta como en el brandbook impreso) para garantizar
+// que el texto (columna izquierda, ~0–50% de ancho) siga leyendo sobre
+// morado incluso cuando la descripción es larga — el impreso es estático
+// y no tiene este problema, la web sí.
+const DESKTOP_PURPLE_POLYGON = "0% 0%, 100% 0%, 100% 32%, 55% 58%, 0% 72%";
+const DESKTOP_SEAM_PATH = "M 100 32 L 55 58 L 0 72";
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
 // viven en el Footer). Placeholders (#) hasta contar con las cuentas
@@ -104,15 +132,19 @@ export default function BrandPage({
         }`}
       >
         {isTakis ? (
-          // Ronda 45: fondo diagonal morado/amarillo + espirales — replica
-          // la portada del brandbook (04 Brand Assets & Applications, morado
-          // arriba-izquierda, amarillo con espirales abajo-derecha). El
-          // corte cambia de horizontal (mobile, sigue el orden apilado:
-          // visual arriba/amarillo, texto abajo/morado) a diagonal (desktop
-          // md+, sigue las 2 columnas: texto a la izquierda/morado, producto
-          // a la derecha/amarillo) — mismo criterio de layout ya usado en
-          // el resto de la sección (order-1/2 según breakpoint).
+          // Ronda 46: rehecho 1:1 contra la página de portada real "04
+          // BRAND ASSETS & APPLICATIONS" del brandbook (morado arriba,
+          // amarillo abajo-derecha con espirales, borde punteado tipo
+          // semitono en el corte) — la Ronda 45 tenía la orientación
+          // equivocada (diagonal vertical, columna por columna) en vez de
+          // la diagonal horizontal del original. Se mantiene el ajuste de
+          // Ronda 45 de doblar la línea (en vez de una diagonal recta) SOLO
+          // para garantizar contraste del texto — ver DESKTOP_PURPLE_POLYGON
+          // arriba.
           <>
+            {/* MOBILE — apilado: visual arriba (amarillo), texto abajo
+                (morado). Se mantiene igual que Ronda 45, solo se
+                actualizan las espirales al asset oficial. */}
             <div
               aria-hidden="true"
               className="absolute inset-0 block bg-takis-purple md:hidden"
@@ -120,21 +152,95 @@ export default function BrandPage({
                 clipPath: "polygon(0% 38%, 100% 26%, 100% 100%, 0% 100%)",
               }}
             />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 block overflow-hidden md:hidden">
+              {MOBILE_SWIRL_SPOTS.map((spot, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={i}
+                  src={TAKIS_SWIRL_SRC}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute"
+                  style={{
+                    top: spot.top,
+                    left: spot.left,
+                    width: spot.size,
+                    height: "auto",
+                    transform: `rotate(${spot.rotate})`,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* DESKTOP — morado arriba (full width), amarillo abajo con
+                espirales, 1:1 con la orientación del brandbook. */}
             <div
               aria-hidden="true"
               className="absolute inset-0 hidden bg-takis-purple md:block"
-              style={{
-                clipPath: "polygon(0% 0%, 58% 0%, 44% 100%, 0% 100%)",
-              }}
+              style={{ clipPath: `polygon(${DESKTOP_PURPLE_POLYGON})` }}
             />
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-              {TAKIS_SWIRL_SPOTS.map((spot, i) => (
-                <TakisSwirl
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block">
+              {DESKTOP_SWIRL_SPOTS.map((spot, i) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   key={i}
-                  className={`absolute text-takis-purple ${spot.opacity}`}
-                  style={{ top: spot.top, left: spot.left, width: spot.size, height: spot.size }}
+                  src={TAKIS_SWIRL_SRC}
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute"
+                  style={{
+                    top: spot.top,
+                    left: spot.left,
+                    width: spot.size,
+                    height: "auto",
+                    transform: `rotate(${spot.rotate})`,
+                  }}
                 />
               ))}
+              {/* Borde "semitono" del corte — el original impreso usa una
+                  línea de puntos que crecen de chico a grande sobre el
+                  corte diagonal (textura de spray/rasgado). Se aproxima
+                  con 3 trazos punteados superpuestos (distinto tamaño de
+                  punto cada uno) siguiendo EXACTAMENTE el mismo path que
+                  el clip-path de arriba (DESKTOP_SEAM_PATH), en un SVG con
+                  el mismo sistema de coordenadas 0–100 no-uniforme, así
+                  quedan siempre pegados al corte sin importar el ancho
+                  real de la sección. */}
+              <svg
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                className="absolute inset-0 h-full w-full"
+              >
+                <path
+                  d={DESKTOP_SEAM_PATH}
+                  fill="none"
+                  stroke="#570f8b"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeDasharray="0.4 2.2"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d={DESKTOP_SEAM_PATH}
+                  fill="none"
+                  stroke="#570f8b"
+                  strokeWidth="0.9"
+                  strokeLinecap="round"
+                  strokeDasharray="0.2 1.1"
+                  transform="translate(0, -1.4)"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <path
+                  d={DESKTOP_SEAM_PATH}
+                  fill="none"
+                  stroke="#fff200"
+                  strokeWidth="0.7"
+                  strokeLinecap="round"
+                  strokeDasharray="0.2 1.6"
+                  transform="translate(0, 1.2)"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
             </div>
           </>
         ) : (
