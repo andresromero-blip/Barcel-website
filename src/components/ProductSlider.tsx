@@ -6,36 +6,39 @@ import type { Flavor } from "@/data/brands";
 import TakisTape from "./TakisTape";
 
 const CARD_CLASSNAME =
-  "group flex w-64 shrink-0 flex-col items-center justify-end gap-3 bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
+  "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
 
 function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) {
   return (
     <>
-      {/* SKU = empaque real (bolsa), SIEMPRE visible, en reposo y en
-          hover. La microinteracción NO es un crossfade (la bolsa no
-          desaparece): el producto suelto real se SUMA encima de la
-          bolsa al hacer hover, entrando desde abajo con opacity+scale,
-          tal como en el referente del cliente (bolsa completa +
-          producto suelto asomando en la parte baja, superpuesto). Si
-          el sabor no tiene hoverImage (no existe ese asset), la
-          tarjeta se queda solo con la bolsa, sin la microinteracción. */}
+      {/* Ronda 51: el hover ya NO es un cutout de producto asomando
+          sobre la bolsa (no hay asset transparente para esto en el
+          material del cliente). Ahora es la composición oficial del
+          Takis Global Brandbook 2025 (04.3 Variety Assets: fondo de
+          color de marca + swirl + producto + garnish) revelándose
+          como fondo full-bleed de toda la tarjeta, detrás de la bolsa,
+          que se mantiene fija y visible en reposo y en hover — mismo
+          criterio de "la bolsa nunca desaparece" de rondas anteriores.
+          Si el sabor no tiene hoverImage (sin equivalente en el
+          manual, ver brands.ts), la tarjeta se queda en el fondo
+          blanco/color de marca de siempre, sin microinteracción. */}
+      {flavor.hoverImage && (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+          src={flavor.hoverImage}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+        />
+      )}
       <div className="relative flex h-56 w-full items-end justify-center overflow-visible sm:h-80 md:h-[26rem]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={flavor.image}
           alt=""
           aria-hidden="true"
-          className="h-full w-auto object-contain"
+          className="h-full w-auto object-contain drop-shadow-xl"
         />
-        {flavor.hoverImage && (
-          /* eslint-disable-next-line @next/next/no-img-element */
-          <img
-            src={flavor.hoverImage}
-            alt=""
-            aria-hidden="true"
-            className="pointer-events-none absolute bottom-[-6%] left-1/2 z-10 h-[58%] w-auto -translate-x-1/2 translate-y-2 scale-90 object-contain opacity-0 drop-shadow-xl transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:scale-100 group-hover:opacity-100"
-          />
-        )}
       </div>
       {/* Ronda 44: nombre de sabor en font-takisMark (sustituto de la
           "TAKIS® Font" del brandbook, ver globals.css) solo para Takis —
@@ -43,17 +46,17 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           Ronda 45: el manual (03.4, pág. 37) exige que ese nombre vaya
           siempre dentro del "manchón" amarillo — TakisTape. */}
       {isTakis ? (
-        <TakisTape className="px-3 py-1">
+        <TakisTape className="relative px-3 py-1">
           <span className="font-takisMark text-base uppercase leading-tight sm:text-xl md:text-2xl">
             {flavor.name}
           </span>
         </TakisTape>
       ) : (
-        <span className="font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
+        <span className="relative font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
           {flavor.name}
         </span>
       )}
-      <span className="flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
+      <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
         Ver detalle
         <span aria-hidden>→</span>
       </span>

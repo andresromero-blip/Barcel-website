@@ -1,7 +1,14 @@
 export type Flavor = {
   name: string;
   image: string; // empaque/bolsa — estado default de la tarjeta SKU
-  hoverImage?: string; // producto suelto real — microinteracción de hover (igual a logo/logoHover del Home), solo si existe el asset
+  // Ronda 51: era "producto suelto real" (cutout transparente que se
+  // asomaba encima de la bolsa). El cliente pidió que el hover use la
+  // imagen del Takis Global Brandbook 2025 (composición oficial:
+  // fondo de color de marca + swirl + producto + garnish, recortada
+  // del panel "04.3 Variety Assets" de cada sabor, sin el logo TAKIS
+  // para no duplicar la marca). Ahora es un fondo full-bleed que se
+  // revela detrás de la bolsa al hacer hover, no un cutout superpuesto.
+  hoverImage?: string;
   slug?: string; // segmento de URL para /marcas/[marca]/[slug] — la página de detalle de producto. Sin slug = ese sabor todavía no tiene página propia (el SKU sigue abriendo el modal rápido del slider).
   description?: string; // copy real del producto para la página de detalle (Ronda 27, wireframe de Figma).
   sizes?: string[]; // presentaciones/peso — EJEMPLO pendiente de confirmar con Barcel, ver nota en ProductDetail.tsx.
@@ -119,7 +126,7 @@ export const brands: Brand[] = [
       {
         name: "Fuego",
         image: "/products/takis/flavors/fuego.png",
-        hoverImage: "/products/takis/flavors-hover/fuego.png",
+        hoverImage: "/products/takis/flavors-hover/fuego-brand.jpg",
         slug: "fuego",
         description:
           "El rolling picante que encendió a toda una generación. Sabor intenso a chile y limón, crunch inconfundible y cero medias tintas. Si puedes con el fuego, este es tu antojo.",
@@ -130,7 +137,7 @@ export const brands: Brand[] = [
       {
         name: "Original",
         image: "/products/takis/flavors/original.png",
-        hoverImage: "/products/takis/flavors-hover/original.png",
+        hoverImage: "/products/takis/flavors-hover/original-brand.jpg",
         slug: "original",
         description:
           "El clásico que lo empezó todo. Chile y limón en su punto justo, con el crunch que hizo famosos a los rollos más picosos del mercado.",
@@ -141,22 +148,27 @@ export const brands: Brand[] = [
       {
         name: "Salsa Brava",
         image: "/products/takis/flavors/salsa-brava.png",
-        hoverImage: "/products/takis/flavors-hover/salsa-brava.png",
+        // Ronda 51: Salsa Brava no tiene página propia en el Takis Global
+        // Brandbook 2025 (mismo hueco ya documentado para spiceLevel más
+        // abajo — no es una variedad del portafolio global). Se quita el
+        // hoverImage del producto suelto anterior en vez de dejar un
+        // asset que ya no es consistente con el resto (todos los demás
+        // ahora usan la composición oficial del manual); la tarjeta cae
+        // al mismo fondo sólido de marca que ya usan Ranch/Chile
+        // Limón/Intense Nacho.
         slug: "salsa-brava",
         description:
           "Un toque de salsa picante que sube la temperatura desde el primer bocado. Para quienes ya se les quedó chico el picante normal.",
         sizes: ["62 g", "90 g", "280 g"],
         spiceLevel: "picante",
       },
-      // Ranch, Chile Limón e Intense Nacho: sin hoverImage — el material
-      // compartido no incluye render de producto suelto para estos 3
-      // sabores (solo existe la bolsa). La tarjeta del slider funciona
-      // igual, solo sin la microinteracción de producto asomando; la
-      // página de detalle sí existe para los 8 (galería sin thumbnails
-      // extra cuando solo hay una imagen real).
       {
         name: "Ranch",
         image: "/products/takis/flavors/ranch.png",
+        // Ronda 51: mapeado a "Buckin' Ranch" del Global Brandbook 2025
+        // (04.3 Variety Assets) — la variedad más cercana con asset
+        // oficial disponible para "Ranch".
+        hoverImage: "/products/takis/flavors-hover/ranch-brand.jpg",
         slug: "ranch",
         description:
           "El cremoso encuentro entre el picante y el ranch. Un giro distinto al Takis de siempre, sin perder el crunch que los caracteriza.",
@@ -167,6 +179,7 @@ export const brands: Brand[] = [
       {
         name: "Chile Limón",
         image: "/products/takis/flavors/chile-limon.png",
+        hoverImage: "/products/takis/flavors-hover/chile-limon-brand.jpg",
         slug: "chile-limon",
         description:
           "Ácido, salado y picoso en un solo rollo. La combinación clásica de chile y limón llevada al extremo.",
@@ -177,7 +190,9 @@ export const brands: Brand[] = [
       {
         name: "Huacamoles",
         image: "/products/takis/flavors/huacamoles.png",
-        hoverImage: "/products/takis/flavors-hover/huacamoles.png",
+        // Ronda 51: mismo caso que Salsa Brava — Huacamoles tampoco
+        // aparece en el Global Brandbook 2025, así que se quita el
+        // hoverImage anterior en vez de mezclar dos estilos distintos.
         slug: "huacamoles",
         description:
           "Sabor a guacamole con el picor de siempre. Una mezcla fresca y picante que rompe con lo esperado.",
@@ -188,7 +203,7 @@ export const brands: Brand[] = [
       {
         name: "Blue Heat",
         image: "/products/takis/flavors/blue-heat.png",
-        hoverImage: "/products/takis/flavors-hover/blue-heat.png",
+        hoverImage: "/products/takis/flavors-hover/blue-heat-brand.jpg",
         slug: "blue-heat",
         description:
           "Picante azul, intensidad real. Un sabor atrevido para quienes buscan algo distinto sin bajarle al fuego.",
@@ -199,6 +214,7 @@ export const brands: Brand[] = [
       {
         name: "Intense Nacho",
         image: "/products/takis/flavors/intense-nacho.png",
+        hoverImage: "/products/takis/flavors-hover/intense-nacho-brand.jpg",
         slug: "intense-nacho",
         description:
           "Todo el sabor del queso nacho, sin nada de picor. Intenso en sabor, no en picante — crunch inconfundible para quienes quieren todo el antojo de Takis sin el fuego.",
