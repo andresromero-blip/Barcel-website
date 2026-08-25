@@ -13,23 +13,28 @@ const TAKIS_HERO_BG = "/takis/hero-banner.jpg";
 
 export default function TakisHero({ brand }: { brand: Brand }) {
   return (
-    <section className="relative flex min-h-[clamp(440px,52dvh,640px)] flex-col justify-center overflow-hidden bg-takis-purple">
-      {/* Ronda 55: el cliente reportó que el logo Takis quedaba cortado
-          arriba — con object-cover, si el contenedor (alto fijado por
-          vh) resulta proporcionalmente más ancho que la imagen fuente
-          (1920x1080), el recorte vertical cae centrado y se come la
-          parte de arriba del logo/flama. object-contain elimina el
-          recorte por completo (nunca corta nada): la imagen se ajusta
-          al alto disponible y dosifica el ancho sobrante como el mismo
-          morado sólido del fondo de la sección, quedando visualmente
-          continuo. object-right mantiene el logo/personaje pegados al
-          borde derecho, igual que la referencia del cliente. */}
+    <section className="relative flex min-h-[clamp(440px,40vw,680px)] flex-col justify-center overflow-hidden bg-takis-purple">
+      {/* Ronda 55 (revertido en Ronda 57): object-contain no recorta,
+          pero cuando el contenedor no calza con el aspect ratio real de
+          la imagen (1920x1080) deja una franja sólida a un lado — esa
+          franja no tiene la textura/degradado del JPG, así que se ve
+          como una costura/corte visible (reportado por el cliente).
+          Ronda 57: se vuelve a object-cover (sin costura, siempre
+          full-bleed) y en vez de pelear con el alto en vh (que no
+          escala con el ancho de pantalla), el alto mínimo ahora es
+          proporcional al ANCHO (40vw) — así el recorte vertical que
+          exige object-cover en una sección tan ancha y corta siempre
+          cae por DEBAJO del logo (recorta cuerpo del personaje/textura
+          sobrante, nunca el arte de marca), sin importar qué tan ancha
+          sea la pantalla. object-position "right top" fija el recorte
+          horizontal a la derecha (donde vive el logo/personaje) y el
+          vertical arriba (0%, nunca se come el logo). */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={TAKIS_HERO_BG}
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-contain object-right"
+        className="absolute inset-0 h-full w-full object-cover object-right-top"
       />
 
       <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
