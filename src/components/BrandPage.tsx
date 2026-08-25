@@ -11,17 +11,20 @@ import ProductSlider from "./ProductSlider";
 // costura de halftone y espirales, todo ya resuelto en el archivo) usada
 // directo como imagen de fondo — 1:1 real, no una aproximación.
 //
-// Ronda 52: el cliente preparó él mismo el arte final del hero (logo +
-// personaje + producto sobre fondo morado texturizado) en DOS piezas
-// dedicadas por breakpoint — no una sola foto con object-position
-// distinto por breakpoint como antes. La pieza desktop es casi cuadrada
-// (3200x2800) y la de mobile es 4:3 (1200x900), cada una ya encuadrada a
-// propósito para su contenedor (franja ancha y baja en desktop, caja casi
-// cuadrada en mobile por el mismo min-height clamp). <picture> con
-// <source media> elige la pieza correcta sin pedirle al navegador que
-// descargue las dos.
-const TAKIS_HERO_BG_DESKTOP = "/takis/hero-banner-desktop.jpg";
-const TAKIS_HERO_BG_MOBILE = "/takis/hero-banner-mobile.jpg";
+// Ronda 53: el cliente reportó que el hero de Ronda 52 quedaba con el
+// logo TAKIS duplicado y mal posicionado. Causa real: la Ronda 52 ya
+// traía el logo horneado en el fondo, pero el componente seguía
+// ejecutando la rama heroVisual==="logo" de más abajo, que superpone
+// OTRA copia de brand.logo (más brand.heroImage rotado) encima del
+// fondo — de ahí el logo repetido. Este archivo de Ronda 53 es una sola
+// pieza (1920x1080, un solo TAKIS, personaje + banda amarilla a la
+// derecha, morado vacío a la izquierda ya pensado para el texto) que
+// reemplaza las dos piezas de la Ronda 52 — ya no hace falta <picture>
+// con <source> por breakpoint: un solo <img> con object-position
+// responsivo (ver JSX) resuelve mobile y desktop. La rama heroVisual
+// también se desactiva para Takis (ver isTakis más abajo) para que no
+// vuelva a duplicarse si brand.logo cambia en el futuro.
+const TAKIS_HERO_BG = "/takis/hero-banner.jpg";
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
 // viven en el Footer). Placeholders (#) hasta contar con las cuentas
@@ -112,25 +115,24 @@ export default function BrandPage({
         }`}
       >
         {isTakis ? (
-          // Ronda 52: dos piezas dedicadas por breakpoint (ver constantes
-          // arriba) en vez de una sola foto con object-position distinto.
-          // <picture> + <source media> hace que el navegador pida solo la
-          // pieza que va a usar (no las dos). El breakpoint coincide con
-          // el md: de Tailwind (768px). object-cover + object-center en
-          // ambas porque cada pieza ya viene encuadrada por el cliente
-          // para su propio contenedor. El fondo bg-takis-purple del
-          // <section> es solo el color de "carga" antes de que la imagen
-          // esté lista — coincide con el morado de fondo de ambas piezas.
-          <picture>
-            <source media="(min-width: 768px)" srcSet={TAKIS_HERO_BG_DESKTOP} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={TAKIS_HERO_BG_MOBILE}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
-          </picture>
+          // Ronda 53: una sola pieza (1920x1080) para los dos breakpoints —
+          // ya no hace falta <picture>/<source> por tamaño de archivo. El
+          // contenido que importa (logo TAKIS + personaje) vive en el 45%
+          // derecho de la imagen; el 55% izquierdo es fondo morado vacío
+          // pensado para el texto. object-position mueve el "centro de
+          // interés" del recorte hacia la derecha SOLO en mobile — en
+          // pantallas angostas y bajas, cover recorta mucho a los lados y
+          // con center se perdía media cara del personaje; en desktop el
+          // contenedor es ancho y bajo (parecido al 16:9 real de la
+          // imagen), así que ahí sí objects-center aprovecha casi toda la
+          // pieza sin recortar el logo.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={TAKIS_HERO_BG}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover object-[82%_50%] md:object-center"
+          />
         ) : (
           <svg
             aria-hidden="true"
@@ -286,7 +288,18 @@ export default function BrandPage({
           {/* Productos reales, apilados e inclinados — mismo esquema que
               el referente (dos empaques superpuestos, uno atrás/chico y
               otro al frente/grande), con 1-2 sabores más flotando
-              sueltos en las esquinas si hay assets disponibles. */}
+              sueltos en las esquinas si hay assets disponibles.
+
+              Ronda 53: esta columna entera se salta para Takis. Causa del
+              bug reportado ("logo duplicado, mal posicionado"): el fondo
+              del hero (arriba) ya trae horneados el logo TAKIS y el
+              personaje, pero esta columna seguía dibujando OTRA copia de
+              brand.logo (rama heroVisual==="logo", pensada para la Ronda
+              57 cuando el fondo era solo morado liso) encima — de ahí la
+              duplicación. Con el hero nuevo la imagen de fondo ya es la
+              composición completa; no hay nada que esta columna deba
+              aportar para Takis. */}
+          {!isTakis && (
           <div
             className={`relative order-1 flex items-center justify-center py-10 md:py-0 ${
               brand.imageFirst ? "md:order-1" : "md:order-2"
@@ -374,6 +387,7 @@ export default function BrandPage({
               </div>
             )}
           </div>
+          )}
         </div>
       </section>
 
