@@ -42,6 +42,14 @@ export type Flavor = {
   // revela detrás de la bolsa al hacer hover, no un cutout superpuesto.
   hoverImage?: string;
   slug?: string; // segmento de URL para /marcas/[marca]/[slug] — la página de detalle de producto. Sin slug = ese sabor todavía no tiene página propia (el SKU sigue abriendo el modal rápido del slider).
+  // Ronda 64: asset oficial del nombre de sabor (carpeta "NOMBRES PNG"
+  // que compartió el cliente) — el manchón amarillo con el nombre en
+  // pincel, ya recortado con fondo transparente. Reemplaza el intento
+  // anterior de recrear ese mismo look con TakisTape.tsx + texto en
+  // font-takisMark: el cliente marcó explícitamente "utiliza los
+  // nombres que te compartí en la carpeta (PNG), estos están mal"
+  // sobre esa recreación. Solo Takis tiene esta carpeta por ahora.
+  nameImage?: string;
   description?: string; // copy real del producto para la página de detalle (Ronda 27, wireframe de Figma).
   sizes?: string[]; // presentaciones/peso — EJEMPLO pendiente de confirmar con Barcel, ver nota en ProductDetail.tsx.
   // Ronda 43/44: nivel del "Picómetro" (feedback de cliente + Takis Global
@@ -204,6 +212,7 @@ export const brands: Brand[] = [
         image: "/products/takis/flavors/fuego.png",
         hoverImage: "/products/takis/flavors-hover/fuego-brand.jpg",
         slug: "fuego",
+        nameImage: "/products/takis/nombres/fuego.png",
         description:
           "El rolling picante que encendió a toda una generación. Sabor intenso a chile y limón, crunch inconfundible y cero medias tintas. Si puedes con el fuego, este es tu antojo.",
         sizes: ["70 g", "240 g", "700 g"],
@@ -244,6 +253,7 @@ export const brands: Brand[] = [
         image: "/products/takis/flavors/original.png",
         hoverImage: "/products/takis/flavors-hover/original-brand.jpg",
         slug: "original",
+        nameImage: "/products/takis/nombres/original.png",
         description:
           "El clásico que lo empezó todo. Chile y limón en su punto justo, con el crunch que hizo famosos a los rollos más picosos del mercado.",
         sizes: ["70 g", "240 g", "700 g"],
@@ -291,6 +301,7 @@ export const brands: Brand[] = [
         // al mismo fondo sólido de marca que ya usan Ranch/Chile
         // Limón/Intense Nacho.
         slug: "salsa-brava",
+        nameImage: "/products/takis/nombres/salsa-brava.png",
         description:
           "Un toque de salsa picante que sube la temperatura desde el primer bocado. Para quienes ya se les quedó chico el picante normal.",
         // Ronda 63: el resto de los 7 sabores ya tiene sizes/ingredients/
@@ -312,6 +323,7 @@ export const brands: Brand[] = [
         // oficial disponible para "Ranch".
         hoverImage: "/products/takis/flavors-hover/ranch-brand.jpg",
         slug: "ranch",
+        nameImage: "/products/takis/nombres/ranch.png",
         description:
           "El cremoso encuentro entre el picante y el ranch. Un giro distinto al Takis de siempre, sin perder el crunch que los caracteriza.",
         sizes: ["70 g", "240 g", "700 g"],
@@ -352,6 +364,7 @@ export const brands: Brand[] = [
         image: "/products/takis/flavors/chile-limon.png",
         hoverImage: "/products/takis/flavors-hover/chile-limon-brand.jpg",
         slug: "chile-limon",
+        nameImage: "/products/takis/nombres/chile-limon.png",
         description:
           "Ácido, salado y picoso en un solo rollo. La combinación clásica de chile y limón llevada al extremo.",
         sizes: ["70 g", "240 g", "700 g"],
@@ -394,6 +407,7 @@ export const brands: Brand[] = [
         // aparece en el Global Brandbook 2025, así que se quita el
         // hoverImage anterior en vez de mezclar dos estilos distintos.
         slug: "huacamoles",
+        nameImage: "/products/takis/nombres/huacamoles.png",
         description:
           "Sabor a guacamole con el picor de siempre. Una mezcla fresca y picante que rompe con lo esperado.",
         sizes: ["70 g", "240 g"],
@@ -434,6 +448,7 @@ export const brands: Brand[] = [
         image: "/products/takis/flavors/blue-heat.png",
         hoverImage: "/products/takis/flavors-hover/blue-heat-brand.jpg",
         slug: "blue-heat",
+        nameImage: "/products/takis/nombres/blue-heat.png",
         description:
           "Picante azul, intensidad real. Un sabor atrevido para quienes buscan algo distinto sin bajarle al fuego.",
         sizes: ["70 g", "240 g"],
@@ -474,6 +489,7 @@ export const brands: Brand[] = [
         image: "/products/takis/flavors/intense-nacho.png",
         hoverImage: "/products/takis/flavors-hover/intense-nacho-brand.jpg",
         slug: "intense-nacho",
+        nameImage: "/products/takis/nombres/intense-nacho.png",
         description:
           "Todo el sabor del queso nacho, sin nada de picor. Intenso en sabor, no en picante — crunch inconfundible para quienes quieren todo el antojo de Takis sin el fuego.",
         sizes: ["70 g", "240 g", "700 g"],

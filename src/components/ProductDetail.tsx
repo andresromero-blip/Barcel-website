@@ -6,35 +6,34 @@ import Accordion from "./Accordion";
 import RelatedProductsSlider from "./RelatedProductsSlider";
 import WhereToBuyModal from "./WhereToBuyModal";
 import Picometro from "./Picometro";
-import TakisTape from "./TakisTape";
+import TakisProductDetail from "./TakisProductDetail";
 
 // Página de detalle de producto — 1:1 con el wireframe de Figma
-// (node 107:2838), adaptado a los tokens/patrones ya establecidos en
-// el sitio (fuentes, colores de marca, sin corner-radius en CTAs,
-// mismo mecanismo de acordeón que el menú Marcas del Header).
+// (node 107:2838) para las 5 marcas sin mockup propio, adaptado a los
+// tokens/patrones ya establecidos en el sitio (fuentes, colores de
+// marca, sin corner-radius en CTAs, mismo mecanismo de acordeón que el
+// menú Marcas del Header).
 //
-// Ingredientes / Información nutrimental: Ronda 63 — Barcel compartió las
-// etiquetas oficiales (NPAR-FO-03/09, una por sabor de Takis) y ya se
-// integran como datos reales (brands.ts: flavor.ingredients/allergens/
-// nutrition) para 7 de los 8 sabores. Salsa Brava se queda con el
-// placeholder anterior: su etiqueta llegó protegida con IRM/DRM
-// (Microsoft Rights Management, cuenta corporativa de Bimbo) y no pudo
-// abrirse — ver nota completa en brands.ts.
-//
-// Ronda 54 había introducido, SOLO para Takis, un layout que
-// reutilizaba el hero de marca + el slider del portafolio completo
-// (el mismo contenido del hub /marcas/takis) en vez de esta página.
-// Ronda 62: el cliente marcó eso como el error de raíz — "cada página
-// de producto debe ser independiente: está el hub de marca... y la
-// página de detalle de cada producto", y compartió una referencia
-// (imagen/producto Chip's Fuego) con exactamente esta misma
-// estructura de dos columnas (galería + specs) que ya existe abajo.
-// Se elimina la rama especial de Takis: las 6 marcas, incluida Takis,
-// pasan ahora por el mismo layout único de detalle (ya tenía soporte
-// condicional isTakis para TakisTape/Picómetro/tipografía — solo
-// nunca se alcanzaba porque el early-return de arriba lo interceptaba
-// antes). "también te puede antojar" vuelve a mostrar otros sabores
-// de la MISMA marca (related), no las otras 5 marcas del portafolio.
+// Historial de esta página para Takis, porque ya van tres rondas:
+// - Ronda 54: reutilizaba el hero de marca + el slider del portafolio
+//   completo (el mismo contenido del hub /marcas/takis) — el cliente lo
+//   marcó como el error de raíz: "cada página de producto debe ser
+//   independiente... está el hub de marca y la página de detalle de
+//   cada producto", y compartió una referencia (Chip's Fuego).
+// - Ronda 62: se eliminó esa rama y Takis pasó por este mismo layout de
+//   dos columnas (galería + specs) — pero esta referencia en realidad
+//   describe una estructura DISTINTA (fondo de color de marca, tres
+//   columnas: sellos+ingredientes / producto / nombre+descripción,
+//   flechas entre sabores), que Ronda 62/63 no habían aplicado.
+// - Ronda 64: el cliente lo marcó de nuevo y compartió los assets que
+//   faltaban para construirla de verdad — la carpeta "NOMBRES PNG"
+//   (manchón oficial con el nombre de cada sabor) y bg.jpg (textura de
+//   fondo). Con esos dos assets ya es posible construir la estructura
+//   real solo para Takis, en TakisProductDetail.tsx — un componente
+//   aparte, no una rama más aquí adentro (evita repetir el enredo de la
+//   Ronda 54). Las otras 5 marcas no tienen su propio bg.jpg/NOMBRES
+//   PNG todavía, así que se quedan con el layout de abajo hasta que
+//   Barcel comparta esos assets para ellas también.
 export default function ProductDetail({
   brand,
   flavor,
@@ -46,6 +45,10 @@ export default function ProductDetail({
   related: Flavor[];
   otherBrands: Brand[];
 }) {
+  if (brand.slug === "takis") {
+    return <TakisProductDetail brand={brand} flavor={flavor} related={related} />;
+  }
+
   const galleryImages = [flavor.image, flavor.hoverImage].filter(
     (src): src is string => Boolean(src)
   );
@@ -100,37 +103,15 @@ export default function ProductDetail({
           >
             {brand.name}
           </p>
-          {/* Ronda 44: nombre de sabor con font-takisMark (sustituto libre
-              de la "TAKIS® Font" del brandbook — pág. 37, ese asset SÍ
-              está pensado exactamente para nombrar variedades de producto)
-              en vez de Teko, solo para Takis. Permanent Marker es de un
-              solo peso (no hay bold real) — se quita font-bold para no
-              forzar un bold sintético del navegador, y baja 1-2 escalones
-              de tamaño porque el trazo es visualmente más pesado que Teko
-              a igual tamaño de fuente.
-              Ronda 45: el manual exige el nombre de sabor SIEMPRE dentro
-              del manchón amarillo (TakisTape) — el H1 se divide en dos
-              nodos (marca visualmente oculta porque ya la muestra el
-              label de arriba + el sabor en la cinta) pero fullName se
-              mantiene como texto accesible para lectores de pantalla. */}
-          {brand.slug === "takis" ? (
-            <h1 className="text-4xl uppercase leading-tight text-barcel-black sm:text-5xl md:text-6xl">
-              <span className="sr-only">{fullName}</span>
-              <TakisTape aria-hidden="true" className="px-4 py-1.5">
-                <span className="font-takisMark">{flavor.name}</span>
-              </TakisTape>
-            </h1>
-          ) : (
-            <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black sm:text-7xl md:text-8xl">
-              {fullName}
-            </h1>
-          )}
+          {/* Ronda 64: Takis ya no llega a este componente (early-return
+              arriba, ver TakisProductDetail.tsx) — se quita la rama
+              condicional isTakis que quedaba muerta aquí, este H1
+              siempre es font-teko para las 5 marcas restantes. */}
+          <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black sm:text-7xl md:text-8xl">
+            {fullName}
+          </h1>
           {(flavor.description ?? brand.description) && (
-            <p
-              className={`max-w-md text-base leading-relaxed text-barcel-black/70 ${
-                brand.slug === "takis" ? "font-takisBody" : "font-body"
-              }`}
-            >
+            <p className="max-w-md font-body text-base leading-relaxed text-barcel-black/70">
               {flavor.description ?? brand.description}
             </p>
           )}
