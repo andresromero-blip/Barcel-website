@@ -5,6 +5,7 @@ import SizePicker from "./SizePicker";
 import Picometro from "./Picometro";
 import WhereToBuyModal from "./WhereToBuyModal";
 import RelatedProductsSlider from "./RelatedProductsSlider";
+import OtherBrandsGrid from "./OtherBrandsGrid";
 
 // Ronda 64: el cliente marcó que Ronda 62/63 seguían sin aplicar la
 // estructura que compartió (referencia de Chip's Fuego) y mandó, además,
@@ -81,14 +82,30 @@ import RelatedProductsSlider from "./RelatedProductsSlider";
 // pintado). Se quitan los z-10 sobrantes: sin contextos intermedios,
 // el modal fixed vuelve a compararse contra la raíz real de la página
 // y cubre todo, incluida la barra de Presentación.
+//
+// Ronda 68: el cliente mandó nueva evidencia — el fix de z-index de la
+// Ronda 67 no fue suficiente, el modal seguía cortado. Fix definitivo
+// en WhereToBuyModal.tsx: el modal ahora se monta con createPortal
+// directo en document.body, así que ya no es descendiente del árbol de
+// esta tarjeta y ningún ancestro (presente o futuro) puede volver a
+// atraparlo. Además, "el selector de marcas que había antes": Ronda 54
+// había extraído OtherBrandsGrid específicamente para que "también te
+// puede antojar" en la página de sabor de Takis mostrara las otras 5
+// marcas del portafolio (ver comentario en OtherBrandsGrid.tsx) — al
+// separar esta página en su propio componente (Ronda 64) esa sección
+// se armó solo con el slider de sabores (related) y el selector de
+// marcas se quedó afuera sin querer. Se reintegra aquí, mismo patrón
+// que BrandPage.tsx ("Explora otras marcas").
 export default function TakisProductDetail({
   brand,
   flavor,
   related,
+  otherBrands,
 }: {
   brand: Brand;
   flavor: Flavor;
   related: Flavor[];
+  otherBrands: Brand[];
 }) {
   const fullName = `${brand.name} ${flavor.name}`;
   const galleryFlavors = (brand.flavors ?? []).filter((f) => f.slug);
@@ -295,6 +312,15 @@ export default function TakisProductDetail({
           </div>
         </section>
       )}
+
+      {/* Ronda 68: selector de marcas reintegrado — ver nota arriba. */}
+      <section className="bg-barcel-cream py-14 md:py-16">
+        <OtherBrandsGrid
+          brands={otherBrands}
+          heading="Explora otras marcas"
+          subheading="Descubre el resto del portafolio Barcel."
+        />
+      </section>
     </>
   );
 }

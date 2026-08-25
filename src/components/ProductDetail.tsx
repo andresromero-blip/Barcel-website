@@ -46,7 +46,18 @@ export default function ProductDetail({
   otherBrands: Brand[];
 }) {
   if (brand.slug === "takis") {
-    return <TakisProductDetail brand={brand} flavor={flavor} related={related} />;
+    // Ronda 68: otherBrands se quedaba afuera al hacer este early-return
+    // (ya lo recibe este componente como prop, solo faltaba reenviarlo) —
+    // causa raíz de "el selector de marcas que había antes" ausente en la
+    // página de sabor de Takis. Ver nota completa en TakisProductDetail.tsx.
+    return (
+      <TakisProductDetail
+        brand={brand}
+        flavor={flavor}
+        related={related}
+        otherBrands={otherBrands}
+      />
+    );
   }
 
   const galleryImages = [flavor.image, flavor.hoverImage].filter(
