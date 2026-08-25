@@ -7,9 +7,6 @@ import RelatedProductsSlider from "./RelatedProductsSlider";
 import WhereToBuyModal from "./WhereToBuyModal";
 import Picometro from "./Picometro";
 import TakisTape from "./TakisTape";
-import TakisHero from "./TakisHero";
-import ProductSlider from "./ProductSlider";
-import OtherBrandsGrid from "./OtherBrandsGrid";
 
 // Página de detalle de producto — 1:1 con el wireframe de Figma
 // (node 107:2838), adaptado a los tokens/patrones ya establecidos en
@@ -22,15 +19,20 @@ import OtherBrandsGrid from "./OtherBrandsGrid";
 // inventan cifras/listas reales) hasta recibir el copy oficial de
 // Barcel.
 //
-// Ronda 54: el cliente mandó un mockup para esta página SOLO para
-// Takis — layout completamente distinto (hero de marca + slider del
-// portafolio con badge de Picómetro por tarjeta + "también te puede
-// antojar" con las otras marcas) en vez de la galería + specs de dos
-// columnas de abajo. Confirmado explícitamente por el cliente: para
-// Takis esto REEMPLAZA tamaños/ingredientes/información nutrimental/
-// "¿Dónde comprar?" (el mockup corregido, con Picómetro agregado, no
-// los traía). Las otras 5 marcas no tienen mockup — se quedan con el
-// layout de abajo sin tocar.
+// Ronda 54 había introducido, SOLO para Takis, un layout que
+// reutilizaba el hero de marca + el slider del portafolio completo
+// (el mismo contenido del hub /marcas/takis) en vez de esta página.
+// Ronda 62: el cliente marcó eso como el error de raíz — "cada página
+// de producto debe ser independiente: está el hub de marca... y la
+// página de detalle de cada producto", y compartió una referencia
+// (imagen/producto Chip's Fuego) con exactamente esta misma
+// estructura de dos columnas (galería + specs) que ya existe abajo.
+// Se elimina la rama especial de Takis: las 6 marcas, incluida Takis,
+// pasan ahora por el mismo layout único de detalle (ya tenía soporte
+// condicional isTakis para TakisTape/Picómetro/tipografía — solo
+// nunca se alcanzaba porque el early-return de arriba lo interceptaba
+// antes). "también te puede antojar" vuelve a mostrar otros sabores
+// de la MISMA marca (related), no las otras 5 marcas del portafolio.
 export default function ProductDetail({
   brand,
   flavor,
@@ -46,7 +48,6 @@ export default function ProductDetail({
     (src): src is string => Boolean(src)
   );
   const fullName = `${brand.name} ${flavor.name}`;
-  const isTakis = brand.slug === "takis";
 
   // Ronda 35: contraste AA. /50 sobre blanco da 3.59:1 — no pasa el
   // 4.5:1 que exige AA para texto normal. /70 (mismo valor que ya usa
@@ -74,97 +75,6 @@ export default function ProductDetail({
       <span className="text-barcel-black">{fullName}</span>
     </nav>
   );
-
-  if (isTakis) {
-    return (
-      <>
-        {breadcrumb}
-        <TakisHero brand={brand} />
-
-        <section className="bg-white py-16 md:py-20">
-          <div className="container-page">
-            <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
-              Productos
-            </h2>
-            <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
-              Pasa el cursor para pausar el carrusel y haz clic en tu sabor
-              favorito para verlo de cerca.
-            </p>
-          </div>
-          <div className="container-page mt-8">
-            <ProductSlider
-              brandName={brand.name}
-              brandSlug={brand.slug}
-              flavors={brand.flavors ?? []}
-              hoverBg={brand.hoverBg}
-              hoverText={brand.hoverText}
-            />
-          </div>
-        </section>
-
-        {/* Ronda 61: el cliente reportó que no podía "acceder a la
-            información del producto" — con razón: Ronda 54 había
-            quitado por completo tamaños/ingredientes/información
-            nutrimental/"¿Dónde comprar?" para Takis (registrado en el
-            comentario de arriba como confirmado por el cliente en su
-            momento), dejando la página de cada sabor sin ningún dato
-            propio del producto, solo el hero genérico de marca + el
-            mismo slider. Se restaura aquí, mismo criterio/copy
-            placeholder que las otras 5 marcas (ver rama de abajo),
-            para el sabor actualmente activo ({fullName}). */}
-        <section className="bg-barcel-cream py-14 md:py-20">
-          <div className="container-page max-w-2xl">
-            <h2 className="font-teko text-3xl font-bold uppercase text-barcel-black md:text-4xl">
-              Información de {flavor.name}
-            </h2>
-            <p className="mt-2 font-takisBody text-sm text-barcel-black/70 md:text-base">
-              Todo lo que necesitas saber sobre {fullName}®.
-            </p>
-
-            {flavor.sizes && flavor.sizes.length > 0 && (
-              <div className="mt-6 w-full">
-                <p className="mb-2.5 font-display text-sm font-bold text-barcel-black">
-                  Presentaciones
-                </p>
-                <SizePicker sizes={flavor.sizes} />
-                <p className="mt-2 font-body text-xs text-barcel-black/70">
-                  * Presentaciones de ejemplo — pendientes de confirmar con
-                  Barcel.
-                </p>
-              </div>
-            )}
-
-            <div className="mt-6 flex w-full flex-col gap-3">
-              <Accordion title="Ingredientes">
-                Contenido de ejemplo — pendiente de recibir la lista de
-                ingredientes oficial de {fullName}® para reemplazar este
-                texto.
-              </Accordion>
-              <Accordion title="Información nutrimental">
-                Contenido de ejemplo — pendiente de recibir la tabla
-                nutrimental oficial de {fullName}® para reemplazar este
-                texto.
-              </Accordion>
-            </div>
-
-            <div className="mt-6">
-              <WhereToBuyModal />
-            </div>
-          </div>
-        </section>
-
-        {otherBrands.length > 0 && (
-          <section className="bg-barcel-cream py-14 md:py-20">
-            <OtherBrandsGrid
-              brands={otherBrands}
-              heading="También te puede antojar"
-              subheading="Descubre el resto del portafolio Barcel."
-            />
-          </section>
-        )}
-      </>
-    );
-  }
 
   return (
     <>
