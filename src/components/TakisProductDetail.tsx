@@ -63,6 +63,24 @@ import RelatedProductsSlider from "./RelatedProductsSlider";
 //    esta página y que el selector de las otras 5 marcas (mismo
 //    componente SizePicker, mismo contraste, "el selector de las demás
 //    marcas" que el cliente pidió recuperar).
+//
+// Ronda 67: el modal "¿Dónde comprar?" (WhereToBuyModal, position:fixed
+// z-[60]) no cubría toda la página al abrirse — Sellos, la tarjeta de
+// nombre y la barra de Presentación se veían encima del backdrop, y de
+// paso el selector de Presentación se veía "flotando" suelto, como si
+// no estuviera integrado a la página. Causa raíz: el breadcrumb, el
+// grid de 3 columnas y la barra de Presentación tenían "relative z-10"
+// (agregado en Ronda 65 para asegurar que el texto quedara sobre
+// bg.jpg — innecesario, un elemento en flujo normal SIEMPRE pinta
+// encima del background-image de su propio padre, con o sin z-index).
+// Ese z-10 no era decorativo: creaba un contexto de apilamiento propio
+// para cada uno de esos tres bloques. El modal vive dentro del
+// contexto del grid, así que su z-[60] queda acotado ahí adentro — no
+// se compara nunca contra el contexto de la barra de Presentación (que
+// es un hermano posterior, mismo z-10, y por orden en el DOM gana el
+// pintado). Se quitan los z-10 sobrantes: sin contextos intermedios,
+// el modal fixed vuelve a compararse contra la raíz real de la página
+// y cubre todo, incluida la barra de Presentación.
 export default function TakisProductDetail({
   brand,
   flavor,
@@ -88,8 +106,11 @@ export default function TakisProductDetail({
         {/* Ronda 65: barra sólida (no texto flotando sobre la imagen) —
             garantiza contraste AA sin importar qué parte del fondo
             (morado o amarillo) quede detrás. Blanco puro (no /85) sobre
-            barcel-black da 19.6:1. */}
-        <div className="relative z-10 bg-barcel-black">
+            barcel-black da 19.6:1. Ronda 67: sin z-10 — un elemento en
+            flujo normal ya pinta encima del background-image del padre;
+            el z-10 solo creaba un contexto de apilamiento que atrapaba
+            el modal "¿Dónde comprar?" (ver nota arriba). */}
+        <div className="bg-barcel-black">
           <nav
             aria-label="Ruta de navegación"
             className="container-page flex flex-wrap items-center gap-1.5 py-3 font-body text-xs text-white md:text-sm"
@@ -137,7 +158,8 @@ export default function TakisProductDetail({
           </>
         )}
 
-        <div className="container-page relative z-10 grid gap-8 pb-12 pt-6 md:grid-cols-[1fr_1.15fr_1fr] md:items-center md:gap-6 md:pb-16">
+        {/* Ronda 67: sin z-10 — ver nota arriba sobre el modal atrapado. */}
+        <div className="container-page grid gap-8 pb-12 pt-6 md:grid-cols-[1fr_1.15fr_1fr] md:items-center md:gap-6 md:pb-16">
           {/* Ronda 65: tarjeta blanca sólida (antes flotaba transparente
               sobre bg.jpg) — mismo tratamiento que la tarjeta de
               nombre+descripción de la derecha, así el texto negro de los
@@ -247,7 +269,7 @@ export default function TakisProductDetail({
           // fondo claro que ya usan Sellos/Ingredientes y nombre+
           // descripción, y el mismo contraste con el que este selector
           // ya funciona bien en las otras 5 marcas.
-          <div className="relative z-10 bg-white/95 py-5">
+          <div className="bg-white/95 py-5">
             <div className="container-page flex flex-col items-center gap-2.5 md:flex-row md:justify-center">
               <p className="font-display text-sm font-bold text-barcel-black">Presentación:</p>
               <SizePicker sizes={flavor.sizes} />
