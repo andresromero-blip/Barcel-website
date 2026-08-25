@@ -67,9 +67,20 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           "TAKIS® Font" del brandbook, ver globals.css) solo para Takis —
           Permanent Marker es de un solo peso, sin font-extrabold falso.
           Ronda 45: el manual (03.4, pág. 37) exige que ese nombre vaya
-          siempre dentro del "manchón" amarillo — TakisTape. */}
+          siempre dentro del "manchón" amarillo — TakisTape.
+          Ronda 56: cada composición del Global Brandbook YA trae el
+          nombre del sabor quemado en la imagen (su propia cinta
+          amarilla). En hover, nuestra propia TakisTape quedaba flotando
+          encima de esa cinta ya impresa — dos nombres pisándose. Se
+          desvanece la nuestra en hover (mismo criterio que la bolsa)
+          cuando hay hoverImage, dejando solo la cinta real de la
+          composición. */}
       {isTakis ? (
-        <TakisTape className="relative px-3 py-1">
+        <TakisTape
+          className={`relative px-3 py-1 transition-opacity duration-300 ${
+            flavor.hoverImage ? "group-hover:opacity-0" : ""
+          }`}
+        >
           <span className="font-takisMark text-base uppercase leading-tight sm:text-xl md:text-2xl">
             {flavor.name}
           </span>
@@ -79,10 +90,24 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           {flavor.name}
         </span>
       )}
-      <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
-        {isTakis ? "Ver más información" : "Ver detalle"}
-        <span aria-hidden>→</span>
-      </span>
+      {/* Ronda 56: el link ya no vive en el flujo normal debajo de la
+          cinta — su posición dependía de dónde terminara CADA
+          composición (proporciones distintas por sabor), y en Fuego
+          caía justo encima de la cinta quemada en la imagen. Ahora es
+          un overlay fijo al fondo de la tarjeta con su propio scrim de
+          degradado (garantiza legibilidad sin importar qué haya detrás)
+          — posición idéntica para los 8 sabores. */}
+      {isTakis ? (
+        <span className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-center gap-1.5 bg-gradient-to-t from-black/70 via-black/25 to-transparent px-4 pb-4 pt-10 font-display text-sm font-bold uppercase tracking-wide text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:pb-5 sm:text-base">
+          Ver más información
+          <span aria-hidden>→</span>
+        </span>
+      ) : (
+        <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
+          Ver detalle
+          <span aria-hidden>→</span>
+        </span>
+      )}
     </>
   );
 }
