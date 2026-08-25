@@ -7,6 +7,9 @@ import RelatedProductsSlider from "./RelatedProductsSlider";
 import WhereToBuyModal from "./WhereToBuyModal";
 import Picometro from "./Picometro";
 import TakisTape from "./TakisTape";
+import TakisHero from "./TakisHero";
+import ProductSlider from "./ProductSlider";
+import OtherBrandsGrid from "./OtherBrandsGrid";
 
 // Página de detalle de producto — 1:1 con el wireframe de Figma
 // (node 107:2838), adaptado a los tokens/patrones ya establecidos en
@@ -18,44 +21,103 @@ import TakisTape from "./TakisTape";
 // indicación del cliente se deja como placeholder MARCADO (no se
 // inventan cifras/listas reales) hasta recibir el copy oficial de
 // Barcel.
+//
+// Ronda 54: el cliente mandó un mockup para esta página SOLO para
+// Takis — layout completamente distinto (hero de marca + slider del
+// portafolio con badge de Picómetro por tarjeta + "también te puede
+// antojar" con las otras marcas) en vez de la galería + specs de dos
+// columnas de abajo. Confirmado explícitamente por el cliente: para
+// Takis esto REEMPLAZA tamaños/ingredientes/información nutrimental/
+// "¿Dónde comprar?" (el mockup corregido, con Picómetro agregado, no
+// los traía). Las otras 5 marcas no tienen mockup — se quedan con el
+// layout de abajo sin tocar.
 export default function ProductDetail({
   brand,
   flavor,
   related,
+  otherBrands,
 }: {
   brand: Brand;
   flavor: Flavor;
   related: Flavor[];
+  otherBrands: Brand[];
 }) {
   const galleryImages = [flavor.image, flavor.hoverImage].filter(
     (src): src is string => Boolean(src)
   );
   const fullName = `${brand.name} ${flavor.name}`;
+  const isTakis = brand.slug === "takis";
+
+  // Ronda 35: contraste AA. /50 sobre blanco da 3.59:1 — no pasa el
+  // 4.5:1 que exige AA para texto normal. /70 (mismo valor que ya usa
+  // la descripción de abajo, igual de "secundaria" en jerarquía) da
+  // 7.0:1+, con margen de sobra. Se comparte entre las dos ramas —
+  // el breadcrumb es igual para Takis y el resto de marcas, solo
+  // cambia lo que va debajo.
+  const breadcrumb = (
+    <nav
+      aria-label="Ruta de navegación"
+      className="container-page flex flex-wrap items-center gap-1.5 pb-2 pt-8 font-body text-xs text-barcel-black/70 md:text-sm"
+    >
+      <Link href="/" className="transition-colors hover:text-barcel-black">
+        Inicio
+      </Link>
+      <span aria-hidden="true">/</span>
+      <Link
+        href={`/marcas/${brand.slug}`}
+        className="transition-colors hover:text-barcel-black"
+      >
+        {brand.name}
+        <sup className="text-[0.7em]">®</sup>
+      </Link>
+      <span aria-hidden="true">/</span>
+      <span className="text-barcel-black">{fullName}</span>
+    </nav>
+  );
+
+  if (isTakis) {
+    return (
+      <>
+        {breadcrumb}
+        <TakisHero brand={brand} />
+
+        <section className="bg-white py-16 md:py-20">
+          <div className="container-page">
+            <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
+              Productos
+            </h2>
+            <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
+              Pasa el cursor para pausar el carrusel y haz clic en tu sabor
+              favorito para verlo de cerca.
+            </p>
+          </div>
+          <div className="container-page mt-8">
+            <ProductSlider
+              brandName={brand.name}
+              brandSlug={brand.slug}
+              flavors={brand.flavors ?? []}
+              hoverBg={brand.hoverBg}
+              hoverText={brand.hoverText}
+            />
+          </div>
+        </section>
+
+        {otherBrands.length > 0 && (
+          <section className="bg-barcel-cream py-14 md:py-20">
+            <OtherBrandsGrid
+              brands={otherBrands}
+              heading="También te puede antojar"
+              subheading="Descubre el resto del portafolio Barcel."
+            />
+          </section>
+        )}
+      </>
+    );
+  }
 
   return (
     <>
-      {/* Ronda 35: contraste AA. /50 sobre blanco da 3.59:1 — no pasa el
-          4.5:1 que exige AA para texto normal. /70 (mismo valor que ya
-          usa la descripción de abajo, igual de "secundaria" en jerarquía)
-          da 7.0:1+, con margen de sobra. */}
-      <nav
-        aria-label="Ruta de navegación"
-        className="container-page flex flex-wrap items-center gap-1.5 pb-2 pt-8 font-body text-xs text-barcel-black/70 md:text-sm"
-      >
-        <Link href="/" className="transition-colors hover:text-barcel-black">
-          Inicio
-        </Link>
-        <span aria-hidden="true">/</span>
-        <Link
-          href={`/marcas/${brand.slug}`}
-          className="transition-colors hover:text-barcel-black"
-        >
-          {brand.name}
-          <sup className="text-[0.7em]">®</sup>
-        </Link>
-        <span aria-hidden="true">/</span>
-        <span className="text-barcel-black">{fullName}</span>
-      </nav>
+      {breadcrumb}
 
       <section className="container-page grid gap-10 pb-16 pt-6 md:grid-cols-2 md:gap-16 md:pb-24">
         <ProductGallery images={galleryImages} alt={`${fullName}®`} />

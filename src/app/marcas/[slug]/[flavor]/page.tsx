@@ -46,12 +46,21 @@ export default function ProductRoute({
   const related = (brand.flavors ?? []).filter(
     (f) => f.slug && f.slug !== flavor.slug
   );
+  // Ronda 54: la página de detalle de Takis reemplaza "también te puede
+  // antojar" (antes: otros sabores del mismo Takis) por las otras 5
+  // marcas del portafolio Barcel — mismo dato que ya usa /marcas/[slug].
+  const otherBrands = brands.filter((b) => b.slug !== brand.slug);
 
   return (
     <SearchProvider>
       <Header />
       <main>
-        <ProductDetail brand={brand} flavor={flavor} related={related} />
+        <ProductDetail
+          brand={brand}
+          flavor={flavor}
+          related={related}
+          otherBrands={otherBrands}
+        />
       </main>
       <Footer />
     </SearchProvider>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Flavor } from "@/data/brands";
 import TakisTape from "./TakisTape";
+import { SPICE_LEVELS } from "./Picometro";
 
 const CARD_CLASSNAME =
   "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
@@ -32,6 +33,22 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
         />
       )}
       <div className="relative flex h-56 w-full items-end justify-center overflow-visible sm:h-80 md:h-[26rem]">
+        {/* Ronda 54: badge del Picómetro — el cliente pidió que cada
+            tarjeta del slider muestre su nivel de picante (mismo asset
+            PNG de termómetro que ya usaba la página de detalle, ver
+            Picometro.tsx) flotando junto a la bolsa, no solo dentro de
+            una sección aparte. Va DENTRO de este div (overflow-visible)
+            en vez del contenedor exterior de la tarjeta, que tiene
+            overflow-hidden por la revelación del hover — si el badge
+            viviera ahí se recortaría contra el borde de la tarjeta. */}
+        {isTakis && flavor.spiceLevel && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={SPICE_LEVELS[flavor.spiceLevel].image}
+            alt={`Picómetro: ${SPICE_LEVELS[flavor.spiceLevel].label}`}
+            className="absolute left-0 top-1/2 z-20 h-16 w-auto -translate-x-1/3 -translate-y-1/2 object-contain drop-shadow-lg sm:h-20 md:h-24"
+          />
+        )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={flavor.image}
