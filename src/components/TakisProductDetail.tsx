@@ -41,6 +41,28 @@ import RelatedProductsSlider from "./RelatedProductsSlider";
 // (bg-barcel-black) en vez de flotar directo sobre la imagen. Además se
 // reemplaza bg.jpg por el fondo oficial nuevo que compartió el cliente
 // (BG Takis.pdf: diagonal morado/amarillo con espirales de marca).
+//
+// Ronda 66: tres correcciones del cliente sobre esta misma tarjeta:
+// 1) La etiqueta "TAKIS" se quita — competía en peso visual con el
+//    nombre real del sabor. Los PNG oficiales de nombres además traían
+//    ~35-45% de margen transparente alrededor del manchón (verificado
+//    con getbbox()), así que el <img> se veía chico y con huecos raros
+//    arriba/abajo aunque el contenedor fuera grande — se recortaron los
+//    8 PNG a su contenido real (+12px de aire) antes de esta ronda, y
+//    ahora el nombre crece de max-w-[240px] a max-w-sm/md: es el
+//    elemento más grande de la tarjeta, como pidió el cliente.
+// 2) "Todo tiene el mismo peso": se agrupa nombre+descripción,
+//    picómetro y CTA en bloques con su propio spacing (gap-6 entre
+//    bloques en vez de un gap-4 plano en 5 elementos sueltos) y se baja
+//    la descripción a text-sm/60% para que no compita con el nombre.
+// 3) La barra negra sólida de "Presentación" (fix de contraste de la
+//    Ronda 65) rompía el borde de las pastillas inactivas de
+//    SizePicker (border-barcel-black/15 es invisible sobre fondo
+//    negro) — "el color negro hace difícil la interacción con el
+//    selector". Pasa a bg-white/95, igual que el resto de tarjetas de
+//    esta página y que el selector de las otras 5 marcas (mismo
+//    componente SizePicker, mismo contraste, "el selector de las demás
+//    marcas" que el cliente pidió recuperar).
 export default function TakisProductDetail({
   brand,
   flavor,
@@ -178,27 +200,30 @@ export default function TakisProductDetail({
             />
           </div>
 
-          <div className="order-2 flex flex-col items-start gap-4 bg-white/95 p-6 md:order-3 md:p-8">
-            <p className="font-display text-sm font-bold uppercase tracking-[0.2em] text-takis-purple">
-              {brand.name}
-            </p>
-            {flavor.nameImage ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src={flavor.nameImage}
-                alt={fullName}
-                className="h-auto w-full max-w-[240px]"
-              />
-            ) : (
-              <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black">
-                {fullName}
-              </h1>
-            )}
-            {(flavor.description ?? brand.description) && (
-              <p className="font-takisBody text-base leading-relaxed text-barcel-black/70">
-                {flavor.description ?? brand.description}
-              </p>
-            )}
+          <div className="order-2 flex flex-col items-start gap-6 bg-white/95 p-6 md:order-3 md:p-8">
+            {/* Ronda 66: nombre+descripción agrupados como un solo bloque
+                (gap-3) — el nombre es el elemento más grande de toda la
+                tarjeta, sin la etiqueta "TAKIS" compitiendo arriba. */}
+            <div className="flex flex-col gap-3">
+              {flavor.nameImage ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={flavor.nameImage}
+                  alt={fullName}
+                  className="h-auto w-full max-w-[280px] sm:max-w-sm md:max-w-[22rem]"
+                />
+              ) : (
+                <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black">
+                  {fullName}
+                </h1>
+              )}
+              {(flavor.description ?? brand.description) && (
+                <p className="max-w-sm font-takisBody text-sm leading-relaxed text-barcel-black/60">
+                  {flavor.description ?? brand.description}
+                </p>
+              )}
+            </div>
+
             {flavor.spiceLevel && (
               <div className="w-full border-t border-black/10 pt-4">
                 <Picometro level={flavor.spiceLevel} />
@@ -215,15 +240,19 @@ export default function TakisProductDetail({
         </div>
 
         {flavor.sizes && flavor.sizes.length > 0 && (
-          // Ronda 65: mismo criterio que el breadcrumb — barra sólida en
-          // vez de texto blanco flotando sobre el fondo (podía caer sobre
-          // la zona amarilla del nuevo bg.jpg y perder todo el contraste).
-          <div className="relative z-10 bg-barcel-black py-5">
+          // Ronda 66: la barra negra sólida (fix de contraste de la Ronda
+          // 65) tapaba el borde border-barcel-black/15 de las pastillas
+          // inactivas de SizePicker — quedaban sin borde visible, sin
+          // affordance de que son botones. Pasa a bg-white/95: mismo
+          // fondo claro que ya usan Sellos/Ingredientes y nombre+
+          // descripción, y el mismo contraste con el que este selector
+          // ya funciona bien en las otras 5 marcas.
+          <div className="relative z-10 bg-white/95 py-5">
             <div className="container-page flex flex-col items-center gap-2.5 md:flex-row md:justify-center">
-              <p className="font-display text-sm font-bold text-white">Presentación:</p>
+              <p className="font-display text-sm font-bold text-barcel-black">Presentación:</p>
               <SizePicker sizes={flavor.sizes} />
               {!flavor.nutrition && (
-                <p className="font-body text-xs text-white/70">
+                <p className="font-body text-xs text-barcel-black/60">
                   * Presentaciones de ejemplo — pendientes de confirmar con Barcel.
                 </p>
               )}
