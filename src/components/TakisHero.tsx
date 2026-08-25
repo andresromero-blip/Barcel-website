@@ -13,7 +13,7 @@ const TAKIS_HERO_BG = "/takis/hero-banner.jpg";
 
 export default function TakisHero({ brand }: { brand: Brand }) {
   return (
-    <section className="relative flex min-h-[clamp(440px,40vw,680px)] flex-col justify-center overflow-hidden bg-takis-purple">
+    <section className="relative flex min-h-[clamp(440px,40vw,680px)] flex-col justify-center overflow-hidden bg-takis-purple md:aspect-[1920/1080] md:min-h-0">
       {/* Ronda 55 (revertido en Ronda 57): object-contain no recorta,
           pero cuando el contenedor no calza con el aspect ratio real de
           la imagen (1920x1080) deja una franja sólida a un lado — esa
@@ -28,7 +28,24 @@ export default function TakisHero({ brand }: { brand: Brand }) {
           sobrante, nunca el arte de marca), sin importar qué tan ancha
           sea la pantalla. object-position "right top" fija el recorte
           horizontal a la derecha (donde vive el logo/personaje) y el
-          vertical arriba (0%, nunca se come el logo). */}
+          vertical arriba (0%, nunca se come el logo).
+          Ronda 69: el cliente pidió el banner 1:1, sin recortar NINGÚN
+          elemento (logo, flama, personaje) en ningún ancho de escritorio
+          — el recorte de Ronda 57 (aceptado como mal menor) ya no es
+          aceptable. Causa raíz real: la sección forzaba una altura fija
+          en clamp(...) independiente del ancho real de pantalla, así que
+          en pantallas anchas la imagen (1920x1080, 16:9) necesitaba más
+          alto del que el contenedor permitía y object-cover recortaba la
+          parte de abajo (mano con Takis, cola del logo). Fix: en md+ el
+          contenedor usa aspect-[1920/1080] — el MISMO aspect ratio real
+          del archivo — así el alto siempre escala en proporción exacta
+          al ancho, el contenedor nunca "no calza" con la imagen, y
+          object-cover dejar de recortar nada (cover y contain dan
+          resultado idéntico cuando el contenedor ya tiene el aspect
+          ratio exacto de la imagen). En mobile (debajo de md) se
+          mantiene el clamp anterior — un hero 16:9 completo en un
+          teléfono en vertical dejaría el logo diminuto, y el cliente
+          pidió esto para Desktop. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={TAKIS_HERO_BG}
