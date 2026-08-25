@@ -102,6 +102,57 @@ export default function ProductDetail({
           </div>
         </section>
 
+        {/* Ronda 61: el cliente reportó que no podía "acceder a la
+            información del producto" — con razón: Ronda 54 había
+            quitado por completo tamaños/ingredientes/información
+            nutrimental/"¿Dónde comprar?" para Takis (registrado en el
+            comentario de arriba como confirmado por el cliente en su
+            momento), dejando la página de cada sabor sin ningún dato
+            propio del producto, solo el hero genérico de marca + el
+            mismo slider. Se restaura aquí, mismo criterio/copy
+            placeholder que las otras 5 marcas (ver rama de abajo),
+            para el sabor actualmente activo ({fullName}). */}
+        <section className="bg-barcel-cream py-14 md:py-20">
+          <div className="container-page max-w-2xl">
+            <h2 className="font-teko text-3xl font-bold uppercase text-barcel-black md:text-4xl">
+              Información de {flavor.name}
+            </h2>
+            <p className="mt-2 font-takisBody text-sm text-barcel-black/70 md:text-base">
+              Todo lo que necesitas saber sobre {fullName}®.
+            </p>
+
+            {flavor.sizes && flavor.sizes.length > 0 && (
+              <div className="mt-6 w-full">
+                <p className="mb-2.5 font-display text-sm font-bold text-barcel-black">
+                  Presentaciones
+                </p>
+                <SizePicker sizes={flavor.sizes} />
+                <p className="mt-2 font-body text-xs text-barcel-black/70">
+                  * Presentaciones de ejemplo — pendientes de confirmar con
+                  Barcel.
+                </p>
+              </div>
+            )}
+
+            <div className="mt-6 flex w-full flex-col gap-3">
+              <Accordion title="Ingredientes">
+                Contenido de ejemplo — pendiente de recibir la lista de
+                ingredientes oficial de {fullName}® para reemplazar este
+                texto.
+              </Accordion>
+              <Accordion title="Información nutrimental">
+                Contenido de ejemplo — pendiente de recibir la tabla
+                nutrimental oficial de {fullName}® para reemplazar este
+                texto.
+              </Accordion>
+            </div>
+
+            <div className="mt-6">
+              <WhereToBuyModal />
+            </div>
+          </div>
+        </section>
+
         {otherBrands.length > 0 && (
           <section className="bg-barcel-cream py-14 md:py-20">
             <OtherBrandsGrid
