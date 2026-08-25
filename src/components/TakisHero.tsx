@@ -10,52 +10,75 @@ import { BRAND_SOCIALS, type Brand } from "@/data/brands";
 // componente compartido; BrandPage.tsx también lo usa ahora para
 // garantizar que ambas páginas queden 1:1 sin poder desincronizarse.
 const TAKIS_HERO_BG = "/takis/hero-banner.jpg";
+// Ronda 70: asset dedicado para mobile (1200x900, 4:3) — mismo arte,
+// recompuesto por el cliente para verse bien en un layout apilado.
+const TAKIS_HERO_BG_MOBILE = "/takis/hero-banner-mobile.jpg";
 
 export default function TakisHero({ brand }: { brand: Brand }) {
-  return (
-    <section className="relative flex min-h-[clamp(440px,40vw,680px)] flex-col justify-center overflow-hidden bg-takis-purple md:aspect-[1920/1080] md:min-h-0">
-      {/* Ronda 55 (revertido en Ronda 57): object-contain no recorta,
-          pero cuando el contenedor no calza con el aspect ratio real de
-          la imagen (1920x1080) deja una franja sólida a un lado — esa
-          franja no tiene la textura/degradado del JPG, así que se ve
-          como una costura/corte visible (reportado por el cliente).
-          Ronda 57: se vuelve a object-cover (sin costura, siempre
-          full-bleed) y en vez de pelear con el alto en vh (que no
-          escala con el ancho de pantalla), el alto mínimo ahora es
-          proporcional al ANCHO (40vw) — así el recorte vertical que
-          exige object-cover en una sección tan ancha y corta siempre
-          cae por DEBAJO del logo (recorta cuerpo del personaje/textura
-          sobrante, nunca el arte de marca), sin importar qué tan ancha
-          sea la pantalla. object-position "right top" fija el recorte
-          horizontal a la derecha (donde vive el logo/personaje) y el
-          vertical arriba (0%, nunca se come el logo).
-          Ronda 69: el cliente pidió el banner 1:1, sin recortar NINGÚN
-          elemento (logo, flama, personaje) en ningún ancho de escritorio
-          — el recorte de Ronda 57 (aceptado como mal menor) ya no es
-          aceptable. Causa raíz real: la sección forzaba una altura fija
-          en clamp(...) independiente del ancho real de pantalla, así que
-          en pantallas anchas la imagen (1920x1080, 16:9) necesitaba más
-          alto del que el contenedor permitía y object-cover recortaba la
-          parte de abajo (mano con Takis, cola del logo). Fix: en md+ el
-          contenedor usa aspect-[1920/1080] — el MISMO aspect ratio real
-          del archivo — así el alto siempre escala en proporción exacta
-          al ancho, el contenedor nunca "no calza" con la imagen, y
-          object-cover dejar de recortar nada (cover y contain dan
-          resultado idéntico cuando el contenedor ya tiene el aspect
-          ratio exacto de la imagen). En mobile (debajo de md) se
-          mantiene el clamp anterior — un hero 16:9 completo en un
-          teléfono en vertical dejaría el logo diminuto, y el cliente
-          pidió esto para Desktop. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={TAKIS_HERO_BG}
-        alt=""
-        aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover object-right-top"
-      />
+  // Ronda 70: el cliente marcó "el hero banner en pantallas mobile no
+  // es funcional" y pidió no tocar NADA de cómo se ve en desktop.
+  //
+  // Causa raíz real del problema en mobile: la versión de escritorio
+  // (Ronda 69) resolvió el recorte poniendo la imagen de fondo en
+  // position:absolute cubriendo TODA la sección, con el texto
+  // (tagline/descripción/Síguelos) flotando ENCIMA en un segundo layer
+  // — eso obliga a que la sección tenga una sola altura que sirva para
+  // dos cosas a la vez: mostrar la imagen completa (aspect-ratio fijo,
+  // 1920x1080) Y darle espacio al bloque de texto (que varía según el
+  // tagline/descripción de cada marca). Esas dos necesidades de altura
+  // compiten: si la sección crece para que quepa el texto, la imagen de
+  // fondo (h-full, object-cover) se estira/recorta para cubrir esa
+  // altura extra — literalmente el mismo bug que Ronda 69 arregló para
+  // desktop, pero ahora causado por el texto en vez de por un clamp fijo.
+  //
+  // En vez de intentar exprimir ese mismo mecanismo (overlay absoluto)
+  // para mobile con un segundo aspect-ratio, se separa el layout de
+  // mobile en dos bloques apilados normales, sin overlay ni position:
+  // absolute — la imagen (<img> con w-full h-auto, que respeta su
+  // aspect ratio real de forma nativa sin ninguna regla CSS especial)
+  // arriba, y el bloque de texto (fondo sólido morado, sin transparencia
+  // que dependa de la imagen) debajo. Así la imagen NUNCA compite por
+  // altura con nada — es imposible que se recorte, sin importar cuánto
+  // texto traiga el tagline/descripción de cada sabor.
+  //
+  // El bloque <section> de desktop (md:) se deja completamente intacto,
+  // tal cual quedó en Ronda 69 — solo se le agrega "hidden md:flex" para
+  // alternar con el bloque de mobile, ninguna otra clase cambia.
+  const followText = (
+    <div className="mt-6 border-t border-white/20 pt-5">
+      <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-wide text-white/80">
+        Síguelos
+      </p>
+      <div className="flex items-center gap-2.5">
+        {BRAND_SOCIALS.map((social) => (
+          <a
+            key={social.label}
+            href={social.href}
+            aria-label={`${social.label} de ${brand.name}`}
+            className="flex h-9 w-9 items-center justify-center bg-white text-barcel-black shadow-sm transition-transform hover:scale-110"
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+              <path d={social.path} />
+            </svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
 
-      <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
-        <div className="relative z-10 order-2 bg-takis-purple px-4 py-5 sm:px-6 sm:py-6 md:order-1">
+  return (
+    <>
+      {/* Mobile (debajo de md): imagen apilada arriba, sin overlay —
+          ver nota completa arriba. */}
+      <section className="relative overflow-hidden bg-takis-purple md:hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={TAKIS_HERO_BG_MOBILE}
+          alt=""
+          aria-hidden="true"
+          className="block h-auto w-full"
+        />
+        <div className="px-4 py-6 sm:px-6">
           <Link
             href="/"
             className="mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-white/80 transition-colors hover:text-white hover:underline"
@@ -63,7 +86,7 @@ export default function TakisHero({ brand }: { brand: Brand }) {
             <span aria-hidden>←</span> Volver al inicio
           </Link>
           <h1
-            className="font-takisDisplay text-4xl font-bold uppercase leading-[1.05] tracking-wide text-white sm:text-5xl md:text-6xl"
+            className="font-takisDisplay text-4xl font-bold uppercase leading-[1.05] tracking-wide text-white"
             style={{
               transform: "rotate(-2deg)",
               textShadow: "3px 3px 0 rgba(87, 15, 139, 0.5)",
@@ -74,28 +97,44 @@ export default function TakisHero({ brand }: { brand: Brand }) {
           <p className="mt-4 max-w-sm font-takisBody text-base font-medium leading-relaxed text-white/80">
             {brand.description}
           </p>
+          {followText}
+        </div>
+      </section>
 
-          <div className="mt-6 border-t border-white/20 pt-5">
-            <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-wide text-white/80">
-              Síguelos
+      {/* Desktop (md+): igual que en Ronda 69, sin ningún cambio. */}
+      <section className="relative hidden flex-col justify-center overflow-hidden bg-takis-purple md:flex md:aspect-[1920/1080]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={TAKIS_HERO_BG}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-right-top"
+        />
+
+        <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
+          <div className="relative z-10 order-2 bg-takis-purple px-4 py-5 sm:px-6 sm:py-6 md:order-1">
+            <Link
+              href="/"
+              className="mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-white/80 transition-colors hover:text-white hover:underline"
+            >
+              <span aria-hidden>←</span> Volver al inicio
+            </Link>
+            <h1
+              className="font-takisDisplay text-4xl font-bold uppercase leading-[1.05] tracking-wide text-white sm:text-5xl md:text-6xl"
+              style={{
+                transform: "rotate(-2deg)",
+                textShadow: "3px 3px 0 rgba(87, 15, 139, 0.5)",
+              }}
+            >
+              {brand.tagline}
+            </h1>
+            <p className="mt-4 max-w-sm font-takisBody text-base font-medium leading-relaxed text-white/80">
+              {brand.description}
             </p>
-            <div className="flex items-center gap-2.5">
-              {BRAND_SOCIALS.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={`${social.label} de ${brand.name}`}
-                  className="flex h-9 w-9 items-center justify-center bg-white text-barcel-black shadow-sm transition-transform hover:scale-110"
-                >
-                  <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-                    <path d={social.path} />
-                  </svg>
-                </a>
-              ))}
-            </div>
+            {followText}
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }

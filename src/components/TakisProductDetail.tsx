@@ -182,7 +182,11 @@ export default function TakisProductDetail({
               nombre+descripción de la derecha, así el texto negro de los
               acordeones vuelve a tener contraste AA real. */}
           <div className="order-3 flex flex-col gap-3 bg-white/95 p-6 md:order-1 md:p-8">
-            <Accordion title="Sellos" defaultOpen>
+            {/* Ronda 70: "Sellos" → "Información Nutrimental" — el
+                cliente pidió el nombre correcto de esta sección
+                (la tabla de abajo es información nutrimental, no un
+                listado de sellos de advertencia). */}
+            <Accordion title="Información Nutrimental" defaultOpen>
               {flavor.nutrition ? (
                 <div className="flex flex-col gap-2">
                   <p className="mb-1 text-xs uppercase tracking-wide text-barcel-black/50">
