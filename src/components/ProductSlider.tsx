@@ -94,13 +94,29 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           cinta — su posición dependía de dónde terminara CADA
           composición (proporciones distintas por sabor), y en Fuego
           caía justo encima de la cinta quemada en la imagen. Ahora es
-          un overlay fijo al fondo de la tarjeta con su propio scrim de
-          degradado (garantiza legibilidad sin importar qué haya detrás)
-          — posición idéntica para los 8 sabores. */}
+          un overlay fijo al fondo de la tarjeta — posición idéntica
+          para los 8 sabores.
+          Ronda 72: el cliente marcó que el CTA "pasa desapercibido
+          debido a la carga cognitiva de la pieza" — el scrim de
+          degradado + texto plano (Ronda 56) no alcanza a competir
+          visualmente con las composiciones oficiales del brandbook
+          (swirl + garnish a color completo, distinto por sabor). Fix:
+          el texto pasa a vivir dentro de un contenedor real de botón
+          primario (fondo sólido blanco, texto morado de marca en
+          mayúsculas, sombra) en vez de flotar sobre un degradado — un
+          bloque sólido blanco contrasta de forma consistente sin
+          importar el color de fondo de cada composición (azul, verde,
+          rojo, etc.), a diferencia de un scrim semitransparente que
+          depende de qué haya detrás. Se quita el scrim de degradado de
+          todo el ancho: ya no hace falta, y sumaba ruido visual
+          (justo el "carga cognitiva" reportado) sin aportar contraste
+          adicional una vez que el botón es opaco. */}
       {isTakis ? (
-        <span className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-center gap-1.5 bg-gradient-to-t from-black/70 via-black/25 to-transparent px-4 pb-4 pt-10 font-display text-sm font-bold uppercase tracking-wide text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:pb-5 sm:text-base">
-          Ver más información
-          <span aria-hidden>→</span>
+        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
+          <span className="inline-flex items-center gap-1.5 bg-white px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-takis-purple shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+            Ver más información
+            <span aria-hidden>→</span>
+          </span>
         </span>
       ) : (
         <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
