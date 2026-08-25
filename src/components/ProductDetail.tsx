@@ -13,11 +13,13 @@ import TakisTape from "./TakisTape";
 // el sitio (fuentes, colores de marca, sin corner-radius en CTAs,
 // mismo mecanismo de acordeón que el menú Marcas del Header).
 //
-// Ingredientes / Información nutrimental: el wireframe los pide, pero
-// ese contenido no existe todavía en ningún asset del proyecto —por
-// indicación del cliente se deja como placeholder MARCADO (no se
-// inventan cifras/listas reales) hasta recibir el copy oficial de
-// Barcel.
+// Ingredientes / Información nutrimental: Ronda 63 — Barcel compartió las
+// etiquetas oficiales (NPAR-FO-03/09, una por sabor de Takis) y ya se
+// integran como datos reales (brands.ts: flavor.ingredients/allergens/
+// nutrition) para 7 de los 8 sabores. Salsa Brava se queda con el
+// placeholder anterior: su etiqueta llegó protegida con IRM/DRM
+// (Microsoft Rights Management, cuenta corporativa de Bimbo) y no pudo
+// abrirse — ver nota completa en brands.ts.
 //
 // Ronda 54 había introducido, SOLO para Takis, un layout que
 // reutilizaba el hero de marca + el slider del portafolio completo
@@ -76,11 +78,20 @@ export default function ProductDetail({
     </nav>
   );
 
+  // Ronda 63: referencia del cliente (Chip's Fuego) mostraba la galería +
+  // specs sobre una banda de fondo de color, separada del resto de la
+  // página. Se usa barcel-cream (no un color saturado de marca): es el
+  // mismo fondo que ya usa "también te puede antojar" más abajo, con
+  // contraste AA ya verificado contra texto negro — un fondo saturado por
+  // marca (ej. takis-purple) obligaría a revisar de nuevo el contraste de
+  // cada texto de esta sección para las 6 marcas, fuera de alcance de
+  // esta ronda.
   return (
     <>
       {breadcrumb}
 
-      <section className="container-page grid gap-10 pb-16 pt-6 md:grid-cols-2 md:gap-16 md:pb-24">
+      <section className="bg-barcel-cream">
+        <div className="container-page grid gap-10 py-10 md:grid-cols-2 md:gap-16 md:py-16">
         <ProductGallery images={galleryImages} alt={`${fullName}®`} />
 
         <div className="flex flex-col items-start gap-4">
@@ -150,31 +161,141 @@ export default function ProductDetail({
                 Presentaciones
               </p>
               <SizePicker sizes={flavor.sizes} />
-              {/* Ronda 35: /40 sobre blanco da 2.65:1 — muy por debajo de
-                  AA. Sube a /70 (7.0:1+) igual que el resto de texto
-                  secundario de esta página. */}
-              <p className="mt-2 font-body text-xs text-barcel-black/70">
-                * Presentaciones de ejemplo — pendientes de confirmar con
-                Barcel.
-              </p>
+              {/* Ronda 63: los 7 sabores con etiqueta real (nutrition
+                  presente) ya traen presentaciones reales — la nota de
+                  "ejemplo, pendiente de confirmar" solo aplica a Salsa
+                  Brava (única sin etiqueta, ver nota arriba). Ronda 35:
+                  /40 sobre blanco da 2.65:1 — no pasa AA. /70 (7.0:1+)
+                  igual que el resto de texto secundario de esta página. */}
+              {!flavor.nutrition && (
+                <p className="mt-2 font-body text-xs text-barcel-black/70">
+                  * Presentaciones de ejemplo — pendientes de confirmar con
+                  Barcel.
+                </p>
+              )}
             </div>
           )}
 
           <div className="mt-2 flex w-full flex-col gap-3">
             <Accordion title="Ingredientes">
-              Contenido de ejemplo — pendiente de recibir la lista de
-              ingredientes oficial de {fullName}® para reemplazar este
-              texto.
+              {flavor.ingredients ? (
+                <div className="flex flex-col gap-3">
+                  <p className="uppercase">{flavor.ingredients}</p>
+                  {flavor.allergens && (
+                    <p className="font-bold">{flavor.allergens}</p>
+                  )}
+                </div>
+              ) : (
+                <>
+                  Contenido de ejemplo — pendiente de recibir la lista de
+                  ingredientes oficial de {fullName}® para reemplazar este
+                  texto.
+                </>
+              )}
             </Accordion>
             <Accordion title="Información nutrimental">
-              Contenido de ejemplo — pendiente de recibir la tabla
-              nutrimental oficial de {fullName}® para reemplazar este
-              texto.
+              {flavor.nutrition ? (
+                <div className="flex flex-col gap-3">
+                  <p className="text-xs text-barcel-black/70">
+                    Porción: {flavor.nutrition.porcionG} g ·{" "}
+                    {flavor.nutrition.porcionesEnvase} porciones por envase.
+                  </p>
+                  <table className="w-full border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b-2 border-barcel-black/20 text-left">
+                        <th className="py-1.5 font-display font-bold">
+                          Nutrimento
+                        </th>
+                        <th className="py-1.5 text-right font-display font-bold">
+                          Por porción
+                        </th>
+                        <th className="py-1.5 text-right font-display font-bold">
+                          Por 100 g
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        [
+                          "Contenido energético",
+                          `${flavor.nutrition.kcalPorcion} kcal`,
+                          `${flavor.nutrition.kcal100g} kcal`,
+                        ],
+                        [
+                          "Proteínas",
+                          `${flavor.nutrition.proteinasPorcion} g`,
+                          `${flavor.nutrition.proteinas100g} g`,
+                        ],
+                        [
+                          "Grasas totales",
+                          `${flavor.nutrition.grasasTotalesPorcion} g`,
+                          `${flavor.nutrition.grasasTotales100g} g`,
+                        ],
+                        [
+                          "· Grasas saturadas",
+                          `${flavor.nutrition.grasasSatPorcion} g`,
+                          `${flavor.nutrition.grasasSat100g} g`,
+                        ],
+                        [
+                          "· Grasas trans",
+                          `${flavor.nutrition.grasasTransPorcionMg} mg`,
+                          `${flavor.nutrition.grasasTrans100gMg} mg`,
+                        ],
+                        [
+                          "Colesterol",
+                          `${flavor.nutrition.colesterolPorcionMg} mg`,
+                          `${flavor.nutrition.colesterol100gMg} mg`,
+                        ],
+                        [
+                          "Hidratos de carbono disponibles",
+                          `${flavor.nutrition.hidratosPorcion} g`,
+                          `${flavor.nutrition.hidratos100g} g`,
+                        ],
+                        [
+                          "· Azúcares",
+                          `${flavor.nutrition.azucaresPorcion} g`,
+                          `${flavor.nutrition.azucares100g} g`,
+                        ],
+                        [
+                          "· Azúcares añadidos",
+                          `${flavor.nutrition.azucaresAnadidosPorcion} g`,
+                          `${flavor.nutrition.azucaresAnadidos100g} g`,
+                        ],
+                        [
+                          "Fibra dietética",
+                          `${flavor.nutrition.fibraPorcion} g`,
+                          `${flavor.nutrition.fibra100g} g`,
+                        ],
+                        [
+                          "Sodio",
+                          `${flavor.nutrition.sodioPorcionMg} mg`,
+                          `${flavor.nutrition.sodio100gMg} mg`,
+                        ],
+                      ].map(([label, porcion, cien]) => (
+                        <tr key={label} className="border-b border-barcel-black/10">
+                          <td className="py-1.5 pr-2 text-barcel-black/80">
+                            {label}
+                          </td>
+                          <td className="py-1.5 text-right">{porcion}</td>
+                          <td className="py-1.5 text-right">{cien}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <>
+                  Contenido de ejemplo — pendiente de recibir la tabla
+                  nutrimental oficial de {fullName}® para reemplazar este
+                  texto.
+                </>
+              )}
             </Accordion>
           </div>
 
           <WhereToBuyModal />
         </div>
+      </div>
       </section>
 
       {related.length > 0 && (

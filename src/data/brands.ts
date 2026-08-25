@@ -60,6 +60,50 @@ export type Flavor = {
   // 82, 96). false/undefined = estimación propia (solo Salsa Brava, sin
   // equivalente en el brandbook global) — ver nota en ProductDetail.tsx.
   spiceLevelConfirmed?: boolean;
+  // Ronda 63: declaración real de ingredientes, tal cual el archivo fuente
+  // NPAR-FO-03/09 "ETIQUETA NUTRIMENTAL Y DECLARACIÓN DE INGREDIENTES MX"
+  // que Barcel compartió (una etiqueta xlsx por sabor, con una hoja por
+  // presentación). MAYÚSCULAS y puntuación tal cual el documento oficial —
+  // no se reescribe el copy, es texto regulatorio.
+  ingredients?: string;
+  // "PUEDE CONTENER: ..." / "CONTIENE: ..." — mismo archivo fuente, texto
+  // regulatorio tal cual.
+  allergens?: string;
+  // Tabla nutrimental real. El "porción"/"por 100 g" de cada nutrimento NO
+  // cambia entre presentaciones (50 g, 240 g, 700 g, etc. son el mismo
+  // producto embolsado en distinto gramaje) — por eso es un solo bloque
+  // por sabor, tomado de la hoja "70g" de cada etiqueta (presentación
+  // individual, la más comparable entre los 7 sabores que sí tienen
+  // etiqueta). Salsa Brava se queda sin este campo: su etiqueta llegó
+  // protegida con IRM/DRM (Microsoft Rights Management, cuenta corporativa
+  // de Bimbo) y no pudo abrirse — ProductDetail.tsx cae al placeholder
+  // anterior para ese único sabor.
+  nutrition?: {
+    porcionG: number;
+    porcionesEnvase: string;
+    kcalPorcion: number;
+    kcal100g: number;
+    proteinasPorcion: number;
+    proteinas100g: number;
+    grasasTotalesPorcion: number;
+    grasasTotales100g: number;
+    grasasSatPorcion: number;
+    grasasSat100g: number;
+    grasasTransPorcionMg: number;
+    grasasTrans100gMg: number;
+    colesterolPorcionMg: number;
+    colesterol100gMg: number;
+    hidratosPorcion: number;
+    hidratos100g: number;
+    azucaresPorcion: number;
+    azucares100g: number;
+    azucaresAnadidosPorcion: number;
+    azucaresAnadidos100g: number;
+    fibraPorcion: number;
+    fibra100g: number;
+    sodioPorcionMg: number;
+    sodio100gMg: number;
+  };
 };
 
 export type Brand = {
@@ -162,9 +206,38 @@ export const brands: Brand[] = [
         slug: "fuego",
         description:
           "El rolling picante que encendió a toda una generación. Sabor intenso a chile y limón, crunch inconfundible y cero medias tintas. Si puedes con el fuego, este es tu antojo.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g", "700 g"],
         spiceLevel: "extremo",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR (SAL YODADA, MALTODEXTRINA, AZÚCARES AÑADIDOS (AZÚCAR), ÁCIDO CÍTRICO, GMS, PROTEÍNA VEGETAL, ANTOCIANINAS, CEBOLLA, BICARBONATO DE SODIO, EXTRACTO DE LEVADURA, ACEITE VEGETAL, SABORIZANTES NATURALES E IDÉNTICOS AL NATURAL, EXTRACTO DE CHILE).",
+        allergens: "PUEDE CONTENER: SOYA, LECHE, GLUTEN Y CACAHUATE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 149,
+          kcal100g: 495,
+          proteinasPorcion: 1.71,
+          proteinas100g: 5.7,
+          grasasTotalesPorcion: 8.82,
+          grasasTotales100g: 29.4,
+          grasasSatPorcion: 1.26,
+          grasasSat100g: 4.2,
+          grasasTransPorcionMg: 81,
+          grasasTrans100gMg: 270,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 15.54,
+          hidratos100g: 51.8,
+          azucaresPorcion: 0.96,
+          azucares100g: 3.2,
+          azucaresAnadidosPorcion: 0.45,
+          azucaresAnadidos100g: 1.5,
+          fibraPorcion: 1.35,
+          fibra100g: 4.5,
+          sodioPorcionMg: 446.7,
+          sodio100gMg: 1489,
+        },
       },
       {
         name: "Original",
@@ -173,9 +246,38 @@ export const brands: Brand[] = [
         slug: "original",
         description:
           "El clásico que lo empezó todo. Chile y limón en su punto justo, con el crunch que hizo famosos a los rollos más picosos del mercado.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g", "700 g"],
         spiceLevel: "bajo",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR [MALTODEXTRINA, SAL YODADA, ALMIDÓN, GMS, ÁCIDO CÍTRICO, CHILE POBLANO, CEBOLLA EN POLVO, ALMIDON MODIFICADO, ANTOCIANINAS, EXTRACTO DE PAPRIKA, AZÚCARES AÑADIDOS (AZÚCAR), SABORIZANTES NATURALES E IDÉNTICOS AL NATURAL, GOMA ACACIA].",
+        allergens: "PUEDE CONTENER: SOYA, LECHE, GLUTEN, CACAHUATE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 152,
+          kcal100g: 507,
+          proteinasPorcion: 1.8,
+          proteinas100g: 6,
+          grasasTotalesPorcion: 9,
+          grasasTotales100g: 30,
+          grasasSatPorcion: 1.32,
+          grasasSat100g: 4.4,
+          grasasTransPorcionMg: 82.5,
+          grasasTrans100gMg: 275,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 15.96,
+          hidratos100g: 53.2,
+          azucaresPorcion: 0.57,
+          azucares100g: 1.9,
+          azucaresAnadidosPorcion: 0.03,
+          azucaresAnadidos100g: 0.1,
+          fibraPorcion: 1.44,
+          fibra100g: 4.8,
+          sodioPorcionMg: 254.1,
+          sodio100gMg: 847,
+        },
       },
       {
         name: "Salsa Brava",
@@ -191,6 +293,14 @@ export const brands: Brand[] = [
         slug: "salsa-brava",
         description:
           "Un toque de salsa picante que sube la temperatura desde el primer bocado. Para quienes ya se les quedó chico el picante normal.",
+        // Ronda 63: el resto de los 7 sabores ya tiene sizes/ingredients/
+        // allergens/nutrition reales (etiquetas NPAR-FO-03/09 que Barcel
+        // compartió). La de Salsa Brava llegó protegida con IRM/DRM
+        // (Microsoft Rights Management, cuenta corporativa de Bimbo) — ni
+        // openpyxl ni LibreOffice pudieron abrirla sin las credenciales
+        // de esa cuenta. Se queda con el placeholder anterior (ejemplo,
+        // pendiente de confirmar) hasta que Barcel comparta una copia sin
+        // proteger.
         sizes: ["62 g", "90 g", "280 g"],
         spiceLevel: "picante",
       },
@@ -204,9 +314,38 @@ export const brands: Brand[] = [
         slug: "ranch",
         description:
           "El cremoso encuentro entre el picante y el ranch. Un giro distinto al Takis de siempre, sin perder el crunch que los caracteriza.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g", "700 g"],
         spiceLevel: "cero",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR [SÓLIDOS DE LA LECHE, MALTODEXTRINA, SAL YODADA, ACEITE VEGETAL, TOMATE Y CEBOLLA EN POLVO (0,5%), AZÚCARES AÑADIDOS (GLUCOSA, AZÚCAR, JARABE DE MAÍZ), GMS, SABORIZANTES NATURALES Y ARTIFICIALES, ALMIDÓN MODIFICADO, AJO EN POLVO, ÁCIDO LÁCTICO, LECHE, ESPECIAS, CURCUMINA, VINAGRE, ÁCIDO MÁLICO, ÁCIDO CÍTRICO, OLEORRESINA DE PAPRIKA].",
+        allergens: "CONTIENE: LECHE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 153,
+          kcal100g: 511,
+          proteinasPorcion: 1.92,
+          proteinas100g: 6.4,
+          grasasTotalesPorcion: 9.12,
+          grasasTotales100g: 30.4,
+          grasasSatPorcion: 1.38,
+          grasasSat100g: 4.6,
+          grasasTransPorcionMg: 81,
+          grasasTrans100gMg: 270,
+          colesterolPorcionMg: 0.3,
+          colesterol100gMg: 1,
+          hidratosPorcion: 15.87,
+          hidratos100g: 52.9,
+          azucaresPorcion: 1.2,
+          azucares100g: 4,
+          azucaresAnadidosPorcion: 0.12,
+          azucaresAnadidos100g: 0.4,
+          fibraPorcion: 1.41,
+          fibra100g: 4.7,
+          sodioPorcionMg: 208.8,
+          sodio100gMg: 696,
+        },
       },
       {
         name: "Chile Limón",
@@ -215,9 +354,38 @@ export const brands: Brand[] = [
         slug: "chile-limon",
         description:
           "Ácido, salado y picoso en un solo rollo. La combinación clásica de chile y limón llevada al extremo.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g", "700 g"],
         spiceLevel: "bajo",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR [MALTODEXTRINA, SAL YODADA, GMS, ÁCIDO CÍTRICO, PROTEINA VEGETAL, AZÚCARES AÑADIDOS (AZÚCAR), CLORURO DE POTASIO, SABORIZANTES NATURALES, ANTOCIANINAS, ALMIDÓN MODIFICADO, EXTRACTO DE PAPRIKA].",
+        allergens: "CONTIENE: LECHE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 151,
+          kcal100g: 504,
+          proteinasPorcion: 1.83,
+          proteinas100g: 6.1,
+          grasasTotalesPorcion: 8.79,
+          grasasTotales100g: 29.3,
+          grasasSatPorcion: 1.26,
+          grasasSat100g: 4.2,
+          grasasTransPorcionMg: 81,
+          grasasTrans100gMg: 270,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 16.2,
+          hidratos100g: 54,
+          azucaresPorcion: 0.72,
+          azucares100g: 2.4,
+          azucaresAnadidosPorcion: 0.12,
+          azucaresAnadidos100g: 0.4,
+          fibraPorcion: 1.35,
+          fibra100g: 4.5,
+          sodioPorcionMg: 190.2,
+          sodio100gMg: 634,
+        },
       },
       {
         name: "Huacamoles",
@@ -228,9 +396,38 @@ export const brands: Brand[] = [
         slug: "huacamoles",
         description:
           "Sabor a guacamole con el picor de siempre. Una mezcla fresca y picante que rompe con lo esperado.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g"],
         spiceLevel: "picante",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR [SAL YODADA, SÓLIDOS DE LA LECHE, MALTODEXTRINA, GMS, ACEITE VEGETAL, CEBOLLA EN POLVO, ÁCIDO CÍTRICO, AJO EN POLVO, TOMATE EN POLVO, ÁCIDO ACÉTICO, AZÚCARES AÑADIDOS (AZÚCAR), SABORIZANTES NATURALES E IDÉNTICOS A LOS NATURALES, ESPECIAS, GUANILATO DE SODIO, INOSINATO DE SODIO, EXTRACTO DE ESPIRULINA, MONO Y DIGLICÉRIDOS DE ÁCIDOS GRASOS, CURCUMINA].",
+        allergens: "CONTIENE: LECHE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 154,
+          kcal100g: 512,
+          proteinasPorcion: 1.92,
+          proteinas100g: 6.4,
+          grasasTotalesPorcion: 9.21,
+          grasasTotales100g: 30.7,
+          grasasSatPorcion: 1.41,
+          grasasSat100g: 4.7,
+          grasasTransPorcionMg: 83.7,
+          grasasTrans100gMg: 279,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 15.72,
+          hidratos100g: 52.4,
+          azucaresPorcion: 0.9,
+          azucares100g: 3,
+          azucaresAnadidosPorcion: 0.15,
+          azucaresAnadidos100g: 0.5,
+          fibraPorcion: 1.44,
+          fibra100g: 4.8,
+          sodioPorcionMg: 256.2,
+          sodio100gMg: 854,
+        },
       },
       {
         name: "Blue Heat",
@@ -239,9 +436,38 @@ export const brands: Brand[] = [
         slug: "blue-heat",
         description:
           "Picante azul, intensidad real. Un sabor atrevido para quienes buscan algo distinto sin bajarle al fuego.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g"],
         spiceLevel: "extremo",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR (MALTODEXTRINA, ÁCIDO CÍTRICO, AZÚCARES AÑADIDOS (AZÚCAR), SAL YODADA, CLORURO DE POTASIO, GMS, EXTRACTO DE ESPIRULINA, PROTEÍNA VEGETAL, EXTRACTO DE LEVADURA, CEBOLLA EN POLVO, ACEITE VEGETAL, BICARBONATO DE SODIO, SABORIZANTE NATURAL).",
+        allergens: "PUEDE CONTENER: SOYA, LECHE, CACAHUATE, GLUTEN",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 149,
+          kcal100g: 496,
+          proteinasPorcion: 1.68,
+          proteinas100g: 5.6,
+          grasasTotalesPorcion: 8.85,
+          grasasTotales100g: 29.5,
+          grasasSatPorcion: 1.26,
+          grasasSat100g: 4.2,
+          grasasTransPorcionMg: 81,
+          grasasTrans100gMg: 270,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 15.63,
+          hidratos100g: 52.1,
+          azucaresPorcion: 0.93,
+          azucares100g: 3.1,
+          azucaresAnadidosPorcion: 0.42,
+          azucaresAnadidos100g: 1.4,
+          fibraPorcion: 1.38,
+          fibra100g: 4.6,
+          sodioPorcionMg: 192.3,
+          sodio100gMg: 641,
+        },
       },
       {
         name: "Intense Nacho",
@@ -250,9 +476,38 @@ export const brands: Brand[] = [
         slug: "intense-nacho",
         description:
           "Todo el sabor del queso nacho, sin nada de picor. Intenso en sabor, no en picante — crunch inconfundible para quienes quieren todo el antojo de Takis sin el fuego.",
-        sizes: ["62 g", "90 g", "280 g"],
+        sizes: ["70 g", "240 g", "700 g"],
         spiceLevel: "cero",
         spiceLevelConfirmed: true,
+        ingredients:
+          "HARINA DE MAÍZ, ACEITE VEGETAL, SAZONADOR [SÓLIDOS DE LA LECHE, MALTODEXTRINA, SAL YODADA, ACEITE VEGETAL, SABORIZANTES NATURALES Y ARTIFICIALES, TOMATE EN POLVO, CEBOLLA EN POLVO, GMS, QUESO, LECHE, AZÚCARES AÑADIDOS (DEXTROSA, AZÚCAR), PROTEÍNA VEGETAL, EXTRACTO DE PAPRIKA, CURCUMINA, ÁCIDO LÁCTICO, ÁCIDO CÍTRICO, ESPECIAS, INOSINATO DE SODIO, GUANILATO DE SODIO].",
+        allergens: "CONTIENE: LECHE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "Aprox. 2",
+          kcalPorcion: 154,
+          kcal100g: 513,
+          proteinasPorcion: 1.98,
+          proteinas100g: 6.6,
+          grasasTotalesPorcion: 9.24,
+          grasasTotales100g: 30.8,
+          grasasSatPorcion: 1.47,
+          grasasSat100g: 4.9,
+          grasasTransPorcionMg: 88.5,
+          grasasTrans100gMg: 295,
+          colesterolPorcionMg: 0.3,
+          colesterol100gMg: 1,
+          hidratosPorcion: 15.72,
+          hidratos100g: 52.4,
+          azucaresPorcion: 1.14,
+          azucares100g: 3.8,
+          azucaresAnadidosPorcion: 0.03,
+          azucaresAnadidos100g: 0.1,
+          fibraPorcion: 1.38,
+          fibra100g: 4.6,
+          sodioPorcionMg: 240.9,
+          sodio100gMg: 803,
+        },
       },
     ],
   },
