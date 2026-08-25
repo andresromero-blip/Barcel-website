@@ -26,6 +26,21 @@ import RelatedProductsSlider from "./RelatedProductsSlider";
 // marca no tiene nada en común con el layout de galería+specs que usan
 // las otras 5 marcas — evita repetir el error de Ronda 54 de forzar todo
 // dentro de un solo componente con ramas cada vez más enredadas.
+//
+// Ronda 65: el cliente marcó (con captura) que la columna de Sellos/
+// Ingredientes era "imposible de leer" — causa raíz real: Accordion.tsx
+// no trae fondo propio (mismo componente que usa ProductDetail.tsx, pero
+// ahí vive sobre bg-barcel-cream, un fondo claro). Aquí vivía flotando
+// directo sobre bg.jpg (morado oscuro/texturizado), así que su texto
+// negro quedaba con muy poco contraste — no pasa AA. Fix: se envuelve esa
+// columna en la misma tarjeta blanca sólida que ya usa la columna de
+// nombre+descripción (bg-white/95), en vez de dejarla transparente sobre
+// el fondo. El breadcrumb y "Presentación:" (texto blanco) tenían el
+// mismo riesgo de raíz — dependían de que el fondo fuera oscuro en ese
+// punto exacto — así que también pasan a vivir sobre una barra sólida
+// (bg-barcel-black) en vez de flotar directo sobre la imagen. Además se
+// reemplaza bg.jpg por el fondo oficial nuevo que compartió el cliente
+// (BG Takis.pdf: diagonal morado/amarillo con espirales de marca).
 export default function TakisProductDetail({
   brand,
   flavor,
@@ -48,24 +63,34 @@ export default function TakisProductDetail({
         className="relative bg-barcel-black bg-cover bg-center"
         style={{ backgroundImage: "url(/products/takis/bg.jpg)" }}
       >
-        <nav
-          aria-label="Ruta de navegación"
-          className="container-page relative z-10 flex flex-wrap items-center gap-1.5 pb-2 pt-8 font-body text-xs text-white/85 md:text-sm"
-        >
-          <Link href="/" className="transition-colors hover:text-white">
-            Inicio
-          </Link>
-          <span aria-hidden="true">/</span>
-          <Link
-            href={`/marcas/${brand.slug}`}
-            className="transition-colors hover:text-white"
+        {/* Ronda 65: barra sólida (no texto flotando sobre la imagen) —
+            garantiza contraste AA sin importar qué parte del fondo
+            (morado o amarillo) quede detrás. Blanco puro (no /85) sobre
+            barcel-black da 19.6:1. */}
+        <div className="relative z-10 bg-barcel-black">
+          <nav
+            aria-label="Ruta de navegación"
+            className="container-page flex flex-wrap items-center gap-1.5 py-3 font-body text-xs text-white md:text-sm"
           >
-            {brand.name}
-            <sup className="text-[0.7em]">®</sup>
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="text-white">{fullName}</span>
-        </nav>
+            <Link href="/" className="text-white/80 transition-colors hover:text-white">
+              Inicio
+            </Link>
+            <span aria-hidden="true" className="text-white/50">
+              /
+            </span>
+            <Link
+              href={`/marcas/${brand.slug}`}
+              className="text-white/80 transition-colors hover:text-white"
+            >
+              {brand.name}
+              <sup className="text-[0.7em]">®</sup>
+            </Link>
+            <span aria-hidden="true" className="text-white/50">
+              /
+            </span>
+            <span className="text-white">{fullName}</span>
+          </nav>
+        </div>
 
         {/* Ronda 64: navegación entre sabores (no entre presentaciones,
             ver nota arriba) — oculta en mobile para no competir por
@@ -91,7 +116,11 @@ export default function TakisProductDetail({
         )}
 
         <div className="container-page relative z-10 grid gap-8 pb-12 pt-6 md:grid-cols-[1fr_1.15fr_1fr] md:items-center md:gap-6 md:pb-16">
-          <div className="order-3 flex flex-col gap-3 md:order-1">
+          {/* Ronda 65: tarjeta blanca sólida (antes flotaba transparente
+              sobre bg.jpg) — mismo tratamiento que la tarjeta de
+              nombre+descripción de la derecha, así el texto negro de los
+              acordeones vuelve a tener contraste AA real. */}
+          <div className="order-3 flex flex-col gap-3 bg-white/95 p-6 md:order-1 md:p-8">
             <Accordion title="Sellos" defaultOpen>
               {flavor.nutrition ? (
                 <div className="flex flex-col gap-2">
@@ -186,14 +215,19 @@ export default function TakisProductDetail({
         </div>
 
         {flavor.sizes && flavor.sizes.length > 0 && (
-          <div className="container-page relative z-10 flex flex-col items-center gap-2.5 pb-12 md:flex-row md:justify-center md:pb-16">
-            <p className="font-display text-sm font-bold text-white">Presentación:</p>
-            <SizePicker sizes={flavor.sizes} />
-            {!flavor.nutrition && (
-              <p className="font-body text-xs text-white/70">
-                * Presentaciones de ejemplo — pendientes de confirmar con Barcel.
-              </p>
-            )}
+          // Ronda 65: mismo criterio que el breadcrumb — barra sólida en
+          // vez de texto blanco flotando sobre el fondo (podía caer sobre
+          // la zona amarilla del nuevo bg.jpg y perder todo el contraste).
+          <div className="relative z-10 bg-barcel-black py-5">
+            <div className="container-page flex flex-col items-center gap-2.5 md:flex-row md:justify-center">
+              <p className="font-display text-sm font-bold text-white">Presentación:</p>
+              <SizePicker sizes={flavor.sizes} />
+              {!flavor.nutrition && (
+                <p className="font-body text-xs text-white/70">
+                  * Presentaciones de ejemplo — pendientes de confirmar con Barcel.
+                </p>
+              )}
+            </div>
           </div>
         )}
       </section>
