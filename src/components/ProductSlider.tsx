@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import type { Flavor } from "@/data/brands";
 import TakisTape from "./TakisTape";
@@ -135,10 +135,44 @@ export default function ProductSlider({
   const loop = Array.from({ length: 4 }, () => flavors).flat();
   const isTakis = brandSlug === "takis";
 
+  // Ronda 59: "hover:[animation-play-state:paused]" en CSS solo pausa
+  // con mouse real — en celular no existe :hover, así que el marquee
+  // NUNCA se detenía en touch. El usuario tocaba una tarjeta pero, entre
+  // el instante en que su dedo baja y el tap se resuelve, la animación
+  // seguía corriendo por debajo — el navegador termina resolviendo el
+  // tap contra lo que esté en ese punto exacto en ese instante (a veces
+  // el hueco entre tarjetas, sin link ahí), y el CTA "no llevaba a
+  // ningún lado". Fix: pausar la animación por JS en el primer contacto
+  // (pointerdown cubre touch Y mouse) mutando el estilo directo por ref
+  // — sin esperar al ciclo de render de React — así la posición queda
+  // congelada ANTES de que el tap se resuelva contra un elemento.
+  // Se reanuda un momento después de soltar (si no hubo navegación, el
+  // componente sigue vivo y el loop continúa; si sí navegó, el
+  // componente se desmonta y el timeout no importa).
+  const trackRef = useRef<HTMLDivElement>(null);
+  const resumeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pauseTrack = () => {
+    if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
+    if (trackRef.current) trackRef.current.style.animationPlayState = "paused";
+  };
+  const scheduleResume = () => {
+    if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
+    resumeTimeout.current = setTimeout(() => {
+      if (trackRef.current) trackRef.current.style.animationPlayState = "running";
+    }, 1500);
+  };
+
   return (
     <>
       <div className="overflow-hidden">
-        <div className="flex w-max animate-marquee items-stretch gap-6 py-2 hover:[animation-play-state:paused] sm:gap-8">
+        <div
+          ref={trackRef}
+          className="flex w-max animate-marquee items-stretch gap-6 py-2 hover:[animation-play-state:paused] sm:gap-8"
+          onPointerDown={pauseTrack}
+          onPointerUp={scheduleResume}
+          onPointerCancel={scheduleResume}
+          onMouseLeave={scheduleResume}
+        >
           {loop.map((flavor, i) =>
             flavor.slug ? (
               // Ronda 27: si el sabor ya tiene página de detalle propia
