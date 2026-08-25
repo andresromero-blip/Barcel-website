@@ -135,31 +135,53 @@ export default function ProductSlider({
   const loop = Array.from({ length: 4 }, () => flavors).flat();
   const isTakis = brandSlug === "takis";
 
-  // Ronda 59: "hover:[animation-play-state:paused]" en CSS solo pausa
-  // con mouse real — en celular no existe :hover, así que el marquee
-  // NUNCA se detenía en touch. El usuario tocaba una tarjeta pero, entre
-  // el instante en que su dedo baja y el tap se resuelve, la animación
-  // seguía corriendo por debajo — el navegador termina resolviendo el
-  // tap contra lo que esté en ese punto exacto en ese instante (a veces
-  // el hueco entre tarjetas, sin link ahí), y el CTA "no llevaba a
-  // ningún lado". Fix: pausar la animación por JS en el primer contacto
-  // (pointerdown cubre touch Y mouse) mutando el estilo directo por ref
-  // — sin esperar al ciclo de render de React — así la posición queda
-  // congelada ANTES de que el tap se resuelva contra un elemento.
-  // Se reanuda un momento después de soltar (si no hubo navegación, el
-  // componente sigue vivo y el loop continúa; si sí navegó, el
-  // componente se desmonta y el timeout no importa).
+  // Ronda 60: el fix de Ronda 59 (pausar por JS en pointerdown, con un
+  // setTimeout que reanudaba 1500ms después de soltar/salir) rompió el
+  // pausado por CSS existente: un estilo puesto por JS directo en el
+  // elemento (style.animationPlayState) tiene MÁS especificidad que la
+  // regla de clase "hover:[...]:hover{...}" del stylesheet. En cuanto
+  // el mouse entraba y salía UNA vez del carrusel (algo que pasa solo
+  // con scrollear cerca), el setTimeout de Ronda 59 terminaba fijando
+  // animation-play-state:running por inline style — y desde ese
+  // momento, TODOS los hovers futuros (aunque la regla CSS diga
+  // "paused") quedaban completamente ignorados: el carrusel nunca
+  // volvía a detenerse, para el resto de la sesión. El usuario apuntaba
+  // a un sabor, pero como el carrusel seguía corriendo por debajo sin
+  // que el :hover lo pausara, el click cronometrado contra la posición
+  // que VIO terminaba resolviendo contra un sabor distinto (o el hueco
+  // entre tarjetas) — exactamente el reporte de "la url no corresponde
+  // a la página" / "no pasa nada".
+  //
+  // Fix real: una sola fuente de verdad en JS (nada de timers, nada de
+  // pelear con una regla CSS aparte). Dos flags booleanos — "¿está el
+  // mouse encima?" y "¿hay un dedo/click presionado?" — y CADA evento
+  // relevante (enter/leave/down/up/cancel) recalcula el estilo inline
+  // de inmediato a partir de ambos. Sin temporizadores no hay ventana
+  // en la que un estado viejo se quede pegado.
   const trackRef = useRef<HTMLDivElement>(null);
-  const resumeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pauseTrack = () => {
-    if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
-    if (trackRef.current) trackRef.current.style.animationPlayState = "paused";
+  const isHovering = useRef(false);
+  const isPointerDown = useRef(false);
+  const applyPlayState = () => {
+    if (!trackRef.current) return;
+    trackRef.current.style.animationPlayState =
+      isHovering.current || isPointerDown.current ? "paused" : "running";
   };
-  const scheduleResume = () => {
-    if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
-    resumeTimeout.current = setTimeout(() => {
-      if (trackRef.current) trackRef.current.style.animationPlayState = "running";
-    }, 1500);
+  const handleMouseEnter = () => {
+    isHovering.current = true;
+    applyPlayState();
+  };
+  const handleMouseLeave = () => {
+    isHovering.current = false;
+    isPointerDown.current = false;
+    applyPlayState();
+  };
+  const handlePointerDown = () => {
+    isPointerDown.current = true;
+    applyPlayState();
+  };
+  const handlePointerUp = () => {
+    isPointerDown.current = false;
+    applyPlayState();
   };
 
   return (
@@ -167,11 +189,12 @@ export default function ProductSlider({
       <div className="overflow-hidden">
         <div
           ref={trackRef}
-          className="flex w-max animate-marquee items-stretch gap-6 py-2 hover:[animation-play-state:paused] sm:gap-8"
-          onPointerDown={pauseTrack}
-          onPointerUp={scheduleResume}
-          onPointerCancel={scheduleResume}
-          onMouseLeave={scheduleResume}
+          className="flex w-max animate-marquee items-stretch gap-6 py-2 sm:gap-8"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
         >
           {loop.map((flavor, i) =>
             flavor.slug ? (
