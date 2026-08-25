@@ -101,7 +101,27 @@ export default function TakisHero({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      {/* Desktop (md+): igual que en Ronda 69, sin ningún cambio. */}
+      {/* Desktop (md+): Ronda 71 — el fondo (h-full w-full object-cover,
+          Ronda 69) siempre ocupa el 100% del ancho de la sección, así que
+          escala 1:1 con el viewport en CUALQUIER ancho. El texto, en
+          cambio, vivía dentro de "container-page" (max-width fijo de
+          1280px, Ronda 1) + una grid de 2 columnas — un mecanismo que
+          solo imita el ancho real del personaje/logo de la imagen
+          mientras el viewport mide ~768–1280px. Pasado ese punto,
+          container-page se centra y dispara márgenes laterales que
+          crecen sin límite (640px de por lado a 2560px), mientras la
+          imagen de fondo sigue creciendo 1:1 con el viewport — el texto
+          y el personaje se despegan cada vez más, dejando un vacío
+          morado enorme en medio (reportado por el cliente a 2560px:
+          "se ve mal y desorganizado").
+          Fix: se cambia el padding del texto de píxeles fijos (o un
+          max-width fijo) a un porcentaje del ancho de la sección
+          (px-[4%]/[5%]) — con eso el borde izquierdo de la tarjeta de
+          texto queda siempre al mismo % del ancho de la imagen, sin
+          importar si la pantalla mide 768px o 3440px, porque ambos
+          (imagen y padding) escalan con el mismo factor. El ancho de la
+          tarjeta se limita con max-w explícito (no con una grid-column)
+          para que no se vuelva gigante en monitores ultra anchos. */}
       <section className="relative hidden flex-col justify-center overflow-hidden bg-takis-purple md:flex md:aspect-[1920/1080]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -111,8 +131,8 @@ export default function TakisHero({ brand }: { brand: Brand }) {
           className="absolute inset-0 h-full w-full object-cover object-right-top"
         />
 
-        <div className="container-page relative grid gap-8 py-14 md:grid-cols-2 md:items-center md:gap-12 md:py-20">
-          <div className="relative z-10 order-2 bg-takis-purple px-4 py-5 sm:px-6 sm:py-6 md:order-1">
+        <div className="relative flex w-full items-center px-5 py-14 sm:px-10 md:px-[4%] md:py-20 lg:px-[5%]">
+          <div className="relative z-10 w-full max-w-[420px] bg-takis-purple px-4 py-5 sm:max-w-[460px] sm:px-6 sm:py-6">
             <Link
               href="/"
               className="mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-white/80 transition-colors hover:text-white hover:underline"
