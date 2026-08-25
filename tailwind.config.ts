@@ -4,6 +4,23 @@ const config: Config = {
   content: [
     "./src/**/*.{ts,tsx}",
   ],
+  // Ronda 58: en touch (celular/tablet) no existe un mouse que "salga" de
+  // la tarjeta — el navegador simula :hover en el primer tap y recién
+  // sigue el link en un SEGUNDO tap. Como el CTA/composición del slider
+  // de productos vive detrás de group-hover:opacity, en la práctica el
+  // primer tap del cliente "no hacía nada" (activaba el hover, no
+  // navegaba) y parecía que el CTA estaba roto. Esta flag (recomendada
+  // por los docs de Tailwind desde 3.4) hace que TODAS las variantes
+  // hover:/group-hover:/peer-hover: del sitio solo apliquen en
+  // dispositivos con hover real + puntero fino (mouse/trackpad). En
+  // touch, el estado hover nunca se "finge": el navegador va directo al
+  // click en el primer tap, así que el link navega de inmediato. El
+  // único costo es cosmético (en touch no se ve la revelación animada
+  // de la composición/CTA), pero el tap para entrar al producto ya
+  // funciona en un solo toque.
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     extend: {
       screens: {
