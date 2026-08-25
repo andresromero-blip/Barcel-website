@@ -10,7 +10,18 @@ import ProductSlider from "./ProductSlider";
 // APPLICATIONS" del Takis Global Brandbook 2025: diagonal morado/amarillo,
 // costura de halftone y espirales, todo ya resuelto en el archivo) usada
 // directo como imagen de fondo — 1:1 real, no una aproximación.
-const TAKIS_HERO_BG = "/takis/hero-bg-v2.jpg";
+//
+// Ronda 52: el cliente preparó él mismo el arte final del hero (logo +
+// personaje + producto sobre fondo morado texturizado) en DOS piezas
+// dedicadas por breakpoint — no una sola foto con object-position
+// distinto por breakpoint como antes. La pieza desktop es casi cuadrada
+// (3200x2800) y la de mobile es 4:3 (1200x900), cada una ya encuadrada a
+// propósito para su contenedor (franja ancha y baja en desktop, caja casi
+// cuadrada en mobile por el mismo min-height clamp). <picture> con
+// <source media> elige la pieza correcta sin pedirle al navegador que
+// descargue las dos.
+const TAKIS_HERO_BG_DESKTOP = "/takis/hero-banner-desktop.jpg";
+const TAKIS_HERO_BG_MOBILE = "/takis/hero-banner-mobile.jpg";
 
 // Redes propias de cada marca (NO las corporativas de Barcel, que ya
 // viven en el Footer). Placeholders (#) hasta contar con las cuentas
@@ -101,22 +112,25 @@ export default function BrandPage({
         }`}
       >
         {isTakis ? (
-          // Ronda 49: la foto real del cliente (ver TAKIS_HERO_BG arriba)
-          // reemplaza toda la reconstrucción a mano de las Rondas 45/46 —
-          // 1:1 real, no una aproximación con clip-path/espirales/puntos.
-          // object-cover + una posición por breakpoint para que la diagonal
-          // y las espirales queden encuadradas tanto en mobile (recorte más
-          // angosto) como en desktop (imagen casi completa). El fondo
-          // bg-takis-purple del <section> es solo el color de "carga" antes
-          // de que la imagen esté lista — nunca se ve el salto de color
-          // porque coincide con la esquina superior-izquierda de la foto.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={TAKIS_HERO_BG}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover object-[85%_50%] md:object-center"
-          />
+          // Ronda 52: dos piezas dedicadas por breakpoint (ver constantes
+          // arriba) en vez de una sola foto con object-position distinto.
+          // <picture> + <source media> hace que el navegador pida solo la
+          // pieza que va a usar (no las dos). El breakpoint coincide con
+          // el md: de Tailwind (768px). object-cover + object-center en
+          // ambas porque cada pieza ya viene encuadrada por el cliente
+          // para su propio contenedor. El fondo bg-takis-purple del
+          // <section> es solo el color de "carga" antes de que la imagen
+          // esté lista — coincide con el morado de fondo de ambas piezas.
+          <picture>
+            <source media="(min-width: 768px)" srcSet={TAKIS_HERO_BG_DESKTOP} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={TAKIS_HERO_BG_MOBILE}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
+          </picture>
         ) : (
           <svg
             aria-hidden="true"
