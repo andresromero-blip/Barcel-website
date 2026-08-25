@@ -12,17 +12,15 @@ const CARD_CLASSNAME =
 function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) {
   return (
     <>
-      {/* Ronda 51: el hover ya NO es un cutout de producto asomando
-          sobre la bolsa (no hay asset transparente para esto en el
-          material del cliente). Ahora es la composición oficial del
-          Takis Global Brandbook 2025 (04.3 Variety Assets: fondo de
-          color de marca + swirl + producto + garnish) revelándose
-          como fondo full-bleed de toda la tarjeta, detrás de la bolsa,
-          que se mantiene fija y visible en reposo y en hover — mismo
-          criterio de "la bolsa nunca desaparece" de rondas anteriores.
-          Si el sabor no tiene hoverImage (sin equivalente en el
-          manual, ver brands.ts), la tarjeta se queda en el fondo
-          blanco/color de marca de siempre, sin microinteracción. */}
+      {/* Ronda 55: el cliente mandó referencia explícita del hover —
+          en vez de asomar la composición DETRÁS de la bolsa (Ronda 51),
+          ahora en hover la composición oficial del Takis Global
+          Brandbook 2025 (fondo de color + swirl + producto + garnish)
+          REEMPLAZA a la bolsa por completo: la bolsa se desvanece
+          (opacity 0) y la composición queda full-bleed, sola, con el
+          link "Ver más información" — solo para Takis. Las demás
+          marcas conservan el criterio anterior (bolsa fija + fondo
+          detrás) porque no tienen este asset de composición. */}
       {flavor.hoverImage && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
@@ -46,7 +44,11 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           <img
             src={SPICE_LEVELS[flavor.spiceLevel].image}
             alt={`Picómetro: ${SPICE_LEVELS[flavor.spiceLevel].label}`}
-            className="absolute left-0 top-1/2 z-20 h-16 w-auto -translate-x-1/3 -translate-y-1/2 object-contain drop-shadow-lg sm:h-20 md:h-24"
+            className={`absolute left-0 top-1/2 z-20 h-16 w-auto -translate-x-1/3 -translate-y-1/2 object-contain drop-shadow-lg sm:h-20 md:h-24 ${
+              flavor.hoverImage
+                ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
+                : ""
+            }`}
           />
         )}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -54,7 +56,11 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           src={flavor.image}
           alt=""
           aria-hidden="true"
-          className="h-full w-auto object-contain drop-shadow-xl"
+          className={`h-full w-auto object-contain drop-shadow-xl ${
+            isTakis && flavor.hoverImage
+              ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
+              : ""
+          }`}
         />
       </div>
       {/* Ronda 44: nombre de sabor en font-takisMark (sustituto de la
@@ -74,7 +80,7 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
         </span>
       )}
       <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
-        Ver detalle
+        {isTakis ? "Ver más información" : "Ver detalle"}
         <span aria-hidden>→</span>
       </span>
     </>
