@@ -147,31 +147,25 @@ function CardContent({
             {flavor.name}
           </span>
         </TakisTape>
-      ) : flavor.nameImage ? (
-        // Ronda 98: el cliente pidió usar la etiqueta de yute real (asset
-        // gráfico, no el texto reescrito en font-display) como nombre del
-        // sabor — mismo criterio que "nameImage" ya usa en Takis, pero
-        // como imagen suelta en vez de ir dentro de TakisTape (esa cinta
-        // es un componente propio de Takis). w-40/52/60 iguala el ancho
-        // visual aproximado que ya ocupaba el texto en esta posición.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={flavor.nameImage}
-          alt={flavor.name}
-          className={`relative h-auto w-40 object-contain sm:w-52 md:w-60 ${
-            // Ronda 96: en Chip's, el nombre del sabor se oculta en hover
-            // — el cliente pidió que el fondo de yute (ver nota de
-            // cardClass) sea lo único que cambie, sin el nombre encima.
-            isChips ? "transition-opacity duration-300 group-hover:opacity-0" : ""
-          }`}
-        />
       ) : (
+        // Ronda 98 (revertida en Ronda 100): se probó reemplazar este
+        // texto por la etiqueta de yute como imagen (flavor.nameImage).
+        // El cliente pidió volver a texto plano tanto aquí como en la
+        // página de producto — "vamos a quitar las imágenes con el
+        // nombre de producto ... y vamos a volver a tener el nombre del
+        // producto en texto". font-introhead solo para Chip's (misma
+        // fuente que ya se autohospedó en Ronda 97 para el H1 del hero);
+        // el resto de marcas sin tratamiento especial se queda en
+        // font-display, como siempre.
         <span
-          className={`relative font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl ${
-            // Ronda 96: en Chip's, el nombre del sabor se oculta en hover
-            // — el cliente pidió que el fondo de yute (ver nota de
-            // cardClass) sea lo único que cambie, sin el nombre encima.
-            isChips ? "transition-opacity duration-300 group-hover:opacity-0" : ""
+          className={`relative text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl ${
+            isChips
+              ? // Ronda 96: en Chip's, el nombre del sabor se oculta en
+                // hover — el cliente pidió que el fondo de yute (ver
+                // nota de cardClass) sea lo único que cambie, sin el
+                // nombre encima.
+                "font-introhead transition-opacity duration-300 group-hover:opacity-0"
+              : "font-display"
           }`}
         >
           {flavor.name}

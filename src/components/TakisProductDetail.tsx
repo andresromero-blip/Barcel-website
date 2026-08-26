@@ -277,7 +277,18 @@ export default function TakisProductDetail({
                   className="mx-auto h-auto w-full max-w-[280px] sm:max-w-sm md:max-w-[22rem]"
                 />
               ) : (
-                <h1 className="text-center font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black">
+                // Ronda 100: Chip's usaba nameImage (etiqueta de yute)
+                // hasta que el cliente pidió volver a texto — al quitar
+                // ese campo en brands.ts, Chip's cae aquí igual que
+                // cualquier marca sin nameImage. Se le da su propia
+                // fuente (Introhead, la misma del H1 del hero — ver
+                // globals.css) en vez del font-teko genérico, que sigue
+                // siendo el default para el resto de marcas.
+                <h1
+                  className={`text-center text-6xl font-bold uppercase leading-[0.9] text-barcel-black ${
+                    brand.slug === "chips" ? "font-introhead" : "font-teko"
+                  }`}
+                >
                   {fullName}
                 </h1>
               )}

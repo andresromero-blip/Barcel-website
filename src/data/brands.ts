@@ -184,6 +184,12 @@ export const brands: Brand[] = [
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
     heroImage: "/products/chips/hero-jalapeno.png",
+    // Ronda 100: el cliente mandó una foto de textura de madera para
+    // reemplazar el fondo café sólido de la página de detalle de
+    // producto (ver brand.productDetailBg en el tipo Brand — hasta
+    // ahora Chip's caía al fondo sólido bg-chips-brown por no tener
+    // asset propio, igual que definía la nota original de ese campo).
+    productDetailBg: "/products/chips/product-bg.jpg",
     // Ronda 97: el cliente mandó 7 etiquetas de yute con los nombres
     // "oficiales" para el slider. De esas, 6 corresponden 1:1 a los 6
     // sabores que ya existen aquí — se actualiza el texto exacto,
@@ -197,11 +203,9 @@ export const brands: Brand[] = [
     // te compartí" — la Ronda 97 solo había tomado el TEXTO de esas 6
     // etiquetas para renombrar el campo "name" (usado en un <span> de
     // texto plano), pero el pedido real era usar las etiquetas mismas
-    // como asset gráfico (igual que "nameImage" ya hace para Takis,
-    // ver ese campo arriba). Se recortan las 6 imágenes originales a
-    // su bounding box de contenido (+padding) y se agregan aquí vía
-    // "nameImage" — ProductSlider.tsx ahora renderiza esa imagen en
-    // vez del texto cuando existe, para cualquier marca no-Takis.
+    // como asset gráfico — se agregó "nameImage" apuntando a las 6
+    // etiquetas recortadas.
+    //
     // Ronda 99: se agrega "slug" a los 6 sabores — es lo único que
     // ProductSlider.tsx necesita para dejar de abrir el modal rápido y
     // navegar en su lugar a /marcas/chips/[slug] (BrandProductDetail,
@@ -211,41 +215,46 @@ export const brands: Brand[] = [
     // mostrar "contenido de ejemplo, pendiente de confirmar" en esos
     // casos (mismo criterio que Salsa Brava en Takis), y mientras tanto
     // cae a la descripción general de la marca (brand.description).
+    //
+    // Ronda 100: el cliente pidió revertir la Ronda 98 — "vamos a
+    // quitar las imágenes con el nombre de producto ... y vamos a
+    // volver a tener el nombre del producto en texto" tanto en el
+    // slider de marca como en la página de producto. Se quita
+    // "nameImage" de los 6 sabores: como ProductSlider.tsx y
+    // BrandProductDetail.tsx (antes TakisProductDetail.tsx) ya caen a
+    // texto cuando este campo no existe, alcanza con borrarlo aquí
+    // (no hace falta tocar esos componentes) — el nombre vuelve a
+    // salir de "name" de abajo, ahora en fuente Introhead (ver
+    // ProductSlider.tsx/BrandProductDetail.tsx).
     flavors: [
       {
         name: "Jalapeño",
         image: "/products/chips/flavors/jalapeno.png",
-        nameImage: "/products/chips/flavor-tags/jalapeno.png",
         slug: "jalapeno",
       },
       {
         name: "Fuego",
         image: "/products/chips/flavors/fuego.png",
-        nameImage: "/products/chips/flavor-tags/fuego.png",
         slug: "fuego",
       },
       {
         name: "Sal",
         image: "/products/chips/flavors/sal.png",
-        nameImage: "/products/chips/flavor-tags/sal.png",
         slug: "sal",
       },
       {
         name: "Crema y Especias",
         image: "/products/chips/flavors/crema-especias.png",
-        nameImage: "/products/chips/flavor-tags/crema-especias.png",
         slug: "crema-especias",
       },
       {
         name: "Al Parmesano",
         image: "/products/chips/flavors/tm-parmesano.png",
-        nameImage: "/products/chips/flavor-tags/al-parmesano.png",
         slug: "al-parmesano",
       },
       {
         name: "A la Sal y Pimienta",
         image: "/products/chips/flavors/tm-sal-pimienta.png",
-        nameImage: "/products/chips/flavor-tags/a-la-sal-y-pimienta.png",
         slug: "a-la-sal-y-pimienta",
       },
     ],
