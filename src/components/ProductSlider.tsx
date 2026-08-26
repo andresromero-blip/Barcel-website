@@ -27,11 +27,22 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
   return (
     <>
       {hasComposition && (
+        // Ronda 91: "no es 1:1" — causa raíz real (confirmada leyendo el
+        // DOM en vivo, no una captura): "absolute inset-0" NO deja ver
+        // el padding del padre. El containing block de un absolute es
+        // la PADDING BOX del ancestro relative, así que inset-0 llena
+        // TAMBIÉN el padding — el resultado medía exactamente el mismo
+        // ancho/alto que la tarjeta (0px de marco), pase lo que pase el
+        // ring o el fondo violeta. Fix: en vez de inset-0, esta caja usa
+        // el MISMO valor de espaciado que ya usa CARD_CLASSNAME
+        // (p-5/8/10 → inset-5/8/10, misma escala de Tailwind), así el
+        // violeta de la tarjeta SÍ queda visible como marco real de ese
+        // grosor alrededor de la caja blanca — no un valor inventado.
         // Ronda 73 (nota original, sigue vigente): cada composición del
         // Global Brandbook ya trae swirl + producto + cinta + picómetro
         // quemados en un solo PNG — por eso esta caja no vuelve a
         // renderizar cinta ni picómetro por separado, solo la imagen.
-        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-white p-5 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:gap-5 sm:p-7 md:p-8">
+        <div className="pointer-events-none absolute inset-5 z-20 flex flex-col items-center justify-center gap-3 bg-white p-4 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:inset-8 sm:gap-4 sm:p-5 md:inset-10 md:p-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={flavor.hoverImage}
