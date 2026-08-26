@@ -34,6 +34,16 @@ import TakisProductDetail from "./TakisProductDetail";
 //   Ronda 54). Las otras 5 marcas no tienen su propio bg.jpg/NOMBRES
 //   PNG todavía, así que se quedan con el layout de abajo hasta que
 //   Barcel comparta esos assets para ellas también.
+// - Ronda 99: "replica la misma estructura de las páginas de producto
+//   de Takis, con los assets de Chip's y color" — Chip's ya tiene su
+//   propio "NOMBRES PNG" (las etiquetas de yute recortadas en la Ronda
+//   98, guardadas en flavor.nameImage) aunque todavía no tiene bg.jpg
+//   propio; TakisProductDetail.tsx se generalizó para caer a un fondo
+//   sólido con brand.bg cuando no hay textura (ver brand.productDetailBg
+//   en brands.ts), así que Chip's puede sumarse a esta lista sin
+//   esperar un asset que no existe todavía.
+const BRANDS_WITH_DETAIL_LAYOUT = ["takis", "chips"];
+
 export default function ProductDetail({
   brand,
   flavor,
@@ -45,7 +55,7 @@ export default function ProductDetail({
   related: Flavor[];
   otherBrands: Brand[];
 }) {
-  if (brand.slug === "takis") {
+  if (BRANDS_WITH_DETAIL_LAYOUT.includes(brand.slug)) {
     // Ronda 68: otherBrands se quedaba afuera al hacer este early-return
     // (ya lo recibe este componente como prop, solo faltaba reenviarlo) —
     // causa raíz de "el selector de marcas que había antes" ausente en la

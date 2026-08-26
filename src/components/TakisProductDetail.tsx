@@ -95,6 +95,25 @@ import OtherBrandsGrid from "./OtherBrandsGrid";
 // se armó solo con el slider de sabores (related) y el selector de
 // marcas se quedó afuera sin querer. Se reintegra aquí, mismo patrón
 // que BrandPage.tsx ("Explora otras marcas").
+//
+// Ronda 99: "vamos a comenzar con las páginas de producto [de Chip's],
+// replica la misma estructura de las páginas de producto de Takis, con
+// los assets de Chip's y color" — este componente deja de ser
+// exclusivo de Takis. El nombre del archivo se queda igual (evita el
+// riesgo de un rename de archivo + reescribir imports en un repo
+// git ya en producción, sin beneficio funcional), pero el CONTENIDO ya
+// no asume una sola marca: las dos cosas que sí estaban hardcodeadas a
+// Takis (la imagen de fondo bg.jpg y los links de flecha prev/next
+// armados con el string literal "/marcas/takis/...") ahora salen de
+// `brand.productDetailBg` (ver el campo nuevo en brands.ts — si una
+// marca no lo define, cae a un fondo sólido con su color real,
+// brand.bg) y de `brand.slug` respectivamente. Todo el resto del
+// componente (bg-barcel-black, bg-white/95, bg-barcel-cream,
+// font-teko, Picometro/Accordion/WhereToBuyModal/RelatedProductsSlider/
+// OtherBrandsGrid) ya usaba props/tokens genéricos de brand — nunca
+// tuvo un color de Takis quemado a fuego, así que no hizo falta tocar
+// nada de eso para que Chip's se vea con SU propio café/terracota
+// (brand.bg = bg-chips-brown) en vez de heredar el violeta de Takis.
 export default function TakisProductDetail({
   brand,
   flavor,
@@ -133,8 +152,18 @@ export default function TakisProductDetail({
   return (
     <>
       <section
-        className="relative bg-barcel-black bg-cover bg-center"
-        style={{ backgroundImage: "url(/products/takis/bg.jpg)" }}
+        // Ronda 99: si la marca no tiene su propia textura de fondo
+        // (productDetailBg — ver nota completa arriba), se usa un fondo
+        // sólido con su color real (brand.bg) en vez de mantener
+        // bg-barcel-black + una imagen que no aplica a esa marca.
+        className={`relative bg-cover bg-center ${
+          brand.productDetailBg ? "bg-barcel-black" : brand.bg
+        }`}
+        style={
+          brand.productDetailBg
+            ? { backgroundImage: `url(${brand.productDetailBg})` }
+            : undefined
+        }
       >
         {/* Ronda 65: barra sólida (no texto flotando sobre la imagen) —
             garantiza contraste AA sin importar qué parte del fondo
@@ -175,14 +204,14 @@ export default function TakisProductDetail({
         {galleryFlavors.length > 1 && (
           <>
             <Link
-              href={`/marcas/takis/${prevFlavor.slug}`}
+              href={`/marcas/${brand.slug}/${prevFlavor.slug}`}
               aria-label={`Ver ${brand.name} ${prevFlavor.name}`}
               className="absolute left-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center bg-white font-display text-xl font-bold text-barcel-black shadow-lg transition-transform hover:scale-105 sm:flex md:left-6"
             >
               <span aria-hidden="true">←</span>
             </Link>
             <Link
-              href={`/marcas/takis/${nextFlavor.slug}`}
+              href={`/marcas/${brand.slug}/${nextFlavor.slug}`}
               aria-label={`Ver ${brand.name} ${nextFlavor.name}`}
               className="absolute right-3 top-1/2 z-10 hidden h-12 w-12 -translate-y-1/2 items-center justify-center bg-white font-display text-xl font-bold text-barcel-black shadow-lg transition-transform hover:scale-105 sm:flex md:right-6"
             >

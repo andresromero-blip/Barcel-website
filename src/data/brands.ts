@@ -135,6 +135,16 @@ export type Brand = {
   heroImage?: string; // foto de producto suelto a gran escala — usada en /marcas
   flavors?: Flavor[]; // presentaciones/sabores con foto real de empaque — usada en /marcas
   heroVisual?: "logo"; // si está presente, el hero muestra el logo (no el producto) — por ahora solo Takis
+  // Ronda 99: textura de fondo para la página de detalle de producto
+  // (BrandProductDetail.tsx, antes "TakisProductDetail" — generalizado
+  // para que cualquier marca con sabores propios pueda usar esa misma
+  // estructura de 2 columnas). Solo Takis tiene un asset de marca
+  // dedicado para esto (el diagonal morado/amarillo con espirales del
+  // Global Brandbook). Si una marca no define este campo, el componente
+  // cae a un fondo sólido con su color de marca (brand.bg) en vez de
+  // dejar un hueco o forzar un asset que no existe — así Chip's (sin
+  // textura propia todavía) usa directamente bg-chips-brown.
+  productDetailBg?: string;
 };
 
 export const brands: Brand[] = [
@@ -192,36 +202,51 @@ export const brands: Brand[] = [
     // su bounding box de contenido (+padding) y se agregan aquí vía
     // "nameImage" — ProductSlider.tsx ahora renderiza esa imagen en
     // vez del texto cuando existe, para cualquier marca no-Takis.
+    // Ronda 99: se agrega "slug" a los 6 sabores — es lo único que
+    // ProductSlider.tsx necesita para dejar de abrir el modal rápido y
+    // navegar en su lugar a /marcas/chips/[slug] (BrandProductDetail,
+    // misma estructura que ya usa Takis). Todavía no hay descripción,
+    // nutrición ni ingredientes propios por sabor (Barcel no ha
+    // compartido esas etiquetas para Chip's) — el componente ya sabe
+    // mostrar "contenido de ejemplo, pendiente de confirmar" en esos
+    // casos (mismo criterio que Salsa Brava en Takis), y mientras tanto
+    // cae a la descripción general de la marca (brand.description).
     flavors: [
       {
         name: "Jalapeño",
         image: "/products/chips/flavors/jalapeno.png",
         nameImage: "/products/chips/flavor-tags/jalapeno.png",
+        slug: "jalapeno",
       },
       {
         name: "Fuego",
         image: "/products/chips/flavors/fuego.png",
         nameImage: "/products/chips/flavor-tags/fuego.png",
+        slug: "fuego",
       },
       {
         name: "Sal",
         image: "/products/chips/flavors/sal.png",
         nameImage: "/products/chips/flavor-tags/sal.png",
+        slug: "sal",
       },
       {
         name: "Crema y Especias",
         image: "/products/chips/flavors/crema-especias.png",
         nameImage: "/products/chips/flavor-tags/crema-especias.png",
+        slug: "crema-especias",
       },
       {
         name: "Al Parmesano",
         image: "/products/chips/flavors/tm-parmesano.png",
         nameImage: "/products/chips/flavor-tags/al-parmesano.png",
+        slug: "al-parmesano",
       },
       {
         name: "A la Sal y Pimienta",
         image: "/products/chips/flavors/tm-sal-pimienta.png",
         nameImage: "/products/chips/flavor-tags/a-la-sal-y-pimienta.png",
+        slug: "a-la-sal-y-pimienta",
       },
     ],
   },
@@ -249,6 +274,13 @@ export const brands: Brand[] = [
     logoHover: "/logos/takis-hover.png",
     heroImage: "/products/takis/hero-dragon.png",
     heroVisual: "logo",
+    // Ronda 99: textura oficial del Global Brandbook (diagonal morado/
+    // amarillo con espirales) — ver nota completa del campo en el tipo
+    // Brand más arriba. Antes vivía hardcodeada dentro del propio
+    // componente de la página de detalle; ahora es un dato de marca
+    // como cualquier otro, para que ese mismo componente sirva a otras
+    // marcas sin tocar su código.
+    productDetailBg: "/products/takis/bg.jpg",
     // sizes: mismo set de 3 presentaciones (62 g / 90 g / 280 g) para los
     // 8 sabores — son gramajes reales típicos de Takis, pero se reutilizan
     // como EJEMPLO por ahora: falta que Barcel confirme qué presentaciones
