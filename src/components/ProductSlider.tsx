@@ -168,6 +168,23 @@ export default function ProductSlider({
   const loop = Array.from({ length: 4 }, () => flavors).flat();
   const isTakis = brandSlug === "takis";
 
+  // Ronda 74: el cliente reportó que los hovers con composición oficial
+  // (hoverImage) se veían con un fondo violeta detrás — causa raíz: la
+  // tarjeta completa (Link/button) siempre lleva "hoverBg" (hover:bg-
+  // takis-purple) para las marcas SIN composición, como color de
+  // respaldo. Las composiciones nuevas son PNG con transparencia real
+  // (Ronda 73), así que ese violeta de la tarjeta se colaba por las
+  // zonas transparentes de la imagen en vez de quedar oculto. Fix: para
+  // Takis, cuando el sabor SÍ tiene hoverImage, se omite hoverBg de la
+  // tarjeta (queda el bg-white base de CARD_CLASSNAME sin tinte) — la
+  // composición ya trae su propio fondo/color, no necesita ayuda de la
+  // tarjeta. Los sabores sin hoverImage siguen usando el violeta de
+  // respaldo, igual que las demás marcas.
+  const cardClass = (flavor: Flavor) =>
+    isTakis && flavor.hoverImage
+      ? `${CARD_CLASSNAME} ${hoverText}`
+      : `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
+
   // Ronda 60: el fix de Ronda 59 (pausar por JS en pointerdown, con un
   // setTimeout que reanudaba 1500ms después de soltar/salir) rompió el
   // pausado por CSS existente: un estilo puesto por JS directo en el
@@ -238,7 +255,7 @@ export default function ProductSlider({
                 key={`${flavor.name}-${i}`}
                 href={`/marcas/${brandSlug}/${flavor.slug}`}
                 aria-label={`Ver ${brandName} ${flavor.name}`}
-                className={`${CARD_CLASSNAME} ${hoverBg} ${hoverText}`}
+                className={cardClass(flavor)}
               >
                 <CardContent flavor={flavor} isTakis={isTakis} />
               </Link>
@@ -248,7 +265,7 @@ export default function ProductSlider({
                 type="button"
                 onClick={() => setActive(flavor)}
                 aria-label={`Ver ${brandName} ${flavor.name}`}
-                className={`${CARD_CLASSNAME} ${hoverBg} ${hoverText}`}
+                className={cardClass(flavor)}
               >
                 <CardContent flavor={flavor} isTakis={isTakis} />
               </button>
