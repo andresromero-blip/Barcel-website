@@ -181,10 +181,25 @@ export default function ProductSlider({
   // composición ya trae su propio fondo/color, no necesita ayuda de la
   // tarjeta. Los sabores sin hoverImage siguen usando el violeta de
   // respaldo, igual que las demás marcas.
-  const cardClass = (flavor: Flavor) =>
-    isTakis && flavor.hoverImage
-      ? `${CARD_CLASSNAME} ${hoverText}`
-      : `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
+  // Ronda 88: el cliente pidió replicar, en este slider, el "marco
+  // violeta" que ya usa RelatedProductsSlider.tsx ("También te puede
+  // antojar") — pero eligió conservar intacta la composición del
+  // brandbook en hover (Ronda 55-74, ~15 rondas de trabajo), así que
+  // NO se toca el fondo/composición: solo se agrega un anillo violeta
+  // alrededor de la tarjeta en hover, únicamente para Takis (las otras
+  // 5 marcas no tienen este asset ni fueron parte del pedido).
+  // ring-inset para que el marco quede DENTRO del borde de la tarjeta
+  // (que ya tiene overflow-hidden por la composición), en vez de
+  // agregar tamaño extra que movería el layout del slider.
+  const cardClass = (flavor: Flavor) => {
+    const base =
+      isTakis && flavor.hoverImage
+        ? `${CARD_CLASSNAME} ${hoverText}`
+        : `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
+    return isTakis
+      ? `${base} hover:ring-4 hover:ring-inset hover:ring-takis-purple`
+      : base;
+  };
 
   // Ronda 60: el fix de Ronda 59 (pausar por JS en pointerdown, con un
   // setTimeout que reanudaba 1500ms después de soltar/salir) rompió el

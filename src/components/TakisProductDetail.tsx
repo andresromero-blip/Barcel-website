@@ -427,6 +427,13 @@ export default function TakisProductDetail({
             <h2 className="font-teko text-4xl font-bold uppercase text-barcel-black md:text-5xl">
               También te puede antojar
             </h2>
+            {/* Ronda 88: subtítulo invitando a explorar, mismo patrón
+                (tamaño/color/max-w) que ya usa "Portafolio de productos"
+                en BrandPage.tsx — consistencia entre los dos sliders de
+                producto del sitio. */}
+            <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
+              Explora más sabores y arma tu próximo antojo.
+            </p>
           </div>
           <div className="container-page mt-8">
             <RelatedProductsSlider brand={brand} items={related} />
