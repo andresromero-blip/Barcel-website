@@ -210,7 +210,10 @@ export const brands: Brand[] = [
       {
         name: "Fuego",
         image: "/products/takis/flavors/fuego.png",
-        hoverImage: "/products/takis/flavors-hover/fuego-brand.jpg",
+        // Ronda 73: el cliente mandó el asset oficial de esta composición
+        // (fondo transparente, mismo criterio que las otras 5 nuevas) —
+        // reemplaza al "-brand.jpg" anterior (fondo opaco a sangre).
+        hoverImage: "/products/takis/flavors-hover/fuego-hover.png",
         slug: "fuego",
         nameImage: "/products/takis/nombres/fuego.png",
         description:
@@ -251,7 +254,7 @@ export const brands: Brand[] = [
       {
         name: "Original",
         image: "/products/takis/flavors/original.png",
-        hoverImage: "/products/takis/flavors-hover/original-brand.jpg",
+        hoverImage: "/products/takis/flavors-hover/original-hover.png",
         slug: "original",
         nameImage: "/products/takis/nombres/original.png",
         description:
@@ -294,12 +297,15 @@ export const brands: Brand[] = [
         image: "/products/takis/flavors/salsa-brava.png",
         // Ronda 51: Salsa Brava no tiene página propia en el Takis Global
         // Brandbook 2025 (mismo hueco ya documentado para spiceLevel más
-        // abajo — no es una variedad del portafolio global). Se quita el
-        // hoverImage del producto suelto anterior en vez de dejar un
-        // asset que ya no es consistente con el resto (todos los demás
-        // ahora usan la composición oficial del manual); la tarjeta cae
-        // al mismo fondo sólido de marca que ya usan Ranch/Chile
-        // Limón/Intense Nacho.
+        // abajo — no es una variedad del portafolio global), así que no
+        // hay una composición oficial del cliente para el hover.
+        // Ronda 73: el cliente pidió explícitamente "crea los hovers
+        // faltantes con las imágenes sueltas de producto" — se compone
+        // aquí con el mismo lenguaje visual que las 6 composiciones
+        // reales (fondo de color + producto suelto real cruzado en V +
+        // cinta amarilla real del sitio + picómetro oficial), en vez de
+        // dejar la tarjeta sin hover o mostrar la foto suelta cruda.
+        hoverImage: "/products/takis/flavors-hover/salsa-brava-hover.png",
         slug: "salsa-brava",
         nameImage: "/products/takis/nombres/salsa-brava.png",
         description:
@@ -321,7 +327,7 @@ export const brands: Brand[] = [
         // Ronda 51: mapeado a "Buckin' Ranch" del Global Brandbook 2025
         // (04.3 Variety Assets) — la variedad más cercana con asset
         // oficial disponible para "Ranch".
-        hoverImage: "/products/takis/flavors-hover/ranch-brand.jpg",
+        hoverImage: "/products/takis/flavors-hover/ranch-hover.png",
         slug: "ranch",
         nameImage: "/products/takis/nombres/ranch.png",
         description:
@@ -362,7 +368,7 @@ export const brands: Brand[] = [
       {
         name: "Chile Limón",
         image: "/products/takis/flavors/chile-limon.png",
-        hoverImage: "/products/takis/flavors-hover/chile-limon-brand.jpg",
+        hoverImage: "/products/takis/flavors-hover/chile-limon-hover.png",
         slug: "chile-limon",
         nameImage: "/products/takis/nombres/chile-limon.png",
         description:
@@ -404,8 +410,11 @@ export const brands: Brand[] = [
         name: "Huacamoles",
         image: "/products/takis/flavors/huacamoles.png",
         // Ronda 51: mismo caso que Salsa Brava — Huacamoles tampoco
-        // aparece en el Global Brandbook 2025, así que se quita el
-        // hoverImage anterior en vez de mezclar dos estilos distintos.
+        // aparece en el Global Brandbook 2025.
+        // Ronda 73: mismo criterio que Salsa Brava — composición propia
+        // a partir del producto suelto real, por instrucción explícita
+        // del cliente.
+        hoverImage: "/products/takis/flavors-hover/huacamoles-hover.png",
         slug: "huacamoles",
         nameImage: "/products/takis/nombres/huacamoles.png",
         description:
@@ -446,7 +455,7 @@ export const brands: Brand[] = [
       {
         name: "Blue Heat",
         image: "/products/takis/flavors/blue-heat.png",
-        hoverImage: "/products/takis/flavors-hover/blue-heat-brand.jpg",
+        hoverImage: "/products/takis/flavors-hover/blue-heat-hover.png",
         slug: "blue-heat",
         nameImage: "/products/takis/nombres/blue-heat.png",
         description:
@@ -487,7 +496,7 @@ export const brands: Brand[] = [
       {
         name: "Intense Nacho",
         image: "/products/takis/flavors/intense-nacho.png",
-        hoverImage: "/products/takis/flavors-hover/intense-nacho-brand.jpg",
+        hoverImage: "/products/takis/flavors-hover/intense-nacho-hover.png",
         slug: "intense-nacho",
         nameImage: "/products/takis/nombres/intense-nacho.png",
         description:

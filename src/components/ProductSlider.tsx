@@ -21,13 +21,22 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           link "Ver más información" — solo para Takis. Las demás
           marcas conservan el criterio anterior (bolsa fija + fondo
           detrás) porque no tienen este asset de composición. */}
+      {/* Ronda 73: los 6 nuevos assets del cliente son composiciones con
+          fondo TRANSPARENTE (silueta recortada del swirl+producto+cinta+
+          picómetro), no un fondo opaco a sangre completa como los
+          "-brand.jpg" anteriores. Con object-cover ese recorte se
+          estiraba/recortaba tratando de cubrir toda la tarjeta; con
+          object-contain la composición se ve completa, centrada, y el
+          área transparente deja ver el bg-white propio de la tarjeta —
+          exactamente el look "limpio" que pidió el cliente al quejarse
+          de que el hover anterior se veía "muy cargado". */}
       {flavor.hoverImage && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src={flavor.hoverImage}
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-cover opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-contain p-6 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:p-8"
         />
       )}
       <div className="relative flex h-56 w-full items-end justify-center overflow-visible sm:h-80 md:h-[26rem]">
@@ -38,13 +47,21 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
             una sección aparte. Va DENTRO de este div (overflow-visible)
             en vez del contenedor exterior de la tarjeta, que tiene
             overflow-hidden por la revelación del hover — si el badge
-            viviera ahí se recortaría contra el borde de la tarjeta. */}
+            viviera ahí se recortaría contra el borde de la tarjeta.
+            Ronda 73: el cliente mandó una imagen de referencia mostrando
+            el termómetro a un tamaño mucho mayor (ocupando ~40-50% del
+            alto de la pieza, no ~23-29% como estaba) y separado por
+            completo del producto — sin pisarlo. Se sube de h-16/20/24 a
+            h-28/36/44 (+75% aprox., misma proporción que la referencia)
+            y se empuja más hacia la izquierda (-translate-x-1/2 en vez
+            de -1/3) para que quede claramente afuera de la bolsa en vez
+            de superpuesto sobre su borde. */}
         {isTakis && flavor.spiceLevel && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={SPICE_LEVELS[flavor.spiceLevel].image}
             alt={`Picómetro: ${SPICE_LEVELS[flavor.spiceLevel].label}`}
-            className={`absolute left-0 top-1/2 z-20 h-16 w-auto -translate-x-1/3 -translate-y-1/2 object-contain drop-shadow-lg sm:h-20 md:h-24 ${
+            className={`absolute left-0 top-1/2 z-20 h-28 w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-lg sm:h-36 md:h-44 ${
               flavor.hoverImage
                 ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
                 : ""
