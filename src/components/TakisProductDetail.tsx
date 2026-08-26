@@ -201,17 +201,23 @@ export default function TakisProductDetail({
                 tarjeta, sin la etiqueta "TAKIS" compitiendo arriba.
                 Ronda 79: la descripción se saca de este bloque — ahora
                 comparte fila con el Picómetro (ver abajo) en vez de ir
-                apilada debajo del nombre. */}
+                apilada debajo del nombre.
+                Ronda 83: "centra el título 'Blue Heat'" — el manchón con
+                el nombre del sabor (nameImage) pasa de estar pegado a la
+                izquierda (heredaba el items-start de la tarjeta) a
+                centrado con mx-auto/mx-auto+text-center. Solo se centra
+                el título; la descripción y el resto de la tarjeta siguen
+                alineados a la izquierda como antes. */}
             <div className="flex flex-col gap-3">
               {flavor.nameImage ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={flavor.nameImage}
                   alt={fullName}
-                  className="h-auto w-full max-w-[280px] sm:max-w-sm md:max-w-[22rem]"
+                  className="mx-auto h-auto w-full max-w-[280px] sm:max-w-sm md:max-w-[22rem]"
                 />
               ) : (
-                <h1 className="font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black">
+                <h1 className="text-center font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black">
                   {fullName}
                 </h1>
               )}
@@ -248,7 +254,12 @@ export default function TakisProductDetail({
                 color no cambia (text-barcel-black/70 = #0f0f0f al 70%
                 sobre blanco ≈ #575757), contraste 7.23:1 — pasa AA
                 (4.5:1) y AAA (7:1) para texto normal; subir el peso solo
-                mejora la legibilidad, no la arriesga. */}
+                mejora la legibilidad, no la arriesga.
+                Ronda 83: "sube 3 puntos" el texto de descripción — de
+                text-xs/md:text-sm (12px/14px) a valores arbitrarios
+                15px/17px (+3px en ambos breakpoints), manteniendo el
+                resto de las propiedades (peso, color, tipografía) tal
+                cual quedaron en la Ronda 80/81. */}
             {(flavor.spiceLevel || flavor.description || brand.description) && (
               <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
                 {flavor.spiceLevel && (
@@ -257,7 +268,7 @@ export default function TakisProductDetail({
                   </div>
                 )}
                 {(flavor.description ?? brand.description) && (
-                  <p className="min-w-0 flex-1 font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                  <p className="min-w-0 flex-1 font-body text-[15px] font-medium leading-relaxed text-barcel-black/70 md:text-[17px]">
                     {flavor.description ?? brand.description}
                   </p>
                 )}
