@@ -265,7 +265,9 @@ export default function TakisProductDetail({
                 text-xs/md:text-sm (12px/14px) a valores arbitrarios
                 15px/17px (+3px en ambos breakpoints), manteniendo el
                 resto de las propiedades (peso, color, tipografía) tal
-                cual quedaron en la Ronda 80/81. */}
+                cual quedaron en la Ronda 80/81.
+                Ronda 84: "baja un punto" — de 15px/17px a 14px/16px
+                (-1px en ambos breakpoints). */}
             {(flavor.spiceLevel || flavor.description || brand.description) && (
               <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
                 {flavor.spiceLevel && (
@@ -274,7 +276,7 @@ export default function TakisProductDetail({
                   </div>
                 )}
                 {(flavor.description ?? brand.description) && (
-                  <p className="min-w-0 flex-1 font-body text-[15px] font-medium leading-relaxed text-barcel-black/70 md:text-[17px]">
+                  <p className="min-w-0 flex-1 font-body text-[14px] font-medium leading-relaxed text-barcel-black/70 md:text-[16px]">
                     {flavor.description ?? brand.description}
                   </p>
                 )}
