@@ -197,9 +197,11 @@ export default function TakisProductDetail({
           </div>
 
           <div className="order-2 flex flex-col items-start gap-6 bg-white/95 p-6 md:order-2 md:p-8">
-            {/* Ronda 66: nombre+descripción agrupados como un solo bloque
-                (gap-3) — el nombre es el elemento más grande de toda la
-                tarjeta, sin la etiqueta "TAKIS" compitiendo arriba. */}
+            {/* Ronda 66: el nombre es el elemento más grande de toda la
+                tarjeta, sin la etiqueta "TAKIS" compitiendo arriba.
+                Ronda 79: la descripción se saca de este bloque — ahora
+                comparte fila con el Picómetro (ver abajo) en vez de ir
+                apilada debajo del nombre. */}
             <div className="flex flex-col gap-3">
               {flavor.nameImage ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -213,25 +215,37 @@ export default function TakisProductDetail({
                   {fullName}
                 </h1>
               )}
-              {(flavor.description ?? brand.description) && (
-                <p className="max-w-sm font-takisBody text-sm leading-relaxed text-barcel-black/60">
-                  {flavor.description ?? brand.description}
-                </p>
-              )}
             </div>
 
-            {flavor.spiceLevel && (
-              <div className="w-full border-t border-black/10 pt-4">
-                <Picometro level={flavor.spiceLevel} />
-                {!flavor.spiceLevelConfirmed && (
-                  <p className="mt-3 font-body text-xs text-barcel-black/70">
-                    * Nivel de picante estimado — pendiente de confirmar con Barcel
-                    (sin equivalente en el Takis Global Brandbook 2025).
+            {/* Ronda 79: dos pedidos del cliente sobre este bloque —
+                1) "el picómetro debería estar al lado izquierdo del
+                texto 'Picante azul, intensidad...'": Picometro y la
+                descripción pasan de ser dos bloques apilados a compartir
+                una sola fila (se apilan de nuevo solo en mobile, donde
+                el ancho no alcanza para los dos lado a lado).
+                2) "la tipografía de 'Picante azul, intensidad....' debe
+                ser la misma del cuerpo de texto de la información
+                nutrimental": la descripción pasa de font-takisBody
+                text-sm text-barcel-black/60 a font-body text-xs/sm
+                text-barcel-black/70 — exactamente las clases que usa el
+                cuerpo de los acordeones compact de abajo (ver
+                Accordion.tsx). */}
+            {(flavor.spiceLevel || flavor.description || brand.description) && (
+              <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
+                {flavor.spiceLevel && <Picometro level={flavor.spiceLevel} />}
+                {(flavor.description ?? brand.description) && (
+                  <p className="font-body text-xs leading-relaxed text-barcel-black/70 md:text-sm">
+                    {flavor.description ?? brand.description}
                   </p>
                 )}
               </div>
             )}
-            <WhereToBuyModal />
+            {flavor.spiceLevel && !flavor.spiceLevelConfirmed && (
+              <p className="-mt-3 font-body text-xs text-barcel-black/70">
+                * Nivel de picante estimado — pendiente de confirmar con Barcel
+                (sin equivalente en el Takis Global Brandbook 2025).
+              </p>
+            )}
 
             {/* Ronda 77: Información Nutrimental + Ingredientes, antes en
                 su propia columna, ahora como acordeones colapsados dentro
@@ -288,6 +302,11 @@ export default function TakisProductDetail({
                 )}
               </Accordion>
             </div>
+
+            {/* Ronda 79: "el CTA debe ser la acción, por ende debe estar
+                al final" — WhereToBuyModal pasa de vivir antes de los
+                acordeones a ser el último elemento de la tarjeta. */}
+            <WhereToBuyModal />
           </div>
         </div>
 
