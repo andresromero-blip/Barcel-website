@@ -33,6 +33,22 @@ import { BRAND_SOCIALS, type Brand } from "@/data/brands";
 // en el crop de escritorio como en el ancho completo de mobile.
 const CHIPS_HERO_BG = "/products/chips/hero-banner.jpg";
 
+// Ronda 94: "suma el logo al hero banner manteniendo la misma proporción
+// y ubicación que el de Takis". A diferencia de Chip's, el TAKIS del
+// hero de Takis no es un <img> aparte — viene horneado directo en el
+// pixel del banner (ver nota Ronda 53 en TakisHero.tsx: "una sola pieza
+// ... personaje + banda amarilla a la derecha"). Como Chip's no tiene esa
+// composición pre-armada, el logo real (brand.logo, PNG transparente) se
+// agrega aquí como overlay — pero calcado al mismo recuadro que ocupa el
+// wordmark TAKIS dentro de SU banner (medido a mano sobre
+// public/takis/hero-banner.jpg, 1920x1080): arranca a ~52% del ancho y
+// ~9% del alto, y ocupa ~40% del ancho de la sección. Mismo par de
+// valores para desktop Y mobile (ambos layouts comparten la misma imagen
+// de fondo con la misma proporción, así que el % cae en el mismo lugar
+// visual en los dos).
+const LOGO_BOX =
+  "absolute right-[8%] top-[9%] w-[40%] h-auto object-contain drop-shadow-2xl";
+
 export default function ChipsHero({ brand }: { brand: Brand }) {
   const followText = (
     <div className="mt-6 border-t border-white/20 pt-5">
@@ -61,13 +77,24 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
       {/* Mobile (debajo de md): imagen apilada arriba, sin overlay — ver
           nota completa arriba. */}
       <section className="relative overflow-hidden bg-chips-brown md:hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={CHIPS_HERO_BG}
-          alt=""
-          aria-hidden="true"
-          className="block h-auto w-full"
-        />
+        {/* Envoltura propia (relative) para que el % del logo se calcule
+            contra el alto de la IMAGEN, no contra el alto de toda la
+            sección (que en mobile también incluye el bloque de texto de
+            abajo) — si el logo se posicionara contra la sección completa,
+            "top-[9%]" caería mucho más abajo de lo esperado. */}
+        <div className="relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CHIPS_HERO_BG}
+            alt=""
+            aria-hidden="true"
+            className="block h-auto w-full"
+          />
+          {brand.logo && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={brand.logo} alt={`${brand.name}®`} className={LOGO_BOX} />
+          )}
+        </div>
         <div className="px-4 py-6 sm:px-6">
           <Link
             href="/"
@@ -95,6 +122,15 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-right-bottom"
         />
+        {/* Ronda 94: aquí el % SÍ se calcula contra la sección completa a
+            propósito — a diferencia de mobile, en desktop la sección
+            entera tiene el aspect-ratio fijo de la imagen (md:aspect-
+            [1920/1080]), así que sección e imagen miden exactamente lo
+            mismo y el % cae en el lugar correcto sin envoltura extra. */}
+        {brand.logo && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={brand.logo} alt={`${brand.name}®`} className={LOGO_BOX} />
+        )}
 
         <div className="relative flex w-full items-center px-5 py-14 sm:px-10 md:px-[4%] md:py-20 lg:px-[5%]">
           <div className="relative z-10 w-full max-w-[420px] bg-chips-brown px-4 py-5 sm:max-w-[460px] sm:px-6 sm:py-6">
