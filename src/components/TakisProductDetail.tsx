@@ -276,7 +276,21 @@ export default function TakisProductDetail({
                 Ronda 78: "el desplegable es demasiado grande" — se pasa
                 compact (ver Accordion.tsx) y se baja el gap entre los dos
                 de gap-3 a gap-2, así ocupan menos alto sin perder
-                legibilidad. */}
+                legibilidad.
+                Ronda 81: "iguala los textos Calorías/Azúcar/Grasas
+                saturadas/Grasas trans/Sodio y los ingredientes en
+                fuente, peso, tamaño, estilo y color al texto 'Picante
+                azul, intensidad...'" — las etiquetas de la tabla y el
+                párrafo de ingredientes pasan a usar exactamente la misma
+                clase que la descripción (font-body text-xs font-medium
+                leading-relaxed text-barcel-black/70 md:text-sm) en vez
+                de heredar el default sin peso del Accordion compact.
+                Ingredientes además pierde el uppercase que tenía, para
+                igualar también el estilo (mayúsculas/minúsculas) de la
+                descripción. Los valores (496 kcal, 3.1%, etc.) y
+                alérgenos NO se tocan — el cliente solo pidió igualar las
+                etiquetas y el texto de ingredientes, no los datos que sí
+                deben destacar. */}
             <div className="flex w-full flex-col gap-2 border-t border-black/10 pt-4">
               <Accordion title="Información Nutrimental" compact>
                 {flavor.nutrition ? (
@@ -296,7 +310,9 @@ export default function TakisProductDetail({
                         ["Sodio", `${flavor.nutrition.sodio100gMg} mg`],
                       ].map(([label, value]) => (
                         <div key={label} className="flex items-center justify-between py-1.5">
-                          <span className="text-barcel-black/70">{label}</span>
+                          <span className="font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                            {label}
+                          </span>
                           <span className="font-display font-bold text-barcel-black">
                             {value}
                           </span>
@@ -314,7 +330,9 @@ export default function TakisProductDetail({
               <Accordion title="Ingredientes" compact>
                 {flavor.ingredients ? (
                   <div className="flex flex-col gap-3">
-                    <p className="uppercase">{flavor.ingredients}</p>
+                    <p className="font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                      {flavor.ingredients}
+                    </p>
                     {flavor.allergens && <p className="font-bold">{flavor.allergens}</p>}
                   </div>
                 ) : (
