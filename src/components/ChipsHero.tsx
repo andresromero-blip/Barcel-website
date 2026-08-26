@@ -167,7 +167,7 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
           >
             <span aria-hidden>←</span> Volver al inicio
           </Link>
-          <h1 className="font-teko text-5xl font-bold uppercase leading-[0.9] text-white sm:text-6xl md:text-7xl">
+          <h1 className="font-introhead text-5xl font-bold uppercase leading-[0.9] text-white sm:text-6xl md:text-7xl">
             {brand.tagline}
           </h1>
           <p className="mt-4 max-w-sm font-body text-base font-medium leading-relaxed text-white/80">
