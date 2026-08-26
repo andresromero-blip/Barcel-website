@@ -64,6 +64,26 @@ function CardContent({
           </span>
         </div>
       )}
+      {isChips && (
+        // Ronda 96: el cliente mandó una textura de yute/costal y pidió
+        // que sea el fondo del hover de las tarjetas de Chip's (además
+        // de ocultar el nombre del sabor — ver el <span> de abajo). Va
+        // como PRIMER hijo del fragment con "absolute inset-0" para que
+        // quede detrás de todo el contenido en flujo normal (imagen,
+        // CTA) sin necesidad de z-index explícito — en el algoritmo de
+        // stacking de CSS, los descendientes position:relative con
+        // z-index:auto pintan en orden de aparición en el DOM dentro del
+        // mismo nivel que este div (absolute, sin z explícito = auto
+        // también), así que, al ir primero, cualquier hermano posterior
+        // ya pinta encima suyo de forma automática. Reemplaza al
+        // hover:bg-chips-brown de la tarjeta (ver cardClass) para que no
+        // se mezclen los dos fondos durante la transición de opacidad.
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+          style={{ backgroundImage: "url(/products/chips/sku-hover-bg.jpg)" }}
+        />
+      )}
       <div className="relative flex h-56 w-full items-end justify-center overflow-visible sm:h-80 md:h-[26rem]">
         {/* Ronda 54: badge del Picómetro — el cliente pidió que cada
             tarjeta del slider muestre su nivel de picante (mismo asset
@@ -128,7 +148,14 @@ function CardContent({
           </span>
         </TakisTape>
       ) : (
-        <span className="relative font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl">
+        <span
+          className={`relative font-display text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl ${
+            // Ronda 96: en Chip's, el nombre del sabor se oculta en hover
+            // — el cliente pidió que el fondo de yute (ver nota de
+            // cardClass) sea lo único que cambie, sin el nombre encima.
+            isChips ? "transition-opacity duration-300 group-hover:opacity-0" : ""
+          }`}
+        >
           {flavor.name}
         </span>
       )}
@@ -261,7 +288,11 @@ export default function ProductSlider({
       return `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-takis-purple`;
     }
     if (isChips) {
-      return `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-chips-brown`;
+      // Ronda 96: se omite hoverBg (hover:bg-chips-brown) — el fondo de
+      // yute (ver CardContent) ya cumple esa función; si se dejaran los
+      // dos, el marrón sólido se mezclaría con la textura durante la
+      // transición de opacidad (mismo criterio que Ronda 74 con Takis).
+      return `${CARD_CLASSNAME} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-chips-brown`;
     }
     return `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
   };
