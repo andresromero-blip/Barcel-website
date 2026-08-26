@@ -33,6 +33,20 @@ export const BRAND_SOCIALS = [
 export type Flavor = {
   name: string;
   image: string; // empaque/bolsa — estado default de la tarjeta SKU
+  // Ronda 101: el cliente mandó 9 fotos de "estilo de vida" (bolsa +
+  // bowl sobre una mesa, con ambiente/fondo real) para el slider de la
+  // marca en /marcas/chips — pidió reemplazar ahí el recorte de
+  // producto sobre blanco por la foto completa. De las 9, 6 coinciden
+  // 1:1 con los sabores que ya existen aquí; las otras 3 (Toque Maestro
+  // al Cilantro y Limón, Chipotle Limón, Habanero) no tienen sabor
+  // creado todavía — el cliente confirmó dejarlas fuera por ahora
+  // (mismo criterio que Ronda 97 con la 7ma etiqueta de yute). Es un
+  // campo aparte de "image" (no lo reemplaza): "image" se sigue usando
+  // en la página de detalle de producto (BrandProductDetail) y en el
+  // modal rápido de marcas sin página propia — el pedido del cliente
+  // fue explícito ("en este slider"), así que solo ProductSlider.tsx
+  // consume "sliderImage", y únicamente cuando existe.
+  sliderImage?: string;
   // Ronda 51: era "producto suelto real" (cutout transparente que se
   // asomaba encima de la bolsa). El cliente pidió que el hover use la
   // imagen del Takis Global Brandbook 2025 (composición oficial:
@@ -230,31 +244,37 @@ export const brands: Brand[] = [
       {
         name: "Jalapeño",
         image: "/products/chips/flavors/jalapeno.png",
+        sliderImage: "/products/chips/lifestyle/jalapeno.jpg",
         slug: "jalapeno",
       },
       {
         name: "Fuego",
         image: "/products/chips/flavors/fuego.png",
+        sliderImage: "/products/chips/lifestyle/fuego.jpg",
         slug: "fuego",
       },
       {
         name: "Sal",
         image: "/products/chips/flavors/sal.png",
+        sliderImage: "/products/chips/lifestyle/sal.jpg",
         slug: "sal",
       },
       {
         name: "Crema y Especias",
         image: "/products/chips/flavors/crema-especias.png",
+        sliderImage: "/products/chips/lifestyle/crema-especias.jpg",
         slug: "crema-especias",
       },
       {
         name: "Al Parmesano",
         image: "/products/chips/flavors/tm-parmesano.png",
+        sliderImage: "/products/chips/lifestyle/al-parmesano.jpg",
         slug: "al-parmesano",
       },
       {
         name: "A la Sal y Pimienta",
         image: "/products/chips/flavors/tm-sal-pimienta.png",
+        sliderImage: "/products/chips/lifestyle/a-la-sal-y-pimienta.jpg",
         slug: "a-la-sal-y-pimienta",
       },
     ],

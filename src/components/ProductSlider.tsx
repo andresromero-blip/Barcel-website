@@ -64,7 +64,7 @@ function CardContent({
           </span>
         </div>
       )}
-      {isChips && (
+      {isChips && !flavor.sliderImage && (
         // Ronda 96: el cliente mandó una textura de yute/costal y pidió
         // que sea el fondo del hover de las tarjetas de Chip's (además
         // de ocultar el nombre del sabor — ver el <span> de abajo). Va
@@ -78,6 +78,14 @@ function CardContent({
         // ya pinta encima suyo de forma automática. Reemplaza al
         // hover:bg-chips-brown de la tarjeta (ver cardClass) para que no
         // se mezclen los dos fondos durante la transición de opacidad.
+        //
+        // Ronda 101: este truco dependía de que la imagen default fuera
+        // un recorte transparente (dejaba ver el yute alrededor). Los
+        // sabores con "sliderImage" (foto de estilo de vida, opaca y a
+        // sangre) ya cubren toda la tarjeta — el yute quedaría
+        // completamente tapado, invisible. Se omite solo para esos
+        // sabores en vez de borrar el código: los que aún no tengan
+        // sliderImage siguen usando el mismo tratamiento de antes.
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
@@ -113,17 +121,33 @@ function CardContent({
             }`}
           />
         )}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={flavor.image}
-          alt=""
-          aria-hidden="true"
-          className={`h-full w-auto object-contain drop-shadow-xl ${
-            isTakis && flavor.hoverImage
-              ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
-              : ""
-          }`}
-        />
+        {isChips && flavor.sliderImage ? (
+          // Ronda 101: foto de estilo de vida (bolsa + bowl + fondo real)
+          // que el cliente pidió usar en vez del recorte de producto —
+          // a diferencia de los demás casos (object-contain, deja ver el
+          // fondo blanco de la tarjeta alrededor), esta va a sangre
+          // dentro de la caja de la tarjeta (object-cover, sin
+          // drop-shadow: la foto ya trae su propia composición/sombra).
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={flavor.sliderImage}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={flavor.image}
+            alt=""
+            aria-hidden="true"
+            className={`h-full w-auto object-contain drop-shadow-xl ${
+              isTakis && flavor.hoverImage
+                ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
+                : ""
+            }`}
+          />
+        )}
       </div>
       {/* Ronda 44: nombre de sabor en font-takisMark (sustituto de la
           "TAKIS® Font" del brandbook, ver globals.css) solo para Takis —
@@ -160,11 +184,18 @@ function CardContent({
         <span
           className={`relative text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl ${
             isChips
-              ? // Ronda 96: en Chip's, el nombre del sabor se oculta en
-                // hover — el cliente pidió que el fondo de yute (ver
-                // nota de cardClass) sea lo único que cambie, sin el
-                // nombre encima.
-                "font-introhead transition-opacity duration-300 group-hover:opacity-0"
+              ? flavor.sliderImage
+                ? // Ronda 101: con foto de estilo de vida ya no hay yute
+                  // que "limpiar" en hover (ver nota de arriba) — el
+                  // nombre se queda visible siempre, mismo criterio que
+                  // el resto de marcas sin tratamiento especial.
+                  "font-introhead"
+                : // Ronda 96: en Chip's, el nombre del sabor se oculta en
+                  // hover — el cliente pidió que el fondo de yute (ver
+                  // nota de cardClass) sea lo único que cambie, sin el
+                  // nombre encima. Sigue vigente para los sabores que
+                  // aún no tienen sliderImage.
+                  "font-introhead transition-opacity duration-300 group-hover:opacity-0"
               : "font-display"
           }`}
         >
