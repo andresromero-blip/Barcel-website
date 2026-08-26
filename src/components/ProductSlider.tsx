@@ -131,7 +131,14 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           ahora SÍ se distingue del bg-white base de la tarjeta. */}
       {isTakis ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
-          <span className="inline-flex items-center gap-1.5 bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+          {/* Ronda 89: el cliente mandó una referencia del hover con el
+              botón "recuadrado" (borde blanco alrededor del relleno
+              violeta), no solo relleno sólido — mismo grosor de línea
+              (border-2) que ya usan el resto de bordes interactivos del
+              sitio (SizePicker, Accordion, OtherBrandsGrid, WhereToBuyModal)
+              para que el peso de la línea sea consistente en toda la UX,
+              no un valor nuevo inventado para este botón. */}
+          <span className="inline-flex items-center gap-1.5 border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
           </span>
