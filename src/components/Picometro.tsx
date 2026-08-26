@@ -21,22 +21,46 @@ export const SPICE_LEVELS = {
 
 export type SpiceLevel = keyof typeof SPICE_LEVELS;
 
-export default function Picometro({ level }: { level: SpiceLevel }) {
+// Ronda 80: se agrega la variante `compact` (imagen y tipografía más
+// chicas) para TakisProductDetail.tsx, donde el cliente pidió reducir el
+// tamaño del Picómetro para que quede alineado con el texto de
+// descripción que ahora vive a su lado (Ronda 79). No se toca el
+// default: ProductDetail.tsx (las otras 5 marcas) sigue usando el
+// tamaño original, que no fue objetado.
+export default function Picometro({
+  level,
+  compact = false,
+}: {
+  level: SpiceLevel;
+  compact?: boolean;
+}) {
   const info = SPICE_LEVELS[level];
 
   return (
-    <div className="flex items-center gap-4">
+    <div className={`flex items-center ${compact ? "gap-3" : "gap-4"}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={info.image}
         alt={`Picómetro — nivel de picante: ${info.label}`}
-        className="h-28 w-auto object-contain md:h-32"
+        className={compact ? "h-14 w-auto object-contain sm:h-16" : "h-28 w-auto object-contain md:h-32"}
       />
       <div className="flex flex-col gap-1">
-        <p className="font-display text-xs font-bold uppercase tracking-[0.15em] text-barcel-black/50">
+        <p
+          className={
+            compact
+              ? "font-display text-[10px] font-bold uppercase tracking-[0.12em] text-barcel-black/50"
+              : "font-display text-xs font-bold uppercase tracking-[0.15em] text-barcel-black/50"
+          }
+        >
           Picómetro
         </p>
-        <p className="font-teko text-3xl font-bold uppercase leading-none text-barcel-black md:text-4xl">
+        <p
+          className={
+            compact
+              ? "font-teko text-xl font-bold uppercase leading-none text-barcel-black sm:text-2xl"
+              : "font-teko text-3xl font-bold uppercase leading-none text-barcel-black md:text-4xl"
+          }
+        >
           {info.label}
         </p>
       </div>

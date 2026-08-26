@@ -229,22 +229,35 @@ export default function TakisProductDetail({
                 text-sm text-barcel-black/60 a font-body text-xs/sm
                 text-barcel-black/70 — exactamente las clases que usa el
                 cuerpo de los acordeones compact de abajo (ver
-                Accordion.tsx). Alineación items-start (no items-center):
-                con items-center la descripción quedaba centrada a la
-                altura del número "Extremo" del Picómetro (su elemento
-                más grande y pesado), dando una sensación de choque
-                visual entre ambos textos; con items-start la descripción
-                arranca a la altura de la etiqueta "Picómetro" y no
-                compite con el número. */}
+                Accordion.tsx).
+                Ronda 80: tres pedidos más del cliente sobre este bloque —
+                1) "el picómetro y el texto deben estar alineados":
+                vuelve a items-center (la Ronda 79 lo había puesto en
+                items-start para evitar que la descripción chocara con el
+                número grande de "Extremo"; con el Picómetro más chico
+                que trae este mismo cambio ese choque ya no pasa, así que
+                items-center ahora sí alinea bien ambos elementos por su
+                centro vertical).
+                2) "reduce el tamaño del picómetro": se pasa la nueva
+                variante compact (ver Picometro.tsx) — imagen y
+                tipografía más chicas, pensadas para vivir al lado de un
+                párrafo en vez de solo en su propia fila.
+                3) "aumenta el peso tipográfico ya que es difícil
+                leerlo": la descripción pasa de peso normal (400) a
+                font-medium (500). Verificación de accesibilidad: el
+                color no cambia (text-barcel-black/70 = #0f0f0f al 70%
+                sobre blanco ≈ #575757), contraste 7.23:1 — pasa AA
+                (4.5:1) y AAA (7:1) para texto normal; subir el peso solo
+                mejora la legibilidad, no la arriesga. */}
             {(flavor.spiceLevel || flavor.description || brand.description) && (
-              <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-start sm:gap-6">
+              <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
                 {flavor.spiceLevel && (
                   <div className="shrink-0">
-                    <Picometro level={flavor.spiceLevel} />
+                    <Picometro level={flavor.spiceLevel} compact />
                   </div>
                 )}
                 {(flavor.description ?? brand.description) && (
-                  <p className="min-w-0 flex-1 font-body text-xs leading-relaxed text-barcel-black/70 md:text-sm">
+                  <p className="min-w-0 flex-1 font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
                     {flavor.description ?? brand.description}
                   </p>
                 )}
