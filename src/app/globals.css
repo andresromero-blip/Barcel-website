@@ -27,6 +27,25 @@
   --font-takis-display: "veneer", "Anton", ui-sans-serif, system-ui, sans-serif;
   --font-takis-body: "acumin-pro", "Raleway", ui-sans-serif, system-ui, sans-serif;
   --font-takis-mark: "Permanent Marker", ui-sans-serif, system-ui, sans-serif; /* sustituto de TAKIS® Font — sin licencia real disponible */
+
+  /* Ronda 97: "Introhead" para el título del contenedor del hero de Chip's
+     (h1 "Antojo picosito"). A diferencia de Teko/Veneer/Acumin Pro (CDN de
+     Google Fonts / kit de Adobe Typekit), esta fuente NO está disponible
+     en ningún servicio — el cliente compartió el archivo .otf directo
+     (nombre interno real: "Intro Head H Base"), así que se autohospeda
+     igual que cualquier asset propio: conversión a .woff2 (56KB, sin
+     dependencias de red externas) en public/fonts/, cargada vía @font-face
+     aquí abajo. Solo se usa en el título del hero de Chip's — el resto del
+     sitio no la toca. */
+  --font-introhead: "IntroHeadH", ui-sans-serif, system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: "IntroHeadH";
+  src: url("/fonts/IntroHeadH-Base.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 html {

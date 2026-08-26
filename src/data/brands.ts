@@ -174,13 +174,21 @@ export const brands: Brand[] = [
     logo: "/logos/chips.png",
     logoHover: "/logos/chips-hover.png",
     heroImage: "/products/chips/hero-jalapeno.png",
+    // Ronda 97: el cliente mandó 7 etiquetas de yute con los nombres
+    // "oficiales" para el slider. De esas, 6 corresponden 1:1 a los 6
+    // sabores que ya existen aquí — se actualiza el texto exacto,
+    // sobre todo los dos "Toque Maestro" (pierden ese prefijo: la
+    // etiqueta real dice solo "AL PARMESANO" / "A LA SAL Y PIMIENTA",
+    // no el nombre completo de la sub-línea). La 7ma etiqueta ("Al
+    // cilantro y limón") no tiene sabor ni foto de bolsa existente —
+    // el cliente confirmó explícitamente NO incluirla todavía.
     flavors: [
       { name: "Jalapeño", image: "/products/chips/flavors/jalapeno.png" },
       { name: "Fuego", image: "/products/chips/flavors/fuego.png" },
       { name: "Sal", image: "/products/chips/flavors/sal.png" },
       { name: "Crema y Especias", image: "/products/chips/flavors/crema-especias.png" },
-      { name: "Toque Maestro Al Parmesano", image: "/products/chips/flavors/tm-parmesano.png" },
-      { name: "Toque Maestro Sal y Pimienta", image: "/products/chips/flavors/tm-sal-pimienta.png" },
+      { name: "Al Parmesano", image: "/products/chips/flavors/tm-parmesano.png" },
+      { name: "A la Sal y Pimienta", image: "/products/chips/flavors/tm-sal-pimienta.png" },
     ],
   },
   {

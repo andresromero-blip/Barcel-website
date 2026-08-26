@@ -111,6 +111,9 @@ const config: Config = {
         takisDisplay: ["var(--font-takis-display)", "sans-serif"],
         takisBody: ["var(--font-takis-body)", "sans-serif"],
         takisMark: ["var(--font-takis-mark)", "sans-serif"],
+        // Ronda 97: título del hero de Chip's — ver nota completa en
+        // globals.css (@font-face autohospedada, archivo del cliente).
+        introhead: ["var(--font-introhead)", "sans-serif"],
       },
       keyframes: {
         marquee: {
