@@ -253,7 +253,13 @@ export default function TakisProductDetail({
                 </h1>
               )}
               {sizesText && (
-                <p className="text-center font-body text-xs text-barcel-black/50">
+                // Ronda 87: "sube un punto y mejora su legibilidad
+                // aumentando su peso" — de text-xs (12px) a 13px y de
+                // font-normal a font-medium. El peso extra por sí solo no
+                // arregla contraste, así que también se sube la opacidad
+                // de /50 a /60 (antes ~3.6:1 sobre blanco, no pasa AA;
+                // con /60 queda ~5:1, sí pasa AA para texto normal).
+                <p className="text-center font-body text-[13px] font-medium text-barcel-black/60">
                   Presentación: {sizesText}
                   {!flavor.nutrition && " — de ejemplo, pendiente de confirmar con Barcel"}
                 </p>
