@@ -182,13 +182,47 @@ export const brands: Brand[] = [
     // no el nombre completo de la sub-línea). La 7ma etiqueta ("Al
     // cilantro y limón") no tiene sabor ni foto de bolsa existente —
     // el cliente confirmó explícitamente NO incluirla todavía.
+    //
+    // Ronda 98: el cliente marcó "no están aplicados los nombres que
+    // te compartí" — la Ronda 97 solo había tomado el TEXTO de esas 6
+    // etiquetas para renombrar el campo "name" (usado en un <span> de
+    // texto plano), pero el pedido real era usar las etiquetas mismas
+    // como asset gráfico (igual que "nameImage" ya hace para Takis,
+    // ver ese campo arriba). Se recortan las 6 imágenes originales a
+    // su bounding box de contenido (+padding) y se agregan aquí vía
+    // "nameImage" — ProductSlider.tsx ahora renderiza esa imagen en
+    // vez del texto cuando existe, para cualquier marca no-Takis.
     flavors: [
-      { name: "Jalapeño", image: "/products/chips/flavors/jalapeno.png" },
-      { name: "Fuego", image: "/products/chips/flavors/fuego.png" },
-      { name: "Sal", image: "/products/chips/flavors/sal.png" },
-      { name: "Crema y Especias", image: "/products/chips/flavors/crema-especias.png" },
-      { name: "Al Parmesano", image: "/products/chips/flavors/tm-parmesano.png" },
-      { name: "A la Sal y Pimienta", image: "/products/chips/flavors/tm-sal-pimienta.png" },
+      {
+        name: "Jalapeño",
+        image: "/products/chips/flavors/jalapeno.png",
+        nameImage: "/products/chips/flavor-tags/jalapeno.png",
+      },
+      {
+        name: "Fuego",
+        image: "/products/chips/flavors/fuego.png",
+        nameImage: "/products/chips/flavor-tags/fuego.png",
+      },
+      {
+        name: "Sal",
+        image: "/products/chips/flavors/sal.png",
+        nameImage: "/products/chips/flavor-tags/sal.png",
+      },
+      {
+        name: "Crema y Especias",
+        image: "/products/chips/flavors/crema-especias.png",
+        nameImage: "/products/chips/flavor-tags/crema-especias.png",
+      },
+      {
+        name: "Al Parmesano",
+        image: "/products/chips/flavors/tm-parmesano.png",
+        nameImage: "/products/chips/flavor-tags/al-parmesano.png",
+      },
+      {
+        name: "A la Sal y Pimienta",
+        image: "/products/chips/flavors/tm-sal-pimienta.png",
+        nameImage: "/products/chips/flavor-tags/a-la-sal-y-pimienta.png",
+      },
     ],
   },
   {
