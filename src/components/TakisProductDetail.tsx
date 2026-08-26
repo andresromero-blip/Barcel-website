@@ -330,7 +330,20 @@ export default function TakisProductDetail({
               <Accordion title="Ingredientes" compact>
                 {flavor.ingredients ? (
                   <div className="flex flex-col gap-3">
-                    <p className="font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                    {/* Ronda 82: "los ingredientes no deben ir en altas" —
+                        quitar la clase uppercase (Ronda 81) no alcanzaba
+                        porque el dato en brands.ts está escrito en
+                        mayúsculas de origen (es el texto legal tal cual
+                        lo compartió el cliente, igual que en
+                        ProductDetail.tsx de las otras 5 marcas, donde SÍ
+                        se pidió mantenerlo así). Como no hay que tocar
+                        ese dato compartido (perdería las mayúsculas
+                        también en las otras marcas), se resuelve solo
+                        para esta tarjeta con lowercase +
+                        first-letter:uppercase: pasa todo a minúsculas y
+                        recapitaliza únicamente la primera letra, como una
+                        oración normal. */}
+                    <p className="lowercase first-letter:uppercase font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
                       {flavor.ingredients}
                     </p>
                     {flavor.allergens && <p className="font-bold">{flavor.allergens}</p>}
