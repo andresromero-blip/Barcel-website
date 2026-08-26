@@ -9,7 +9,15 @@ import { SPICE_LEVELS } from "./Picometro";
 const CARD_CLASSNAME =
   "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
 
-function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) {
+function CardContent({
+  flavor,
+  isTakis,
+  isChips,
+}: {
+  flavor: Flavor;
+  isTakis: boolean;
+  isChips: boolean;
+}) {
   // Ronda 90: el cliente mandó una referencia exacta del hover que
   // esperaba (marco violeta grueso + caja blanca + CTA con borde
   // blanco) y marcó que el resultado de Ronda 88/89 "no se parece en
@@ -152,10 +160,24 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           duplicar "Ver más información" dos veces sobre la misma
           tarjeta. Se mantiene solo para Takis SIN composición (sabores
           que aún no tienen el asset del brandbook) y para el resto de
-          marcas. */}
+          marcas.
+          Ronda 92: Chip's no tiene assets de composición transparente
+          (sus 9 fotos de "acompañamiento" son fotos de estilo de vida
+          con fondo, no PNGs de ingredientes sueltos como Takis) — el
+          cliente eligió replicar el mismo tratamiento de marco+CTA que
+          ya usan los sabores de Takis SIN composición (Salsa Brava/
+          Huacamoles), en vez de intentar forzar un swap de imagen con
+          un asset que no es el correcto para eso. */}
       {hasComposition ? null : isTakis ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
           <span className="inline-flex items-center gap-1.5 border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+            Ver más información
+            <span aria-hidden>→</span>
+          </span>
+        </span>
+      ) : isChips ? (
+        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
+          <span className="inline-flex items-center gap-1.5 border-2 border-white bg-chips-brown px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
           </span>
@@ -192,6 +214,11 @@ export default function ProductSlider({
   // nunca deje ver un hueco, incluso en monitores anchos.
   const loop = Array.from({ length: 4 }, () => flavors).flat();
   const isTakis = brandSlug === "takis";
+  // Ronda 92: Chip's recibe el mismo tratamiento de hover "marco+CTA" que
+  // ya usan los sabores de Takis sin composición (ver nota completa en
+  // CardContent) — sin tocar el resto de marcas ni la composición propia
+  // de Takis.
+  const isChips = brandSlug === "chips";
 
   // Ronda 74: el cliente reportó que los hovers con composición oficial
   // (hoverImage) se veían con un fondo violeta detrás — causa raíz: la
@@ -230,9 +257,13 @@ export default function ProductSlider({
     if (hasComposition) {
       return `${CARD_CLASSNAME} ${hoverText} hover:bg-takis-purple`;
     }
-    return isTakis
-      ? `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-takis-purple`
-      : `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
+    if (isTakis) {
+      return `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-takis-purple`;
+    }
+    if (isChips) {
+      return `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-chips-brown`;
+    }
+    return `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
   };
 
   // Ronda 60: el fix de Ronda 59 (pausar por JS en pointerdown, con un
@@ -307,7 +338,7 @@ export default function ProductSlider({
                 aria-label={`Ver ${brandName} ${flavor.name}`}
                 className={cardClass(flavor)}
               >
-                <CardContent flavor={flavor} isTakis={isTakis} />
+                <CardContent flavor={flavor} isTakis={isTakis} isChips={isChips} />
               </Link>
             ) : (
               <button
@@ -317,7 +348,7 @@ export default function ProductSlider({
                 aria-label={`Ver ${brandName} ${flavor.name}`}
                 className={cardClass(flavor)}
               >
-                <CardContent flavor={flavor} isTakis={isTakis} />
+                <CardContent flavor={flavor} isTakis={isTakis} isChips={isChips} />
               </button>
             )
           )}

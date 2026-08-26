@@ -144,24 +144,31 @@ export const brands: Brand[] = [
     tagline: "Antojo picosito",
     description:
       "Chip's se distingue por su corte grueso y su proceso de freído lento, que le dan una textura y sabor únicos. Descubre sus variantes icónicas de Jalapeño y de Fuego, además del NUEVO Crema y Especias, sin olvidar los clásicos Sal y Chipotle para disfrutar cada antojo.",
-    bg: "bg-chips-green",
+    // Chip's: color de marca corregido al manual oficial (café/terracota
+    // PMS 483/484 C, ver nota completa en tailwind.config.ts) — el verde
+    // que usaba el sitio era solo una referencia visual de Figma y además
+    // corresponde al secundario de Jalapeño, no al color de marca.
+    bg: "bg-chips-brown",
     logoText: "text-chips-brown",
-    textOnBg: "text-chips-green-700",
-    hoverBg: "hover:bg-chips-green",
-    hoverText: "hover:text-black", // 9.07:1 sobre chips-green — AA (negro puro, no barcel-black — ver nota en Runners)
-    groupHoverText: "group-hover:text-black",
-    // Ronda 36: negro plano le quitaba personalidad al H1 (feedback del
-    // cliente — la marca es dinámica, dirigida a audiencia adolescente).
-    // El H1 es texto grande (WCAG 3:1, no 4.5:1), así que hay margen para
-    // usar el mismo café de la marca (ya usado en logoText) en vez de
-    // negro puro: 4.40:1 sobre chips-green — AA-grande con margen de
-    // sobra, y es color real de marca, no negro genérico.
-    heroText: "text-chips-brown",
-    lightHero: false,
-    // Ronda 39: caja de redes con el mismo café que el H1 (no negro
-    // genérico) — 4.40:1 contra chips-green (igual que heroText, mismo
-    // color) y el ícono blanco da 10.18:1 contra esa caja.
-    socialBg: "bg-chips-brown",
+    // 10.42:1 sobre blanco — AA de sobra (mejor que el 5.06:1 que daba el
+    // verde-700 anterior).
+    textOnBg: "text-chips-brown",
+    hoverBg: "hover:bg-chips-brown",
+    hoverText: "hover:text-white", // 10.42:1 sobre chips-brown — AA
+    groupHoverText: "group-hover:text-white",
+    // El fondo del hero ahora es el café oscuro de marca (antes era verde
+    // brillante) — igual que Takis, un café tan oscuro solo deja blanco
+    // como opción de texto legible encima (mismo criterio que Ronda 36,
+    // pero aquí ya no hay margen para un acento de color: café sobre café
+    // da 2.02:1, no pasa ni el umbral de texto grande).
+    heroText: "text-white",
+    lightHero: true,
+    // Ronda 39 (mismo criterio, adaptado): ya no hay margen para "blanco
+    // genérico" cuando heroText ya es blanco por necesidad de contraste —
+    // se usa el segundo color oficial de marca (terracota/reflejos, PMS
+    // 484 C) para que la caja de redes SÍ sea un acento real de marca en
+    // vez de cualquiera de los dos neutros. 5.15:1 con ícono blanco — AA.
+    socialBg: "bg-chips-terracotta",
     socialIcon: "text-white",
     imageFirst: true,
     logo: "/logos/chips.png",

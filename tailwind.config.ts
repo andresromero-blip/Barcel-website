@@ -48,10 +48,24 @@ const config: Config = {
           950: "#262626", // Colors base/Grey/950
         },
         chips: {
-          green: "#28C445", // color de marca (referencia visual del diseño aprobado)
-          "green-600": "#1FA036",
-          "green-700": "#14802A", // 5.06:1 sobre blanco — AA para texto normal
-          brown: "#5A3A22",
+          // Chip's Manual de Marca 2025 (03. Recursos Gráficos, pág. 10-11)
+          // — reemplaza los tonos "de referencia visual" aprobados en Figma
+          // por los valores OFICIALES del manual, mismo criterio que Takis
+          // en la Ronda 44. Hallazgo clave: el color PRIMARIO de Chip's NO
+          // es verde — la paleta principal es un trío café/terracota (PMS
+          // 483 C base + PMS 484 C reflejos + blanco stroke). El verde es
+          // apenas el color SECUNDARIO del sabor Jalapeño, uno de tres
+          // acentos por sabor (Sal/Jalapeño/Fuego) — nunca el color de
+          // marca a nivel de sitio.
+          brown: "#663025", // PMS 483 C — base/primario. 10.42:1 sobre blanco y con blanco encima — AA de sobra en ambas direcciones.
+          terracotta: "#AF5141", // PMS 484 C — reflejos/secundario de marca. 5.15:1 con blanco encima — AA.
+          // Paleta secundaria por sabor (pág. 11) — NO son el color de
+          // marca, solo acentos puntuales si se necesita distinguir un
+          // sabor específico (ej. un badge). Se documentan aquí por si se
+          // usan más adelante, igual que "purple-600" en Takis.
+          sal: "#FFD100", // PMS 109 C
+          green: "#00953B", // PMS 355 C — Jalapeño
+          fuego: "#5C0F8B", // PMS 2597 C — Fuego (mismo morado que Takis, coincidencia del manual, no relacionado)
         },
         takis: {
           // Ronda 44: reemplaza el morado/amarillo "de referencia visual"
