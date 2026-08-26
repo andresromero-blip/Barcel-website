@@ -229,12 +229,22 @@ export default function TakisProductDetail({
                 text-sm text-barcel-black/60 a font-body text-xs/sm
                 text-barcel-black/70 — exactamente las clases que usa el
                 cuerpo de los acordeones compact de abajo (ver
-                Accordion.tsx). */}
+                Accordion.tsx). Alineación items-start (no items-center):
+                con items-center la descripción quedaba centrada a la
+                altura del número "Extremo" del Picómetro (su elemento
+                más grande y pesado), dando una sensación de choque
+                visual entre ambos textos; con items-start la descripción
+                arranca a la altura de la etiqueta "Picómetro" y no
+                compite con el número. */}
             {(flavor.spiceLevel || flavor.description || brand.description) && (
-              <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
-                {flavor.spiceLevel && <Picometro level={flavor.spiceLevel} />}
+              <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-start sm:gap-6">
+                {flavor.spiceLevel && (
+                  <div className="shrink-0">
+                    <Picometro level={flavor.spiceLevel} />
+                  </div>
+                )}
                 {(flavor.description ?? brand.description) && (
-                  <p className="font-body text-xs leading-relaxed text-barcel-black/70 md:text-sm">
+                  <p className="min-w-0 flex-1 font-body text-xs leading-relaxed text-barcel-black/70 md:text-sm">
                     {flavor.description ?? brand.description}
                   </p>
                 )}
