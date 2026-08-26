@@ -235,9 +235,13 @@ export default function TakisProductDetail({
 
             {/* Ronda 77: Información Nutrimental + Ingredientes, antes en
                 su propia columna, ahora como acordeones colapsados dentro
-                de esta misma tarjeta — ver nota arriba. */}
-            <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4">
-              <Accordion title="Información Nutrimental">
+                de esta misma tarjeta — ver nota arriba.
+                Ronda 78: "el desplegable es demasiado grande" — se pasa
+                compact (ver Accordion.tsx) y se baja el gap entre los dos
+                de gap-3 a gap-2, así ocupan menos alto sin perder
+                legibilidad. */}
+            <div className="flex w-full flex-col gap-2 border-t border-black/10 pt-4">
+              <Accordion title="Información Nutrimental" compact>
                 {flavor.nutrition ? (
                   <div className="flex flex-col gap-2">
                     <p className="mb-1 text-xs uppercase tracking-wide text-barcel-black/50">
@@ -254,7 +258,7 @@ export default function TakisProductDetail({
                         ],
                         ["Sodio", `${flavor.nutrition.sodio100gMg} mg`],
                       ].map(([label, value]) => (
-                        <div key={label} className="flex items-center justify-between py-2">
+                        <div key={label} className="flex items-center justify-between py-1.5">
                           <span className="text-barcel-black/70">{label}</span>
                           <span className="font-display font-bold text-barcel-black">
                             {value}
@@ -270,7 +274,7 @@ export default function TakisProductDetail({
                   </>
                 )}
               </Accordion>
-              <Accordion title="Ingredientes">
+              <Accordion title="Ingredientes" compact>
                 {flavor.ingredients ? (
                   <div className="flex flex-col gap-3">
                     <p className="uppercase">{flavor.ingredients}</p>
