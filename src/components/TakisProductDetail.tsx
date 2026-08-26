@@ -229,7 +229,16 @@ export default function TakisProductDetail({
                 sobrar espacio) y mx-auto no tenía nada que centrar — se
                 agrega w-full aquí para que el wrapper sí ocupe todo el
                 ancho de la tarjeta y mx-auto pueda centrar la imagen
-                dentro de él. */}
+                dentro de él.
+                Ronda 86: "esa ubicación hace más grande el contenedor,
+                no queremos eso" — la Ronda 85 le había dado a
+                "Presentación" su propio bloque (label + valor apilados +
+                border-t + padding propio), lo que sumaba alto extra a la
+                tarjeta. Se quita ese bloque de más abajo y se integra
+                aquí como una sola línea de texto chico, pegada arriba de
+                la línea divisoria que ya existe sobre la descripción —
+                no agrega una sección nueva, solo una línea dentro del
+                espacio que ya ocupaba el nombre. */}
             <div className="flex w-full flex-col gap-3">
               {flavor.nameImage ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -242,6 +251,12 @@ export default function TakisProductDetail({
                 <h1 className="text-center font-teko text-6xl font-bold uppercase leading-[0.9] text-barcel-black">
                   {fullName}
                 </h1>
+              )}
+              {sizesText && (
+                <p className="text-center font-body text-xs text-barcel-black/50">
+                  Presentación: {sizesText}
+                  {!flavor.nutrition && " — de ejemplo, pendiente de confirmar con Barcel"}
+                </p>
               )}
             </div>
 
@@ -391,28 +406,6 @@ export default function TakisProductDetail({
                 )}
               </Accordion>
             </div>
-
-            {/* Ronda 85: "Presentación" se reubica aquí, dentro de la
-                misma tarjeta — ver nota junto a sizesText arriba. Mismo
-                patrón visual que el resto de la info secundaria: label
-                chico en mayúsculas (igual que "Picómetro" en
-                Picometro.tsx) + valor en el cuerpo de texto estándar de
-                la tarjeta. */}
-            {sizesText && (
-              <div className="flex w-full flex-col gap-1 border-t border-black/10 pt-4">
-                <p className="font-display text-xs font-bold uppercase tracking-[0.15em] text-barcel-black/50">
-                  Presentación
-                </p>
-                <p className="font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
-                  {sizesText}
-                </p>
-                {!flavor.nutrition && (
-                  <p className="font-body text-xs text-barcel-black/60">
-                    * Presentaciones de ejemplo — pendientes de confirmar con Barcel.
-                  </p>
-                )}
-              </div>
-            )}
 
             {/* Ronda 79: "el CTA debe ser la acción, por ende debe estar
                 al final" — WhereToBuyModal pasa de vivir antes de los
