@@ -181,7 +181,16 @@ export default function TakisProductDetail({
               sobre bg.jpg) — mismo tratamiento que la tarjeta de
               nombre+descripción de la derecha, así el texto negro de los
               acordeones vuelve a tener contraste AA real. */}
-          <div className="order-3 flex flex-col gap-3 bg-white/95 p-6 md:order-1 md:p-8">
+          {/* Ronda 76: el cliente pidió invertir el orden de las columnas
+              laterales — información general del producto (nombre,
+              descripción, picómetro, CTA) a la izquierda; información
+              nutrimental + ingredientes a la derecha. El producto
+              (order-2/md:order-2) se queda en el centro sin moverse; solo
+              se intercambian los md:order-1/md:order-3 entre esta tarjeta
+              y la de nombre+descripción más abajo. El orden en mobile
+              (imagen → info general → nutrición) no cambia: ya coincidía
+              con el nuevo orden de lectura izquierda-a-derecha pedido. */}
+          <div className="order-3 flex flex-col gap-3 bg-white/95 p-6 md:order-3 md:p-8">
             {/* Ronda 70: "Sellos" → "Información Nutrimental" — el
                 cliente pidió el nombre correcto de esta sección
                 (la tabla de abajo es información nutrimental, no un
@@ -243,7 +252,7 @@ export default function TakisProductDetail({
             />
           </div>
 
-          <div className="order-2 flex flex-col items-start gap-6 bg-white/95 p-6 md:order-3 md:p-8">
+          <div className="order-2 flex flex-col items-start gap-6 bg-white/95 p-6 md:order-1 md:p-8">
             {/* Ronda 66: nombre+descripción agrupados como un solo bloque
                 (gap-3) — el nombre es el elemento más grande de toda la
                 tarjeta, sin la etiqueta "TAKIS" compitiendo arriba. */}
