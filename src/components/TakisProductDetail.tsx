@@ -207,8 +207,14 @@ export default function TakisProductDetail({
                 izquierda (heredaba el items-start de la tarjeta) a
                 centrado con mx-auto/mx-auto+text-center. Solo se centra
                 el título; la descripción y el resto de la tarjeta siguen
-                alineados a la izquierda como antes. */}
-            <div className="flex flex-col gap-3">
+                alineados a la izquierda como antes.
+                Nota técnica: la tarjeta padre usa items-start, así que
+                este wrapper se encogía al ancho exacto de la imagen (sin
+                sobrar espacio) y mx-auto no tenía nada que centrar — se
+                agrega w-full aquí para que el wrapper sí ocupe todo el
+                ancho de la tarjeta y mx-auto pueda centrar la imagen
+                dentro de él. */}
+            <div className="flex w-full flex-col gap-3">
               {flavor.nameImage ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
