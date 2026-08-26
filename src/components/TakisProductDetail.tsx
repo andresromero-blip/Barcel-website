@@ -175,84 +175,28 @@ export default function TakisProductDetail({
           </>
         )}
 
-        {/* Ronda 67: sin z-10 — ver nota arriba sobre el modal atrapado. */}
-        <div className="container-page grid gap-8 pb-12 pt-6 md:grid-cols-[1fr_1.15fr_1fr] md:items-center md:gap-6 md:pb-16">
-          {/* Ronda 65: tarjeta blanca sólida (antes flotaba transparente
-              sobre bg.jpg) — mismo tratamiento que la tarjeta de
-              nombre+descripción de la derecha, así el texto negro de los
-              acordeones vuelve a tener contraste AA real. */}
-          {/* Ronda 76: el cliente pidió invertir el orden de las columnas
-              laterales — información general del producto (nombre,
-              descripción, picómetro, CTA) a la izquierda; información
-              nutrimental + ingredientes a la derecha. El producto
-              (order-2/md:order-2) se queda en el centro sin moverse; solo
-              se intercambian los md:order-1/md:order-3 entre esta tarjeta
-              y la de nombre+descripción más abajo. El orden en mobile
-              (imagen → info general → nutrición) no cambia: ya coincidía
-              con el nuevo orden de lectura izquierda-a-derecha pedido. */}
-          <div className="order-3 flex flex-col gap-3 bg-white/95 p-6 md:order-3 md:p-8">
-            {/* Ronda 70: "Sellos" → "Información Nutrimental" — el
-                cliente pidió el nombre correcto de esta sección
-                (la tabla de abajo es información nutrimental, no un
-                listado de sellos de advertencia). */}
-            <Accordion title="Información Nutrimental" defaultOpen>
-              {flavor.nutrition ? (
-                <div className="flex flex-col gap-2">
-                  <p className="mb-1 text-xs uppercase tracking-wide text-barcel-black/50">
-                    Información por cada 100 g
-                  </p>
-                  <div className="flex flex-col divide-y divide-barcel-black/10">
-                    {[
-                      ["Calorías", `${flavor.nutrition.kcal100g} kcal`],
-                      ["Azúcar", `${flavor.nutrition.azucares100g}%`],
-                      ["Grasas saturadas", `${flavor.nutrition.grasasSat100g}%`],
-                      [
-                        "Grasas trans",
-                        `${(flavor.nutrition.grasasTrans100gMg / 1000).toFixed(1)}%`,
-                      ],
-                      ["Sodio", `${flavor.nutrition.sodio100gMg} mg`],
-                    ].map(([label, value]) => (
-                      <div key={label} className="flex items-center justify-between py-2">
-                        <span className="text-barcel-black/70">{label}</span>
-                        <span className="font-display font-bold text-barcel-black">
-                          {value}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  Contenido de ejemplo — pendiente de recibir los sellos oficiales de{" "}
-                  {fullName}® para reemplazar este texto.
-                </>
-              )}
-            </Accordion>
-            <Accordion title="Ingredientes">
-              {flavor.ingredients ? (
-                <div className="flex flex-col gap-3">
-                  <p className="uppercase">{flavor.ingredients}</p>
-                  {flavor.allergens && <p className="font-bold">{flavor.allergens}</p>}
-                </div>
-              ) : (
-                <>
-                  Contenido de ejemplo — pendiente de recibir la lista de ingredientes
-                  oficial de {fullName}® para reemplazar este texto.
-                </>
-              )}
-            </Accordion>
-          </div>
-
-          <div className="order-1 flex justify-center md:order-2">
+        {/* Ronda 77: el cliente pidió optimizar espacio y lectura —
+            de 3 columnas (nutrición | producto | info+CTA) a 2 columnas.
+            El producto se mueve al centro-izquierda y toda la información
+            (nombre, descripción, picómetro, CTA) se combina en una sola
+            tarjeta a la derecha; Información Nutrimental e Ingredientes
+            ya no tienen columna propia, viven como acordeones colapsados
+            dentro de esa misma tarjeta, debajo del CTA. Menos bloques
+            visuales compitiendo entre sí y menos scroll en mobile, donde
+            el orden se mantiene: imagen primero, tarjeta completa
+            después. Sin z-10 en el grid (Ronda 67) para no volver a
+            atrapar el modal "¿Dónde comprar?". */}
+        <div className="container-page grid gap-8 pb-12 pt-6 md:grid-cols-[1fr_1.1fr] md:items-center md:gap-10 md:pb-16">
+          <div className="order-1 flex justify-center md:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={flavor.image}
               alt={`${fullName}®`}
-              className="h-auto w-full max-w-[220px] drop-shadow-2xl sm:max-w-xs md:max-w-sm"
+              className="h-auto w-full max-w-[260px] drop-shadow-2xl sm:max-w-sm md:max-w-md"
             />
           </div>
 
-          <div className="order-2 flex flex-col items-start gap-6 bg-white/95 p-6 md:order-1 md:p-8">
+          <div className="order-2 flex flex-col items-start gap-6 bg-white/95 p-6 md:order-2 md:p-8">
             {/* Ronda 66: nombre+descripción agrupados como un solo bloque
                 (gap-3) — el nombre es el elemento más grande de toda la
                 tarjeta, sin la etiqueta "TAKIS" compitiendo arriba. */}
@@ -288,6 +232,58 @@ export default function TakisProductDetail({
               </div>
             )}
             <WhereToBuyModal />
+
+            {/* Ronda 77: Información Nutrimental + Ingredientes, antes en
+                su propia columna, ahora como acordeones colapsados dentro
+                de esta misma tarjeta — ver nota arriba. */}
+            <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4">
+              <Accordion title="Información Nutrimental">
+                {flavor.nutrition ? (
+                  <div className="flex flex-col gap-2">
+                    <p className="mb-1 text-xs uppercase tracking-wide text-barcel-black/50">
+                      Información por cada 100 g
+                    </p>
+                    <div className="flex flex-col divide-y divide-barcel-black/10">
+                      {[
+                        ["Calorías", `${flavor.nutrition.kcal100g} kcal`],
+                        ["Azúcar", `${flavor.nutrition.azucares100g}%`],
+                        ["Grasas saturadas", `${flavor.nutrition.grasasSat100g}%`],
+                        [
+                          "Grasas trans",
+                          `${(flavor.nutrition.grasasTrans100gMg / 1000).toFixed(1)}%`,
+                        ],
+                        ["Sodio", `${flavor.nutrition.sodio100gMg} mg`],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between py-2">
+                          <span className="text-barcel-black/70">{label}</span>
+                          <span className="font-display font-bold text-barcel-black">
+                            {value}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    Contenido de ejemplo — pendiente de recibir los sellos oficiales de{" "}
+                    {fullName}® para reemplazar este texto.
+                  </>
+                )}
+              </Accordion>
+              <Accordion title="Ingredientes">
+                {flavor.ingredients ? (
+                  <div className="flex flex-col gap-3">
+                    <p className="uppercase">{flavor.ingredients}</p>
+                    {flavor.allergens && <p className="font-bold">{flavor.allergens}</p>}
+                  </div>
+                ) : (
+                  <>
+                    Contenido de ejemplo — pendiente de recibir la lista de ingredientes
+                    oficial de {fullName}® para reemplazar este texto.
+                  </>
+                )}
+              </Accordion>
+            </div>
           </div>
         </div>
 
