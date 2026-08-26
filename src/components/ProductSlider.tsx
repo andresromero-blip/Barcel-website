@@ -119,18 +119,19 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           visualmente con las composiciones oficiales del brandbook
           (swirl + garnish a color completo, distinto por sabor). Fix:
           el texto pasa a vivir dentro de un contenedor real de botón
-          primario (fondo sólido blanco, texto morado de marca en
-          mayúsculas, sombra) en vez de flotar sobre un degradado — un
-          bloque sólido blanco contrasta de forma consistente sin
-          importar el color de fondo de cada composición (azul, verde,
-          rojo, etc.), a diferencia de un scrim semitransparente que
-          depende de qué haya detrás. Se quita el scrim de degradado de
-          todo el ancho: ya no hace falta, y sumaba ruido visual
-          (justo el "carga cognitiva" reportado) sin aportar contraste
-          adicional una vez que el botón es opaco. */}
+          primario (sombra, mayúsculas) en vez de flotar sobre un
+          degradado.
+          Ronda 74: al quitar el fondo violeta de la tarjeta (el cliente
+          reportó que se veía detrás de las composiciones transparentes),
+          el fondo real detrás del botón pasó a ser blanco — el botón
+          bg-white de Ronda 72 quedó blanco sobre blanco, invisible
+          ("se pierde con el fondo"). Se invierte a fondo morado sólido +
+          texto blanco: mismo contenedor opaco y mismo contraste
+          consistente sin importar el color de cada composición, pero
+          ahora SÍ se distingue del bg-white base de la tarjeta. */}
       {isTakis ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
-          <span className="inline-flex items-center gap-1.5 bg-white px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-takis-purple shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+          <span className="inline-flex items-center gap-1.5 bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
           </span>
