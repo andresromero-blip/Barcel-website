@@ -10,34 +10,40 @@ const CARD_CLASSNAME =
   "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
 
 function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) {
+  // Ronda 90: el cliente mandó una referencia exacta del hover que
+  // esperaba (marco violeta grueso + caja blanca + CTA con borde
+  // blanco) y marcó que el resultado de Ronda 88/89 "no se parece en
+  // nada" — causa raíz: el ring de 4px (Ronda 88) era demasiado
+  // delgado para leerse como "marco", y la composición seguía siendo
+  // full-bleed (Ronda 55/73) sin dejar margen blanco alrededor. Fix
+  // real: el marco ahora nace del padding REAL de la tarjeta
+  // (p-5/8/10, ver CARD_CLASSNAME) + fondo violeta en hover (ver
+  // cardClass) — no de un ring. La composición vive dentro de una
+  // caja blanca opaca inset (no full-bleed), con el mismo padding
+  // generoso que muestra la referencia, y el CTA con su borde blanco
+  // (Ronda 89) vive debajo, ya directamente sobre el violeta de la
+  // tarjeta. hasComposition = true solo para Takis con hoverImage.
+  const hasComposition = isTakis && !!flavor.hoverImage;
   return (
     <>
-      {/* Ronda 55: el cliente mandó referencia explícita del hover —
-          en vez de asomar la composición DETRÁS de la bolsa (Ronda 51),
-          ahora en hover la composición oficial del Takis Global
-          Brandbook 2025 (fondo de color + swirl + producto + garnish)
-          REEMPLAZA a la bolsa por completo: la bolsa se desvanece
-          (opacity 0) y la composición queda full-bleed, sola, con el
-          link "Ver más información" — solo para Takis. Las demás
-          marcas conservan el criterio anterior (bolsa fija + fondo
-          detrás) porque no tienen este asset de composición. */}
-      {/* Ronda 73: los 6 nuevos assets del cliente son composiciones con
-          fondo TRANSPARENTE (silueta recortada del swirl+producto+cinta+
-          picómetro), no un fondo opaco a sangre completa como los
-          "-brand.jpg" anteriores. Con object-cover ese recorte se
-          estiraba/recortaba tratando de cubrir toda la tarjeta; con
-          object-contain la composición se ve completa, centrada, y el
-          área transparente deja ver el bg-white propio de la tarjeta —
-          exactamente el look "limpio" que pidió el cliente al quejarse
-          de que el hover anterior se veía "muy cargado". */}
-      {flavor.hoverImage && (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-          src={flavor.hoverImage}
-          alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 h-full w-full object-contain p-6 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:p-8"
-        />
+      {hasComposition && (
+        // Ronda 73 (nota original, sigue vigente): cada composición del
+        // Global Brandbook ya trae swirl + producto + cinta + picómetro
+        // quemados en un solo PNG — por eso esta caja no vuelve a
+        // renderizar cinta ni picómetro por separado, solo la imagen.
+        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-white p-5 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:gap-5 sm:p-7 md:p-8">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={flavor.hoverImage}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full flex-1 object-contain"
+          />
+          <span className="relative inline-flex shrink-0 items-center gap-1.5 border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+            Ver más información
+            <span aria-hidden>→</span>
+          </span>
+        </div>
       )}
       <div className="relative flex h-56 w-full items-end justify-center overflow-visible sm:h-80 md:h-[26rem]">
         {/* Ronda 54: badge del Picómetro — el cliente pidió que cada
@@ -128,16 +134,16 @@ function CardContent({ flavor, isTakis }: { flavor: Flavor; isTakis: boolean }) 
           ("se pierde con el fondo"). Se invierte a fondo morado sólido +
           texto blanco: mismo contenedor opaco y mismo contraste
           consistente sin importar el color de cada composición, pero
-          ahora SÍ se distingue del bg-white base de la tarjeta. */}
-      {isTakis ? (
+          ahora SÍ se distingue del bg-white base de la tarjeta.
+          Ronda 90: este botón-overlay independiente ya NO se usa cuando
+          hay composición (hasComposition) — ese caso ahora tiene su
+          propio CTA dentro de la caja blanca de arriba, para no
+          duplicar "Ver más información" dos veces sobre la misma
+          tarjeta. Se mantiene solo para Takis SIN composición (sabores
+          que aún no tienen el asset del brandbook) y para el resto de
+          marcas. */}
+      {hasComposition ? null : isTakis ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
-          {/* Ronda 89: el cliente mandó una referencia del hover con el
-              botón "recuadrado" (borde blanco alrededor del relleno
-              violeta), no solo relleno sólido — mismo grosor de línea
-              (border-2) que ya usan el resto de bordes interactivos del
-              sitio (SizePicker, Accordion, OtherBrandsGrid, WhereToBuyModal)
-              para que el peso de la línea sea consistente en toda la UX,
-              no un valor nuevo inventado para este botón. */}
           <span className="inline-flex items-center gap-1.5 border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
@@ -198,14 +204,24 @@ export default function ProductSlider({
   // ring-inset para que el marco quede DENTRO del borde de la tarjeta
   // (que ya tiene overflow-hidden por la composición), en vez de
   // agregar tamaño extra que movería el layout del slider.
+  // Ronda 90: el marco violeta de la referencia del cliente no es un
+  // ring delgado (Ronda 88, insuficiente) — nace de que la TARJETA
+  // ENTERA se pone violeta en hover y la composición vive en una caja
+  // blanca con padding real por dentro (ver CardContent), así que ese
+  // padding de la propia tarjeta (p-5/8/10 en CARD_CLASSNAME) es lo
+  // que se ve como marco. El fondo violeta ya no se omite para
+  // hoverImage (a diferencia de Ronda 74): ese fix era necesario
+  // porque la composición ERA full-bleed y el violeta se colaba por
+  // sus zonas transparentes internas; ahora la composición vive dentro
+  // de una caja bg-white opaca, así que ese problema no puede repetirse.
   const cardClass = (flavor: Flavor) => {
-    const base =
-      isTakis && flavor.hoverImage
-        ? `${CARD_CLASSNAME} ${hoverText}`
-        : `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
+    const hasComposition = isTakis && !!flavor.hoverImage;
+    if (hasComposition) {
+      return `${CARD_CLASSNAME} ${hoverText} hover:bg-takis-purple`;
+    }
     return isTakis
-      ? `${base} hover:ring-4 hover:ring-inset hover:ring-takis-purple`
-      : base;
+      ? `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-takis-purple`
+      : `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
   };
 
   // Ronda 60: el fix de Ronda 59 (pausar por JS en pointerdown, con un
