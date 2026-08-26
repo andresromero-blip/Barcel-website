@@ -39,15 +39,34 @@ const CHIPS_HERO_BG = "/products/chips/hero-banner.jpg";
 // pixel del banner (ver nota Ronda 53 en TakisHero.tsx: "una sola pieza
 // ... personaje + banda amarilla a la derecha"). Como Chip's no tiene esa
 // composición pre-armada, el logo real (brand.logo, PNG transparente) se
-// agrega aquí como overlay — pero calcado al mismo recuadro que ocupa el
-// wordmark TAKIS dentro de SU banner (medido a mano sobre
-// public/takis/hero-banner.jpg, 1920x1080): arranca a ~52% del ancho y
-// ~9% del alto, y ocupa ~40% del ancho de la sección. Mismo par de
-// valores para desktop Y mobile (ambos layouts comparten la misma imagen
-// de fondo con la misma proporción, así que el % cae en el mismo lugar
-// visual en los dos).
-const LOGO_BOX =
+// agrega aquí como overlay — calcado (en su momento) al recuadro que
+// ocupa el wordmark TAKIS dentro de SU banner. Mobile no recibió ajustes
+// en la Ronda 95 (ver abajo), así que conserva ese valor original.
+const LOGO_BOX_MOBILE =
   "absolute right-[8%] top-[9%] w-[40%] h-auto object-contain drop-shadow-2xl";
+
+// Ronda 95: el cliente mandó una captura del hero de escritorio EN VIVO
+// con 3 anotaciones dibujadas a mano (rectángulo violeta = logo,
+// rectángulo blanco = contenedor de texto, círculo = dónde debe
+// "sobresalir" el tazón de papas) y pidió mover el logo y el contenedor
+// de info a esos recuadros. Las posiciones no se estimaron a ojo: la
+// captura (2042x902) se analizó con Python/PIL+scipy (detección de
+// blobs por color + bounding box) para sacar coordenadas exactas:
+//   - Rectángulo violeta (logo):   x=[755,1519] y=[86,605]  → left 37.0%,
+//     top 9.5%, ancho 37.4% del recuadro de la sección.
+//   - Rectángulo blanco (info):    x=[104,665]  y=[84,777]  → left 5.1%,
+//     top 9.3%, ancho 27.5% (ese ancho YA coincidía con el max-w-[420px]
+//     actual, así que solo cambia la posición, no el tamaño).
+//   - Círculo (tazón de papas):    centro ~(88%, 89%), ya cubierto por
+//     object-right-bottom sin cambios — confirmado con screenshot en
+//     vivo antes de tocar código (el tazón ya sobresale en esa esquina).
+// El logo se movió de left~52%/w-40% a left~37%/w-37% (top se queda en
+// 9%, ya coincidía). Como el rectángulo blanco solo aplica al layout de
+// ESCRITORIO (la captura del cliente es 2042x902, claramente desktop),
+// se separa LOGO_BOX_DESKTOP de LOGO_BOX_MOBILE en vez de reusar una
+// sola constante — mobile no se tocó.
+const LOGO_BOX_DESKTOP =
+  "absolute left-[37%] top-[9%] w-[37%] h-auto object-contain drop-shadow-2xl";
 
 export default function ChipsHero({ brand }: { brand: Brand }) {
   const followText = (
@@ -92,7 +111,7 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
           />
           {brand.logo && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={brand.logo} alt={`${brand.name}®`} className={LOGO_BOX} />
+            <img src={brand.logo} alt={`${brand.name}®`} className={LOGO_BOX_MOBILE} />
           )}
         </div>
         <div className="px-4 py-6 sm:px-6">
@@ -112,9 +131,18 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
         </div>
       </section>
 
-      {/* Desktop (md+): mismo fix de porcentaje que Ronda 71 de Takis —
-          ver nota arriba. */}
-      <section className="relative hidden flex-col justify-center overflow-hidden bg-chips-brown md:flex md:aspect-[1920/1080]">
+      {/* Desktop (md+): Ronda 95 — logo y contenedor de info ahora se
+          posicionan con "position: absolute" + %, calcados a los
+          recuadros de la anotación del cliente (ver nota completa
+          arriba). Se abandona el wrapper "flex items-center" que
+          centraba verticalmente el contenedor de info — el cliente pidió
+          explícitamente que quede arriba (top~9%), alineado con el
+          logo, no centrado. Padding-percentage no sirve aquí porque el
+          spec CSS calcula "padding-top: %" contra el ANCHO del
+          contenedor, no el alto — por eso se usa "top-[%]" en un
+          elemento absolute (igual que ya hace LOGO_BOX), que sí calcula
+          contra el alto real de la sección. */}
+      <section className="relative hidden overflow-hidden bg-chips-brown md:block md:aspect-[1920/1080]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={CHIPS_HERO_BG}
@@ -122,32 +150,30 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover object-right-bottom"
         />
-        {/* Ronda 94: aquí el % SÍ se calcula contra la sección completa a
-            propósito — a diferencia de mobile, en desktop la sección
-            entera tiene el aspect-ratio fijo de la imagen (md:aspect-
-            [1920/1080]), así que sección e imagen miden exactamente lo
-            mismo y el % cae en el lugar correcto sin envoltura extra. */}
+        {/* El % se calcula contra la sección completa a propósito — en
+            desktop la sección entera tiene el aspect-ratio fijo de la
+            imagen (md:aspect-[1920/1080]), así que sección e imagen
+            miden exactamente lo mismo y el % cae en el lugar correcto
+            sin envoltura extra. */}
         {brand.logo && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={brand.logo} alt={`${brand.name}®`} className={LOGO_BOX} />
+          <img src={brand.logo} alt={`${brand.name}®`} className={LOGO_BOX_DESKTOP} />
         )}
 
-        <div className="relative flex w-full items-center px-5 py-14 sm:px-10 md:px-[4%] md:py-20 lg:px-[5%]">
-          <div className="relative z-10 w-full max-w-[420px] bg-chips-brown px-4 py-5 sm:max-w-[460px] sm:px-6 sm:py-6">
-            <Link
-              href="/"
-              className="mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-white/80 transition-colors hover:text-white hover:underline"
-            >
-              <span aria-hidden>←</span> Volver al inicio
-            </Link>
-            <h1 className="font-teko text-5xl font-bold uppercase leading-[0.9] text-white sm:text-6xl md:text-7xl">
-              {brand.tagline}
-            </h1>
-            <p className="mt-4 max-w-sm font-body text-base font-medium leading-relaxed text-white/80">
-              {brand.description}
-            </p>
-            {followText}
-          </div>
+        <div className="absolute left-[5%] top-[9%] z-10 w-full max-w-[420px] bg-chips-brown px-4 py-5 sm:max-w-[460px] sm:px-6 sm:py-6">
+          <Link
+            href="/"
+            className="mb-6 inline-flex items-center gap-1.5 font-display text-xs font-bold uppercase tracking-wide text-white/80 transition-colors hover:text-white hover:underline"
+          >
+            <span aria-hidden>←</span> Volver al inicio
+          </Link>
+          <h1 className="font-teko text-5xl font-bold uppercase leading-[0.9] text-white sm:text-6xl md:text-7xl">
+            {brand.tagline}
+          </h1>
+          <p className="mt-4 max-w-sm font-body text-base font-medium leading-relaxed text-white/80">
+            {brand.description}
+          </p>
+          {followText}
         </div>
       </section>
     </>
