@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Brand, Flavor } from "@/data/brands";
 import Accordion from "./Accordion";
-import SizePicker from "./SizePicker";
 import Picometro from "./Picometro";
 import WhereToBuyModal from "./WhereToBuyModal";
 import RelatedProductsSlider from "./RelatedProductsSlider";
@@ -113,6 +112,23 @@ export default function TakisProductDetail({
   const prevFlavor =
     galleryFlavors[(currentIndex - 1 + galleryFlavors.length) % galleryFlavors.length];
   const nextFlavor = galleryFlavors[(currentIndex + 1) % galleryFlavors.length];
+
+  // Ronda 85: el cliente pidió reubicar "Presentación" — la información
+  // (qué tamaños de bolsa existen) sí importa, pero no justifica un
+  // componente selector propio: la diferencia entre una presentación de
+  // 70 g y una de 240 g no se nota en el SKU/imagen del producto (es la
+  // misma foto), así que un grupo de botones que "parece" cambiar algo
+  // pero no cambia nada visual es engañoso. SizePicker.tsx (botones
+  // clicables con estado activo) se reemplaza aquí por una línea de
+  // texto simple, no interactiva, dentro de la misma tarjeta — mismo
+  // criterio que se usó para el resto de la info secundaria (Rondas
+  // 80/81: font-body text-xs/sm font-medium text-barcel-black/70).
+  const sizesText =
+    flavor.sizes && flavor.sizes.length > 0
+      ? flavor.sizes.length === 1
+        ? flavor.sizes[0]
+        : `${flavor.sizes.slice(0, -1).join(", ")} y ${flavor.sizes[flavor.sizes.length - 1]}`
+      : null;
 
   return (
     <>
@@ -376,33 +392,34 @@ export default function TakisProductDetail({
               </Accordion>
             </div>
 
+            {/* Ronda 85: "Presentación" se reubica aquí, dentro de la
+                misma tarjeta — ver nota junto a sizesText arriba. Mismo
+                patrón visual que el resto de la info secundaria: label
+                chico en mayúsculas (igual que "Picómetro" en
+                Picometro.tsx) + valor en el cuerpo de texto estándar de
+                la tarjeta. */}
+            {sizesText && (
+              <div className="flex w-full flex-col gap-1 border-t border-black/10 pt-4">
+                <p className="font-display text-xs font-bold uppercase tracking-[0.15em] text-barcel-black/50">
+                  Presentación
+                </p>
+                <p className="font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                  {sizesText}
+                </p>
+                {!flavor.nutrition && (
+                  <p className="font-body text-xs text-barcel-black/60">
+                    * Presentaciones de ejemplo — pendientes de confirmar con Barcel.
+                  </p>
+                )}
+              </div>
+            )}
+
             {/* Ronda 79: "el CTA debe ser la acción, por ende debe estar
                 al final" — WhereToBuyModal pasa de vivir antes de los
                 acordeones a ser el último elemento de la tarjeta. */}
             <WhereToBuyModal />
           </div>
         </div>
-
-        {flavor.sizes && flavor.sizes.length > 0 && (
-          // Ronda 66: la barra negra sólida (fix de contraste de la Ronda
-          // 65) tapaba el borde border-barcel-black/15 de las pastillas
-          // inactivas de SizePicker — quedaban sin borde visible, sin
-          // affordance de que son botones. Pasa a bg-white/95: mismo
-          // fondo claro que ya usan Sellos/Ingredientes y nombre+
-          // descripción, y el mismo contraste con el que este selector
-          // ya funciona bien en las otras 5 marcas.
-          <div className="bg-white/95 py-5">
-            <div className="container-page flex flex-col items-center gap-2.5 md:flex-row md:justify-center">
-              <p className="font-display text-sm font-bold text-barcel-black">Presentación:</p>
-              <SizePicker sizes={flavor.sizes} />
-              {!flavor.nutrition && (
-                <p className="font-body text-xs text-barcel-black/60">
-                  * Presentaciones de ejemplo — pendientes de confirmar con Barcel.
-                </p>
-              )}
-            </div>
-          </div>
-        )}
       </section>
 
       {related.length > 0 && (
