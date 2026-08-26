@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BRAND_SOCIALS, type Brand } from "@/data/brands";
 import ProductSlider from "./ProductSlider";
 import TakisHero from "./TakisHero";
+import ChipsHero from "./ChipsHero";
 import OtherBrandsGrid from "./OtherBrandsGrid";
 
 // Ronda 49: el cliente pidió el fondo 1:1 con el asset real del
@@ -55,6 +56,12 @@ export default function BrandPage({
   // sigue el campo explícito lightHero, no el color del H1.
   const isLightText = brand.lightHero;
   const isTakis = brand.slug === "takis";
+  // Ronda 93: mismo patrón que isTakis — Chip's ahora tiene su propio
+  // hero de foto real (ChipsHero.tsx, mecanismo responsive clonado de
+  // TakisHero.tsx) en vez de la sección genérica de color sólido de más
+  // abajo. Las otras 4 marcas siguen con el hero genérico — no hubo
+  // pedido de cambiarlas.
+  const isChips = brand.slug === "chips";
 
   return (
     <>
@@ -91,6 +98,8 @@ export default function BrandPage({
           aquí mismo — no había pedido de cambiarlas. */}
       {isTakis ? (
         <TakisHero brand={brand} />
+      ) : isChips ? (
+        <ChipsHero brand={brand} />
       ) : (
       <section
         className={`relative flex min-h-[clamp(400px,46dvh,600px)] flex-col justify-center overflow-hidden ${brand.bg}`}
