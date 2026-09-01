@@ -133,17 +133,26 @@ export default function Hero() {
           producto— repartido en todo el ancho). Usamos su misma proporción
           como tamaño PREFERIDO en todos los breakpoints (mobile-first) para
           que la imagen nunca se recorte lateralmente: en pantallas angostas
-          la altura baja proporcionalmente en vez de forzar un alto fijo.
-          Ronda 104: en pantallas anchas y bajas (laptop 1440x900,
-          desktop grande) esa proporción daba una altura mayor que el
-          viewport visible, empujando el CTA y los dots fuera de la
-          primera vista (el cliente reportó que había que hacer scroll
-          para verlos). `max-h-[78vh]` limita la altura real al alto de
-          pantalla disponible — el object-cover de las imágenes ya se
-          encarga de recortar los laterales sin deformarlas, igual que
-          antes. `min-h` evita que el banner colapse en viewports muy
-          bajos (celular en horizontal). */}
-      <div className="relative aspect-[1440/900] max-h-[78vh] min-h-[320px] w-full">
+          la altura baja proporcionalmente en vez de forzar un alto fijo, y
+          ahí casi nunca se activa el tope de altura de abajo (el ancho
+          angosto ya da una altura corta por sí solo).
+          Ronda 104: en pantallas anchas y bajas (laptop 1440x900, desktop
+          grande) esa proporción daba una altura MAYOR que el viewport
+          visible, empujando el CTA y los dots fuera de la primera vista.
+          Ronda 105: el primer tope (`max-h-[78vh]` fijo) recortaba de más
+          — al limitar la altura sin limitar el ancho, el object-cover
+          quedaba obligado a recortar también arriba/abajo de la imagen,
+          cortando logos y texto cerca del borde superior del banner (el
+          cliente lo reportó con evidencia). Ahora el tope es
+          `calc(100vh - header)` en vez de un vh arbitrario — usa TODO el
+          alto real disponible bajo el header (h-16/h-20, ver Header.tsx)
+          en lugar de solo el 78%, así que en la inmensa mayoría de
+          pantallas el recorte vertical es mínimo o nulo. Como colchón
+          extra, `object-top` en vez del centro por defecto: si de
+          cualquier forma hace falta recortar algo, se recorta abajo (zona
+          donde ya vive el CTA/dots superpuestos) y no arriba, donde están
+          los logos y el texto principal de cada pieza. */}
+      <div className="relative aspect-[1440/900] max-h-[calc(100vh-4rem)] min-h-[280px] w-full md:max-h-[calc(100vh-5rem)]">
         {SLIDES.map((s, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -151,7 +160,7 @@ export default function Hero() {
             src={s.image}
             alt={s.alt}
             aria-hidden={i !== index}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
             loading={i === 0 ? "eager" : "lazy"}
