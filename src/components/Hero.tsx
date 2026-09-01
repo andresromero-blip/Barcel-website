@@ -148,8 +148,25 @@ export default function Hero() {
           `max-h-[85vh]` queda solo como colchón de seguridad para
           viewports extremadamente bajos (celular en horizontal), no
           como mecanismo principal — con estos assets casi nunca se
-          activa. */}
-      <div className="relative aspect-[2048/768] max-h-[85vh] min-h-[200px] w-full">
+          activa.
+
+          Ronda 113: el cliente reportó que en mobile "los banners se ven
+          muy pequeños y el CTA los tapa". Causa real: se forzaba el MISMO
+          aspect-ratio panorámico (2048:768 ≈ 2.67:1, pensado para
+          desktop) en todos los tamaños — en un viewport angosto (390px)
+          eso da apenas ~146px de alto. Con tan poco espacio, el overlay
+          de CTA+dots (que en conjunto mide ~90px) termina cubriendo más
+          de la mitad de la franja visible, y el resto del banner queda
+          diminuto. Fix: en mobile se usa un aspect-ratio más alto/menos
+          panorámico (4:3 ≈ 293px de alto para el mismo viewport, el
+          doble que antes) — object-cover sigue mostrando el alto
+          COMPLETO de la imagen (nunca recorta arriba/abajo, donde suele
+          vivir el producto/logo), solo recorta un poco de los bordes
+          izquierdo/derecho, que en un banner panorámico es fondo/aire, no
+          contenido. A partir de md (donde el ancho real del viewport ya
+          hace que 2048:768 dé una altura cómoda) se vuelve al
+          aspect-ratio real del asset — desktop queda intacto. */}
+      <div className="relative aspect-[4/3] max-h-[85vh] min-h-[200px] w-full sm:aspect-[3/2] md:aspect-[2048/768]">
         {SLIDES.map((s, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
