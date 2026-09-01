@@ -12,25 +12,32 @@ import { brands } from "@/data/brands";
 // altura de <img> por marca para igualar la ALTURA de esa tinta (~26px).
 //
 // Ronda 109: igualar solo la altura no bastaba — Golden Nuts es un wordmark
-// mucho más ancho que alto (bbox de tinta ~583x228px, relación ~2.6:1)
+// mucho más ancho que alto (bbox de tinta ~576x222px, relación ~2.6:1)
 // mientras el resto ronda 1:1–1.7:1. Con la altura de tinta igual mediante
 // h fija + w-auto, Golden Nuts terminaba con casi el DOBLE de ancho que
 // cualquier otro logo — se veía "más grande" aunque su altura coincidiera.
-// Fix real: en vez de igualar solo alto, se ajusta por marca para que la
-// tinta quepa dentro de la MISMA caja alto x ancho (34x78px en md, mismo
-// criterio que object-fit:contain pero calculado sobre el bbox de tinta
-// real medido con PIL, no sobre el canvas con aire) — así cada logo usa la
-// dimensión que le toque recortar (alto para los 5 primeros, ancho para
-// Golden Nuts) y todos ocupan, como máximo, el mismo espacio visual.
+// Primer intento: acotar también el ancho, pero con un presupuesto de 78px
+// (holgado) Golden Nuts seguía siendo, por mucho, el más ancho de la tira
+// (78px vs. ~27–59px del resto) — el cliente lo siguió viendo más grande.
+//
+// Ronda 110: se aprieta el presupuesto de ancho a 59px — el ancho que
+// Runners (el segundo más ancho) ya ocupa de forma natural igualando solo
+// altura. Con eso, Golden Nuts y Runners empatan como los más anchos de la
+// tira (ninguno puede rebasar al otro) y Golden Nuts cede en ALTURA (baja a
+// ~25px en vez de 33px) para no exceder ese ancho — es la marca con la
+// forma más corta/ancha del set, así que algo tenía que ceder para no
+// dominar la fila; se prefirió que cediera altura antes que seguir siendo
+// el logo más ancho por un margen tan grande. Mismos criterios que antes
+// (bbox de tinta real medido en el archivo, no el canvas con aire).
 // Valores fijos (no se recalculan en runtime) porque Tailwind JIT necesita
 // ver el string completo de la clase en el código.
 const LOGO_SIZE: Record<string, string> = {
-  chips: "h-[54px] md:h-[61px]",
-  takis: "h-[36px] md:h-[41px]",
+  chips: "h-[55px] md:h-[62px]",
+  takis: "h-[37px] md:h-[42px]",
   runners: "h-[57px] md:h-[64px]",
   "big-mix": "h-[39px] md:h-[44px]",
   "hot-nuts": "h-[42px] md:h-[47px]",
-  "golden-nuts": "h-[29px] md:h-[33px]", // ahora limitado por ancho de tinta, no por altura
+  "golden-nuts": "h-[22px] md:h-[25px]", // limitado por ancho de tinta (empata con Runners), no por altura
 };
 
 export default function LogoMarquee() {
