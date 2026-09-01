@@ -8,23 +8,29 @@ import { brands } from "@/data/brands";
 // el resultado visual era que Golden Nuts (poco aire) se veía grande y el
 // resto (mucho aire, sobre todo Runners y Chip's) se veía diminuto — no es
 // que los logos midan distinto, es que el "tinta" real dentro del archivo
-// ocupa un % de alto muy distinto por marca.
+// ocupa un % de alto muy distinto por marca. El fix de esa ronda calculó la
+// altura de <img> por marca para igualar la ALTURA de esa tinta (~26px).
 //
-// Fix: en vez de recortar los .png (usados también en BrandCard/BrandPage,
-// fuera de alcance de este ajuste), se calcula por marca la altura de <img>
-// necesaria para que la ALTURA REAL DEL LOGO (no del canvas) quede igual a
-// la de Golden Nuts — que es el logo que el cliente pidió usar como
-// referencia de tamaño. Fórmula: alturaCanvas = alturaTintaGoldenNuts /
-// (altoBBoxContenido / altoCanvas) de cada logo, medido con PIL sobre los
-// assets reales. Valores fijos (no se recalculan en runtime) porque
-// Tailwind JIT necesita ver el string completo de la clase en el código.
+// Ronda 109: igualar solo la altura no bastaba — Golden Nuts es un wordmark
+// mucho más ancho que alto (bbox de tinta ~583x228px, relación ~2.6:1)
+// mientras el resto ronda 1:1–1.7:1. Con la altura de tinta igual mediante
+// h fija + w-auto, Golden Nuts terminaba con casi el DOBLE de ancho que
+// cualquier otro logo — se veía "más grande" aunque su altura coincidiera.
+// Fix real: en vez de igualar solo alto, se ajusta por marca para que la
+// tinta quepa dentro de la MISMA caja alto x ancho (34x78px en md, mismo
+// criterio que object-fit:contain pero calculado sobre el bbox de tinta
+// real medido con PIL, no sobre el canvas con aire) — así cada logo usa la
+// dimensión que le toque recortar (alto para los 5 primeros, ancho para
+// Golden Nuts) y todos ocupan, como máximo, el mismo espacio visual.
+// Valores fijos (no se recalculan en runtime) porque Tailwind JIT necesita
+// ver el string completo de la clase en el código.
 const LOGO_SIZE: Record<string, string> = {
-  chips: "h-[47px] md:h-[53px]",
-  takis: "h-[32px] md:h-[36px]",
-  runners: "h-[49px] md:h-[56px]",
-  "big-mix": "h-[34px] md:h-[38px]",
-  "hot-nuts": "h-[36px] md:h-[41px]",
-  "golden-nuts": "h-[28px] md:h-[32px]", // sin cambios — es la referencia
+  chips: "h-[54px] md:h-[61px]",
+  takis: "h-[36px] md:h-[41px]",
+  runners: "h-[57px] md:h-[64px]",
+  "big-mix": "h-[39px] md:h-[44px]",
+  "hot-nuts": "h-[42px] md:h-[47px]",
+  "golden-nuts": "h-[29px] md:h-[33px]", // ahora limitado por ancho de tinta, no por altura
 };
 
 export default function LogoMarquee() {
