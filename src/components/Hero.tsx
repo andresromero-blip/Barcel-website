@@ -151,21 +151,35 @@ export default function Hero() {
           activa.
 
           Ronda 113: el cliente reportó que en mobile "los banners se ven
-          muy pequeños y el CTA los tapa". Causa real: se forzaba el MISMO
-          aspect-ratio panorámico (2048:768 ≈ 2.67:1, pensado para
-          desktop) en todos los tamaños — en un viewport angosto (390px)
-          eso da apenas ~146px de alto. Con tan poco espacio, el overlay
-          de CTA+dots (que en conjunto mide ~90px) termina cubriendo más
-          de la mitad de la franja visible, y el resto del banner queda
-          diminuto. Fix: en mobile se usa un aspect-ratio más alto/menos
-          panorámico (4:3 ≈ 293px de alto para el mismo viewport, el
-          doble que antes) — object-cover sigue mostrando el alto
-          COMPLETO de la imagen (nunca recorta arriba/abajo, donde suele
-          vivir el producto/logo), solo recorta un poco de los bordes
-          izquierdo/derecho, que en un banner panorámico es fondo/aire, no
-          contenido. A partir de md (donde el ancho real del viewport ya
-          hace que 2048:768 dé una altura cómoda) se vuelve al
-          aspect-ratio real del asset — desktop queda intacto. */}
+          muy pequeños y el CTA los tapa". Causa real (parte 1): se
+          forzaba el MISMO aspect-ratio panorámico (2048:768 ≈ 2.67:1,
+          pensado para desktop) en todos los tamaños — en un viewport
+          angosto (390px) eso da apenas ~146px de alto. Fix: en mobile se
+          usa un aspect-ratio más alto/menos panorámico (4:3, el doble de
+          alto que antes) — object-cover sigue mostrando el alto COMPLETO
+          de la imagen (nunca recorta arriba/abajo, donde suele vivir el
+          producto/logo), solo recorta un poco de los bordes
+          izquierdo/derecho. A partir de md (donde el ancho real del
+          viewport ya hace que 2048:768 dé una altura cómoda) se vuelve al
+          aspect-ratio real del asset — desktop queda intacto.
+
+          Ronda 114: agrandar la caja (Ronda 113) achicó el problema pero
+          no lo eliminó — el cliente mandó captura del slide "Nuevas Pop"
+          mostrando el CTA todavía encima del arte. Causa real (parte 2):
+          el overlay de CTA+dots seguía siendo `absolute bottom-0` DENTRO
+          de la imagen sin importar la altura de la caja — más alto solo
+          reparte mejor el espacio ARRIBA, pero el overlay sigue anclado
+          al borde inferior, así que cualquier banner cuya composición
+          traiga texto/logo pegado abajo (como Pop) queda tapado sin
+          importar qué tan alta sea la caja. Golácticos (fondo oscuro
+          vacío abajo) no mostraba el problema; Pop (wordmark y texto
+          pegados al borde inferior) sí.
+          Fix definitivo: en mobile el CTA+dots deja de ser overlay — pasa
+          a flujo normal DEBAJO de la imagen (bloque aparte, fondo sólido
+          bg-barcel-black), así nunca se superpone a NINGÚN banner sin
+          importar su composición. Desde md se mantiene el overlay
+          absoluto original, sin ningún cambio (el cliente nunca reportó
+          problema en desktop). */}
       <div className="relative aspect-[4/3] max-h-[85vh] min-h-[200px] w-full sm:aspect-[3/2] md:aspect-[2048/768]">
         {SLIDES.map((s, i) => (
           // eslint-disable-next-line @next/next/no-img-element
@@ -199,45 +213,45 @@ export default function Hero() {
         >
           ›
         </button>
+      </div>
 
-        {/* CTA + dots apilados en flujo normal — al conservar la proporción
-            real de la imagen (arriba) siempre quedan sobre la franja
-            inferior de la composición, sin taparse ni deformarse en
-            ningún ancho de pantalla. Tamaños reducidos en el breakpoint
-            base (mobile) porque ahí el banner es más bajo en términos
-            absolutos. */}
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1.5 px-3 pb-2 xs:gap-2 xs:pb-3 sm:gap-3 sm:px-4 sm:pb-4 md:gap-4 md:pb-6 lg:pb-8">
-          <a
-            href={slide.cta.href}
-            // Ronda 103: Golácticos es una promo con landing propia fuera
-            // del sitio (golacticosbarcel.com) — se abre en pestaña nueva
-            // para no sacar al usuario de la navegación del home.
-            {...(slide.cta.href.startsWith("http")
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-            className={`flex min-h-[44px] items-center justify-center gap-1 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
-          >
-            {slide.cta.label}
-            <span aria-hidden>↗</span>
-          </a>
+      {/* CTA + dots — Ronda 114: en mobile van FUERA de la caja de la
+          imagen, en flujo normal (nunca se superponen a ningún banner,
+          sin importar su composición). Desde md vuelven a ser overlay
+          absoluto sobre la imagen (posicionado contra la <section>, que
+          es "relative" y envuelve tanto la caja de imagen como este
+          bloque) — comportamiento idéntico al original pre-Ronda 114. */}
+      <div className="relative flex flex-col items-center gap-1.5 bg-barcel-black px-3 py-3 xs:gap-2 sm:gap-3 sm:px-4 sm:py-4 md:absolute md:inset-x-0 md:bottom-0 md:gap-4 md:bg-transparent md:px-0 md:py-0 md:pb-6 lg:pb-8">
+        <a
+          href={slide.cta.href}
+          // Ronda 103: Golácticos es una promo con landing propia fuera
+          // del sitio (golacticosbarcel.com) — se abre en pestaña nueva
+          // para no sacar al usuario de la navegación del home.
+          {...(slide.cta.href.startsWith("http")
+            ? { target: "_blank", rel: "noopener noreferrer" }
+            : {})}
+          className={`flex min-h-[44px] items-center justify-center gap-1 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
+        >
+          {slide.cta.label}
+          <span aria-hidden>↗</span>
+        </a>
 
-          {/* dots — único elemento interactivo con corner radius (1:1 con el diseño) */}
-          <div className="flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 shadow-sm xs:gap-2 xs:px-3 xs:py-2 sm:rounded-xl sm:px-4 sm:py-3 md:gap-2.5 md:rounded-2xl md:px-5 md:py-4">
-            {SLIDES.map((s, i) => (
-              <button
-                key={s.id}
-                type="button"
-                aria-label={`Ir al slide ${i + 1}`}
-                aria-current={i === index}
-                onClick={() => goTo(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 sm:h-2 md:h-2.5 ${
-                  i === index
-                    ? "w-6 bg-barcel-red sm:w-8 md:w-10"
-                    : "w-1.5 bg-grey-200 hover:bg-grey-300 sm:w-2 md:w-2.5"
-                }`}
-              />
-            ))}
-          </div>
+        {/* dots — único elemento interactivo con corner radius (1:1 con el diseño) */}
+        <div className="flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 shadow-sm xs:gap-2 xs:px-3 xs:py-2 sm:rounded-xl sm:px-4 sm:py-3 md:gap-2.5 md:rounded-2xl md:px-5 md:py-4">
+          {SLIDES.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              aria-label={`Ir al slide ${i + 1}`}
+              aria-current={i === index}
+              onClick={() => goTo(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 sm:h-2 md:h-2.5 ${
+                i === index
+                  ? "w-6 bg-barcel-red sm:w-8 md:w-10"
+                  : "w-1.5 bg-grey-200 hover:bg-grey-300 sm:w-2 md:w-2.5"
+              }`}
+            />
+          ))}
         </div>
       </div>
     </section>
