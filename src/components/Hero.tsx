@@ -7,38 +7,92 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // (accesible, con foco visible y fondo sólido para garantizar contraste),
 // apilado en flujo normal debajo del banner en vez de calcado por
 // coordenadas — así se mantiene correcto en cualquier tamaño de pantalla.
+//
+// Ronda 103: el cliente reemplazó el set completo de banners (pasó de 3 a
+// 7 piezas: promo Golácticos, Chip's 35 años, Runners Juegalos, nuevas
+// Pop, 2 piezas de Takis y Hot Nuts). El CTA de cada slide enlaza a la
+// página de esa marca cuando existe en el sitio (chips/runners/takis/
+// hot-nuts); Golácticos (promo con landing propia externa) y Pop (sin
+// página de marca todavía) enlazan a la sección #marcas del home. Los
+// colores de cada CTA son los tokens de marca ya verificados AA contra
+// fondo blanco en tailwind.config.ts (mismo criterio que el resto del
+// sitio, no valores nuevos).
 const SLIDES = [
   {
-    id: "bienvenido",
-    image: "/hero/slide-bienvenido.jpg",
-    alt: "¡Bienvenido al universo Barcel! — mix de botanas y frutos secos Barcel",
+    id: "golacticos",
+    image: "/hero/slide-golacticos.jpg",
+    alt: "La Promo Golácticos Barcel — compra, encuentra tu código y regístrate para ganar premios",
     cta: {
-      label: "Explora todas las categorías",
+      label: "Conoce la promo",
+      href: "https://www.golacticosbarcel.com",
+      // Fondo blanco solido + texto rojo oscuro: 5.7:1 de contraste (AA)
+      variant: "text-barcel-red-dark",
+    },
+  },
+  {
+    id: "chips-35-anos",
+    image: "/hero/slide-chips-35-anos.jpg",
+    alt: "Chip's Jalapeño 35 años — celebrando a los que no dan de sus Chip's Jalapeño",
+    cta: {
+      label: "Descubre Chip's Jalapeño",
+      href: "/marcas/chips",
+      // Fondo blanco solido + texto café Chip's: 10.42:1 de contraste (AA)
+      variant: "text-chips-brown",
+    },
+  },
+  {
+    id: "runners-juegalos",
+    image: "/hero/slide-runners-juegalos.jpg",
+    alt: "Runners Juégalos — pruébalos",
+    cta: {
+      label: "Descubre Runners",
+      href: "/marcas/runners",
+      // Fondo blanco solido + texto rosa Runners: 5.04:1 de contraste (AA)
+      variant: "text-runners-pink-700",
+    },
+  },
+  {
+    id: "pop",
+    image: "/hero/slide-pop.jpg",
+    alt: "Nuevas Pop sabor extra mantequilla — encuéntralas en tu tiendita",
+    cta: {
+      label: "Descubre las nuevas Pop",
       href: "#marcas",
       // Fondo blanco solido + texto rojo oscuro: 5.7:1 de contraste (AA)
       variant: "text-barcel-red-dark",
     },
   },
   {
-    id: "golden-nuts",
-    image: "/hero/slide-golden-nuts.jpg",
-    alt: "Golden Nuts Select — más que premium, select",
+    id: "takis-picante",
+    image: "/hero/slide-takis-picante.jpg",
+    alt: "Takis Intense Nacho — todos intensos, no todos picantes",
     cta: {
-      label: "Conócelos ahora",
-      href: "#marcas",
-      // Fondo dorado solido + texto casi negro: 7.2:1 de contraste (AA)
-      variant: "bg-goldennuts-gold text-barcel-black",
+      label: "Descubre Takis",
+      href: "/marcas/takis",
+      // Fondo blanco solido + texto morado oscuro: 6.75:1 de contraste (AA)
+      variant: "text-takis-purple",
     },
   },
   {
-    id: "wapas",
-    image: "/hero/slide-wapas.jpg",
-    alt: "Nuevas Wapas Fuego — 100% onda fuego",
+    id: "takis-picometro",
+    image: "/hero/slide-takis-picometro.jpg",
+    alt: "Los 7 sabores de Takis y su nivel de picor — todos intensos, no todos picantes",
     cta: {
-      label: "Listo para el reto",
-      href: "#marcas",
+      label: "Elige tu nivel de picor",
+      href: "/marcas/takis",
       // Fondo blanco solido + texto morado oscuro: 6.75:1 de contraste (AA)
       variant: "text-takis-purple",
+    },
+  },
+  {
+    id: "hotnuts",
+    image: "/hero/slide-hotnuts.jpg",
+    alt: "Hot Nuts — si va a tronar, ¡que truene bien!",
+    cta: {
+      label: "Descubre Hot Nuts",
+      href: "/marcas/hot-nuts",
+      // Fondo blanco solido + texto naranja Hot Nuts: 5.06:1 de contraste (AA)
+      variant: "text-hotnuts-orange-700",
     },
   },
 ];
@@ -123,6 +177,12 @@ export default function Hero() {
         <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-1.5 px-3 pb-2 xs:gap-2 xs:pb-3 sm:gap-3 sm:px-4 sm:pb-4 md:gap-4 md:pb-6 lg:pb-8">
           <a
             href={slide.cta.href}
+            // Ronda 103: Golácticos es una promo con landing propia fuera
+            // del sitio (golacticosbarcel.com) — se abre en pestaña nueva
+            // para no sacar al usuario de la navegación del home.
+            {...(slide.cta.href.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
             className={`flex min-h-[44px] items-center justify-center gap-1 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
           >
             {slide.cta.label}
