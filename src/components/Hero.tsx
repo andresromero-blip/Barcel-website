@@ -132,27 +132,30 @@ export default function Hero() {
       {/* Los banners son composiciones anchas (1440x900, contenido —texto y
           producto— repartido en todo el ancho). Usamos su misma proporción
           como tamaño PREFERIDO en todos los breakpoints (mobile-first) para
-          que la imagen nunca se recorte lateralmente: en pantallas angostas
-          la altura baja proporcionalmente en vez de forzar un alto fijo, y
-          ahí casi nunca se activa el tope de altura de abajo (el ancho
-          angosto ya da una altura corta por sí solo).
+          que la imagen nunca se recorte: en pantallas angostas la altura
+          baja proporcionalmente en vez de forzar un alto fijo, y ahí casi
+          nunca se activa el tope de altura de abajo (el ancho angosto ya
+          da una altura corta por sí solo).
           Ronda 104: en pantallas anchas y bajas (laptop 1440x900, desktop
           grande) esa proporción daba una altura MAYOR que el viewport
           visible, empujando el CTA y los dots fuera de la primera vista.
-          Ronda 105: el primer tope (`max-h-[78vh]` fijo) recortaba de más
-          — al limitar la altura sin limitar el ancho, el object-cover
-          quedaba obligado a recortar también arriba/abajo de la imagen,
-          cortando logos y texto cerca del borde superior del banner (el
-          cliente lo reportó con evidencia). Ahora el tope es
-          `calc(100vh - header)` en vez de un vh arbitrario — usa TODO el
-          alto real disponible bajo el header (h-16/h-20, ver Header.tsx)
-          en lugar de solo el 78%, así que en la inmensa mayoría de
-          pantallas el recorte vertical es mínimo o nulo. Como colchón
-          extra, `object-top` en vez del centro por defecto: si de
-          cualquier forma hace falta recortar algo, se recorta abajo (zona
-          donde ya vive el CTA/dots superpuestos) y no arriba, donde están
-          los logos y el texto principal de cada pieza. */}
-      <div className="relative aspect-[1440/900] max-h-[calc(100vh-4rem)] min-h-[280px] w-full md:max-h-[calc(100vh-5rem)]">
+          Ronda 105 (revertida): limitar solo `max-h` sin limitar el ancho
+          rompía la proporción real del contenedor, así que el object-cover
+          quedaba obligado a recortar la imagen arriba/abajo — cambiar el
+          punto de recorte con `object-top` solo movió el problema de
+          arriba a abajo (el cliente lo volvió a reportar, ahora cortando
+          la parte inferior del banner).
+          Ronda 106 (fix real): en vez de recortar, se limita el ANCHO en
+          la misma proporción que el alto (`max-w = max-h * 1440/900`), no
+          solo el alto. Así el contenedor SIEMPRE mantiene la proporción
+          exacta 1440:900 del banner — el object-cover deja de tener que
+          recortar nada porque el aspect ratio del contenedor y el de la
+          imagen coinciden siempre. `mx-auto` centra el banner cuando ese
+          tope de ancho se activa; el fondo negro de la <section> rellena
+          las franjas laterales que puedan quedar en pantallas muy anchas
+          y bajas — se sacrifica el edge-to-edge ahí antes que recortar
+          logos o texto, que es lo que pidió el cliente. */}
+      <div className="relative mx-auto aspect-[1440/900] max-h-[calc(100vh-4rem)] max-w-[calc((100vh-4rem)*1.6)] min-h-[280px] w-full md:max-h-[calc(100vh-5rem)] md:max-w-[calc((100vh-5rem)*1.6)]">
         {SLIDES.map((s, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -160,7 +163,7 @@ export default function Hero() {
             src={s.image}
             alt={s.alt}
             aria-hidden={i !== index}
-            className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 ${
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
             loading={i === 0 ? "eager" : "lazy"}
