@@ -131,10 +131,19 @@ export default function Hero() {
     >
       {/* Los banners son composiciones anchas (1440x900, contenido —texto y
           producto— repartido en todo el ancho). Usamos su misma proporción
-          en TODOS los breakpoints (mobile-first) para que la imagen nunca
-          se recorte: en pantallas angostas la altura baja proporcionalmente
-          en vez de forzar un alto fijo que recortaba los laterales. */}
-      <div className="relative aspect-[1440/900] w-full">
+          como tamaño PREFERIDO en todos los breakpoints (mobile-first) para
+          que la imagen nunca se recorte lateralmente: en pantallas angostas
+          la altura baja proporcionalmente en vez de forzar un alto fijo.
+          Ronda 104: en pantallas anchas y bajas (laptop 1440x900,
+          desktop grande) esa proporción daba una altura mayor que el
+          viewport visible, empujando el CTA y los dots fuera de la
+          primera vista (el cliente reportó que había que hacer scroll
+          para verlos). `max-h-[78vh]` limita la altura real al alto de
+          pantalla disponible — el object-cover de las imágenes ya se
+          encarga de recortar los laterales sin deformarlas, igual que
+          antes. `min-h` evita que el banner colapse en viewports muy
+          bajos (celular en horizontal). */}
+      <div className="relative aspect-[1440/900] max-h-[78vh] min-h-[320px] w-full">
         {SLIDES.map((s, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
