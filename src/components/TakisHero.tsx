@@ -85,10 +85,17 @@ export default function TakisHero({ brand }: { brand: Brand }) {
           >
             <span aria-hidden>←</span> Volver al inicio
           </Link>
+          {/* Ronda 112: el cliente pidió que el tagline se vea RECTO, sin
+              inclinación, por temas de SEO — un H1 rotado con CSS
+              transform sigue siendo texto real en el DOM (no afecta
+              indexación), pero visualmente un heading torcido puede leerse
+              como decorativo/menos "oficial" en capturas o previews que SEO
+              suele evaluar. Se quita el transform: rotate(-2deg) y se deja
+              el text-shadow (offset simple, no depende de la inclinación)
+              como único acento de "doble impresión" del brandbook. */}
           <h1
             className="font-takisDisplay text-4xl font-bold uppercase leading-[1.05] tracking-wide text-white"
             style={{
-              transform: "rotate(-2deg)",
               textShadow: "3px 3px 0 rgba(87, 15, 139, 0.5)",
             }}
           >
@@ -139,10 +146,11 @@ export default function TakisHero({ brand }: { brand: Brand }) {
             >
               <span aria-hidden>←</span> Volver al inicio
             </Link>
+            {/* Ronda 112: mismo fix que el H1 de mobile — se quita el
+                transform: rotate(-2deg), queda solo el text-shadow. */}
             <h1
               className="font-takisDisplay text-4xl font-bold uppercase leading-[1.05] tracking-wide text-white sm:text-5xl md:text-6xl"
               style={{
-                transform: "rotate(-2deg)",
                 textShadow: "3px 3px 0 rgba(87, 15, 139, 0.5)",
               }}
             >

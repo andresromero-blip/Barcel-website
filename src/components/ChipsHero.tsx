@@ -40,10 +40,22 @@ const CHIPS_HERO_BG = "/products/chips/hero-banner.jpg";
 // ... personaje + banda amarilla a la derecha"). Como Chip's no tiene esa
 // composición pre-armada, el logo real (brand.logo, PNG transparente) se
 // agrega aquí como overlay — calcado (en su momento) al recuadro que
-// ocupa el wordmark TAKIS dentro de SU banner. Mobile no recibió ajustes
-// en la Ronda 95 (ver abajo), así que conserva ese valor original.
+// ocupa el wordmark TAKIS dentro de SU banner.
+//
+// Ronda 112: el cliente reportó "demasiado espacio negativo" en mobile —
+// causa real: el <img> de fondo usaba su alto NATURAL (h-auto, ratio real
+// 1372:768 ≈ 1.79:1). En un viewport angosto eso todavía deja una franja
+// alta de puro grano de madera vacío (logo y tazón ocupan solo las
+// esquinas). Se acorta a un aspect-ratio fijo más bajo (2:1, ver
+// contenedor más abajo) + object-cover, mismo mecanismo que ya usa
+// escritorio (md:aspect-[1920/1080] + object-cover), así que dos tercios
+// menos de "aire" de madera sin perder el tazón (que sigue ancla do
+// abajo-derecha vía object-right-bottom). Con la caja más baja, el logo
+// también se pide centrado (antes iba en la esquina superior derecha,
+// pensado para el alto natural completo) — se centra horizontal Y
+// verticalmente dentro de esa caja más compacta.
 const LOGO_BOX_MOBILE =
-  "absolute right-[8%] top-[9%] w-[40%] h-auto object-contain drop-shadow-2xl";
+  "absolute left-1/2 top-1/2 w-[45%] h-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-2xl";
 
 // Ronda 95: el cliente mandó una captura del hero de escritorio EN VIVO
 // con 3 anotaciones dibujadas a mano (rectángulo violeta = logo,
@@ -100,14 +112,18 @@ export default function ChipsHero({ brand }: { brand: Brand }) {
             contra el alto de la IMAGEN, no contra el alto de toda la
             sección (que en mobile también incluye el bloque de texto de
             abajo) — si el logo se posicionara contra la sección completa,
-            "top-[9%]" caería mucho más abajo de lo esperado. */}
-        <div className="relative">
+            "top-[9%]" caería mucho más abajo de lo esperado.
+            Ronda 112: aspect-[2/1] fijo (en vez de dejar que la imagen
+            imponga su alto natural) + object-cover — recorta el exceso de
+            madera vacía manteniendo visible el tazón (object-right-bottom,
+            igual que escritorio). */}
+        <div className="relative aspect-[2/1] overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={CHIPS_HERO_BG}
             alt=""
             aria-hidden="true"
-            className="block h-auto w-full"
+            className="absolute inset-0 h-full w-full object-cover object-right-bottom"
           />
           {brand.logo && (
             // eslint-disable-next-line @next/next/no-img-element
