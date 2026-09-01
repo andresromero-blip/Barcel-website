@@ -129,66 +129,39 @@ export default function Hero() {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      {/* Los banners son composiciones anchas (1440x900, contenido —texto y
-          producto— repartido en todo el ancho). El cliente no puede
-          reeditar/recortar estos assets, así que el ajuste tiene que
-          resolverse solo con CSS, sobre las imágenes tal cual están.
-          Ronda 104: aspect-[1440/900] a ancho completo daba una altura
-          MAYOR que el viewport en pantallas anchas y bajas, empujando el
-          CTA y los dots fuera de la primera vista.
-          Ronda 105 (revertida): limitar solo `max-h` obligaba al
-          object-cover a recortar arriba/abajo de la imagen (se probó
-          mover el punto de recorte con `object-top`, solo trasladó el
-          corte de arriba a abajo).
-          Ronda 106 (revertida): limitar también el ancho para mantener
-          la proporción 1440:900 exacta evitaba el recorte, pero dejaba
-          franjas negras a los lados en pantallas anchas y bajas — el
-          cliente lo reportó como "se corta en los laterales" (visualmente
-          se siente igual de mal que un recorte real).
-          Ronda 107 (fix real, con los assets fijos): fondo desenfocado +
-          imagen real completa, técnica estándar de Spotify/YouTube para
-          encajar una imagen con una proporción distinta a su contenedor
-          SIN recortarla y SIN dejar franjas vacías. Dos capas por slide:
-          1) una copia de la misma foto, agrandada (`scale-110`) y
-          desenfocada (`blur-2xl`), en object-cover — rellena todo el
-          contenedor de borde a borde, incluida el área que sobra a los
-          lados cuando el contenedor es más ancho que la proporción
-          1440:900 del banner. 2) la imagen real completa, en
-          object-contain — se ve 100% de la pieza, sin recortar nada,
-          "flotando" centrada sobre el fondo desenfocado. Resultado: nunca
-          se pierde contenido Y nunca se ven franjas vacías, siempre
-          "encaja perfecto" visualmente aunque el aspect ratio del
-          contenedor no coincida con el de la imagen. */}
-      <div className="relative aspect-[1440/900] max-h-[calc(100vh-4rem)] min-h-[280px] w-full md:max-h-[calc(100vh-5rem)]">
+      {/* Historial de este bloque (Rondas 104-107): con los banners
+          originales, casi cuadrados (1440x900), no había forma de que la
+          imagen llegara de borde a borde en pantallas anchas sin recortar
+          contenido o sin dejar franjas/blur de relleno a los lados — el
+          cliente no podía reeditar esos assets, así que se probaron
+          varias soluciones solo-CSS (tope de altura, tope de ancho,
+          fondo desenfocado) y ninguna quedó 100% "borde a borde, sin
+          recortar nada" a la vez.
+          Ronda 108: el cliente mandó los 7 banners rehechos en formato
+          panorámico real (2048x768, proporción ~8:3) pensado para esto.
+          Con esa proporción, a ancho completo la altura resultante es
+          bastante menor que el viewport en cualquier pantalla común
+          (1920 de ancho → ~720px de alto + header, cómodo en cualquier
+          monitor), así que ya no hace falta ningún truco de recorte,
+          tope de altura agresivo ni relleno — un solo <img> por slide,
+          object-cover a ancho completo, igual que un hero "normal".
+          `max-h-[85vh]` queda solo como colchón de seguridad para
+          viewports extremadamente bajos (celular en horizontal), no
+          como mecanismo principal — con estos assets casi nunca se
+          activa. */}
+      <div className="relative aspect-[2048/768] max-h-[85vh] min-h-[200px] w-full">
         {SLIDES.map((s, i) => (
-          <div
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             key={s.id}
+            src={s.image}
+            alt={s.alt}
             aria-hidden={i !== index}
-            className={`absolute inset-0 transition-opacity duration-700 ${
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
-          >
-            {/* Capa 1: fondo — misma foto, agrandada y desenfocada, sin
-                huecos vacíos ni bordes duros del blur (scale-110 los saca
-                del área visible; overflow-hidden de la <section> recorta
-                el resto). */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={s.image}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl brightness-75"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
-            {/* Capa 2: la pieza real, completa, sin recortar nada. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={s.image}
-              alt={s.alt}
-              className="absolute inset-0 h-full w-full object-contain"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
-          </div>
+            loading={i === 0 ? "eager" : "lazy"}
+          />
         ))}
 
         {/* arrow nav — ocultas en mobile (los dots + swipe/autoplay ya
