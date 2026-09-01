@@ -130,44 +130,65 @@ export default function Hero() {
       onMouseLeave={() => setPaused(false)}
     >
       {/* Los banners son composiciones anchas (1440x900, contenido —texto y
-          producto— repartido en todo el ancho). Usamos su misma proporción
-          como tamaño PREFERIDO en todos los breakpoints (mobile-first) para
-          que la imagen nunca se recorte: en pantallas angostas la altura
-          baja proporcionalmente en vez de forzar un alto fijo, y ahí casi
-          nunca se activa el tope de altura de abajo (el ancho angosto ya
-          da una altura corta por sí solo).
-          Ronda 104: en pantallas anchas y bajas (laptop 1440x900, desktop
-          grande) esa proporción daba una altura MAYOR que el viewport
-          visible, empujando el CTA y los dots fuera de la primera vista.
-          Ronda 105 (revertida): limitar solo `max-h` sin limitar el ancho
-          rompía la proporción real del contenedor, así que el object-cover
-          quedaba obligado a recortar la imagen arriba/abajo — cambiar el
-          punto de recorte con `object-top` solo movió el problema de
-          arriba a abajo (el cliente lo volvió a reportar, ahora cortando
-          la parte inferior del banner).
-          Ronda 106 (fix real): en vez de recortar, se limita el ANCHO en
-          la misma proporción que el alto (`max-w = max-h * 1440/900`), no
-          solo el alto. Así el contenedor SIEMPRE mantiene la proporción
-          exacta 1440:900 del banner — el object-cover deja de tener que
-          recortar nada porque el aspect ratio del contenedor y el de la
-          imagen coinciden siempre. `mx-auto` centra el banner cuando ese
-          tope de ancho se activa; el fondo negro de la <section> rellena
-          las franjas laterales que puedan quedar en pantallas muy anchas
-          y bajas — se sacrifica el edge-to-edge ahí antes que recortar
-          logos o texto, que es lo que pidió el cliente. */}
-      <div className="relative mx-auto aspect-[1440/900] max-h-[calc(100vh-4rem)] max-w-[calc((100vh-4rem)*1.6)] min-h-[280px] w-full md:max-h-[calc(100vh-5rem)] md:max-w-[calc((100vh-5rem)*1.6)]">
+          producto— repartido en todo el ancho). El cliente no puede
+          reeditar/recortar estos assets, así que el ajuste tiene que
+          resolverse solo con CSS, sobre las imágenes tal cual están.
+          Ronda 104: aspect-[1440/900] a ancho completo daba una altura
+          MAYOR que el viewport en pantallas anchas y bajas, empujando el
+          CTA y los dots fuera de la primera vista.
+          Ronda 105 (revertida): limitar solo `max-h` obligaba al
+          object-cover a recortar arriba/abajo de la imagen (se probó
+          mover el punto de recorte con `object-top`, solo trasladó el
+          corte de arriba a abajo).
+          Ronda 106 (revertida): limitar también el ancho para mantener
+          la proporción 1440:900 exacta evitaba el recorte, pero dejaba
+          franjas negras a los lados en pantallas anchas y bajas — el
+          cliente lo reportó como "se corta en los laterales" (visualmente
+          se siente igual de mal que un recorte real).
+          Ronda 107 (fix real, con los assets fijos): fondo desenfocado +
+          imagen real completa, técnica estándar de Spotify/YouTube para
+          encajar una imagen con una proporción distinta a su contenedor
+          SIN recortarla y SIN dejar franjas vacías. Dos capas por slide:
+          1) una copia de la misma foto, agrandada (`scale-110`) y
+          desenfocada (`blur-2xl`), en object-cover — rellena todo el
+          contenedor de borde a borde, incluida el área que sobra a los
+          lados cuando el contenedor es más ancho que la proporción
+          1440:900 del banner. 2) la imagen real completa, en
+          object-contain — se ve 100% de la pieza, sin recortar nada,
+          "flotando" centrada sobre el fondo desenfocado. Resultado: nunca
+          se pierde contenido Y nunca se ven franjas vacías, siempre
+          "encaja perfecto" visualmente aunque el aspect ratio del
+          contenedor no coincida con el de la imagen. */}
+      <div className="relative aspect-[1440/900] max-h-[calc(100vh-4rem)] min-h-[280px] w-full md:max-h-[calc(100vh-5rem)]">
         {SLIDES.map((s, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <div
             key={s.id}
-            src={s.image}
-            alt={s.alt}
             aria-hidden={i !== index}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            className={`absolute inset-0 transition-opacity duration-700 ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
-            loading={i === 0 ? "eager" : "lazy"}
-          />
+          >
+            {/* Capa 1: fondo — misma foto, agrandada y desenfocada, sin
+                huecos vacíos ni bordes duros del blur (scale-110 los saca
+                del área visible; overflow-hidden de la <section> recorta
+                el resto). */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.image}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full scale-110 object-cover object-center blur-2xl brightness-75"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+            {/* Capa 2: la pieza real, completa, sin recortar nada. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.image}
+              alt={s.alt}
+              className="absolute inset-0 h-full w-full object-contain"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          </div>
         ))}
 
         {/* arrow nav — ocultas en mobile (los dots + swipe/autoplay ya
