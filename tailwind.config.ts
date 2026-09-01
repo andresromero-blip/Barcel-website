@@ -98,6 +98,16 @@ const config: Config = {
           gold: "#C79A2E",
           "gold-700": "#896A20", // 5.06:1 sobre blanco — AA (gold-base solo da 2.60:1, no pasa)
         },
+        // Ronda 111: faltaban en el grid de marcas — hex extraídos directo
+        // del Fill (pestaña Custom) de cada "Logo marca" en Figma.
+        pop: {
+          blue: "#00A3E9", // fondo del tile, extraído de Figma
+          "blue-700": "#0072A3", // 5.34:1 sobre blanco — AA (blue-base solo da 2.83:1, no pasa)
+        },
+        tostachos: {
+          green: "#6CAB3B", // fondo del tile, extraído de Figma
+          "green-700": "#4B7729", // 5.29:1 sobre blanco — AA (green-base solo da 2.79:1, no pasa)
+        },
       },
       fontFamily: {
         // Text/Family/Text = Raleway (nav, botones, párrafos, nombres de marca)

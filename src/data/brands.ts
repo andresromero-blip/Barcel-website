@@ -761,6 +761,38 @@ export const brands: Brand[] = [
     ],
   },
   {
+    // Ronda 111: faltaba en el grid — el cliente mandó evidencia +
+    // Figma (node 145:4139) mostrando 8 marcas en el prototipo, el sitio
+    // solo tenía 6. Copy, orden (entre Hot Nuts y Golden Nuts) e
+    // imageFirst (texto a la izq., imagen a la der.) tomados 1:1 de la
+    // tarjeta "POP" en ese Figma. bg extraído del Fill real del tile
+    // (pestaña Custom del color picker) — ver tailwind.config.ts.
+    slug: "pop",
+    name: "POP",
+    tagline: "¡Que empiece el crunch!",
+    description:
+      "¡Que empiece la función! Descubre POP y dale sabor a tus momentos favoritos con palomitas crujientes, dulces y picositas. Elige tu favorita y disfruta el antojo a tu manera.",
+    bg: "bg-pop-blue",
+    logoText: "text-white",
+    // pop-blue base solo da 2.83:1 sobre blanco (no pasa AA) — se usa
+    // pop-blue-700 (5.34:1) para textOnBg, mismo criterio que Big
+    // Mix/Runners/Hot Nuts/Golden Nuts.
+    textOnBg: "text-pop-blue-700",
+    hoverBg: "hover:bg-pop-blue",
+    hoverText: "hover:text-black", // 7.42:1 sobre pop-blue — AA
+    groupHoverText: "group-hover:text-black",
+    // El wordmark real de POP es azul marino con contorno blanco — negro
+    // plano es lo más fiel de las opciones que sí pasan contraste aquí
+    // (blanco solo da 2.83:1, no pasa ni el umbral de texto grande).
+    heroText: "text-black",
+    lightHero: false,
+    socialBg: "bg-black",
+    socialIcon: "text-white",
+    imageFirst: false,
+    logo: "/logos/pop.png",
+    logoHover: "/logos/pop-hover.png",
+  },
+  {
     slug: "golden-nuts",
     name: "Golden Nuts",
     tagline: "Sabor clásico, crunch dorado",
@@ -787,7 +819,11 @@ export const brands: Brand[] = [
     // blanco da 21:1 contra la caja.
     socialBg: "bg-black",
     socialIcon: "text-white",
-    imageFirst: false,
+    // Ronda 111: se voltea de false a true — al insertar la tarjeta POP
+    // arriba (imageFirst: false) hacía falta retomar la alternancia, y de
+    // paso coincide 1:1 con el layout real de Golden Nuts en Figma
+    // (imagen a la izq., texto a la der.).
+    imageFirst: true,
     // Ronda 31: logo real + portafolio (carpeta "7) Golden Nuts 2" del
     // material compartido). logo = wordmark negro limpio (GN_LOGO_SIN_SOMBRA,
     // buen contraste sobre goldennuts-gold); logoHover = versión blanca con
@@ -811,5 +847,33 @@ export const brands: Brand[] = [
       { name: "Pepitas", image: "/products/golden-nuts/flavors/pepitas.png" },
       { name: "Sazón Maestro", image: "/products/golden-nuts/flavors/sazon-maestro.png" },
     ],
+  },
+  {
+    // Ronda 111: faltaba en el grid, misma nota que POP arriba — copy,
+    // orden (después de Golden Nuts, al final) e imageFirst tomados 1:1
+    // de la tarjeta "Tostachos" en Figma (node 145:4139).
+    slug: "tostachos",
+    name: "Tostachos",
+    tagline: "Queso, jalapeño y crunch",
+    description:
+      "¡Prepárate para el crunch! Descubre Tostachos y disfruta queso, jalapeño y mucho sabor en cada mordida. Una botana picosita para cualquier antojo.",
+    bg: "bg-tostachos-green",
+    logoText: "text-white",
+    // tostachos-green base solo da 2.79:1 sobre blanco (no pasa AA) — se
+    // usa tostachos-green-700 (5.29:1) para textOnBg.
+    textOnBg: "text-tostachos-green-700",
+    hoverBg: "hover:bg-tostachos-green",
+    hoverText: "hover:text-black", // 7.53:1 sobre tostachos-green — AA
+    groupHoverText: "group-hover:text-black",
+    // El wordmark real de Tostachos es negro con contorno blanco — negro
+    // plano es lo más fiel de las opciones que sí pasan contraste aquí
+    // (blanco solo da 2.79:1, no pasa ni el umbral de texto grande).
+    heroText: "text-black",
+    lightHero: false,
+    socialBg: "bg-black",
+    socialIcon: "text-white",
+    imageFirst: false,
+    logo: "/logos/tostachos.png",
+    logoHover: "/logos/tostachos-hover.png",
   },
 ];

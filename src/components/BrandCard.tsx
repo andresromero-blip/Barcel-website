@@ -16,9 +16,20 @@ export default function BrandCard({
   // sin importar imageFirst — así lo requiere el diseño aprobado. imageFirst
   // solo decide el lado (izquierda/derecha) en el grid de 2 columnas de
   // desktop, usando md:order-* en vez de reordenar el DOM.
+  // Ronda 111: el cliente pidió que los tiles dejen de verse "rectangulares"
+  // y queden cuadrados como en Figma — la tarjeta real (node 145:4139) mide
+  // 720x650px, relación ≈1.108:1, casi cuadrada. Antes el tile usaba
+  // min-h-[220px]/md:min-h-[300px] con una columna de ~medio ancho de
+  // pantalla (el grid de marcas es full-bleed, no vive dentro de
+  // container-page), lo que en desktop daba ~2.2:1 — mucho más ancho que
+  // alto. aspect-[720/650] fija la MISMA relación de Figma sin importar el
+  // ancho real de la columna (viewport completo), así que escala bien en
+  // cualquier resolución en vez de depender de un alto fijo en px. El tile
+  // de texto (textTile, sin alto fijo) ya iguala esta altura solo con el
+  // comportamiento default de CSS grid (align-items: stretch).
   const imageTile = (
     <div
-      className={`group relative flex min-h-[220px] items-center justify-center overflow-hidden p-8 md:min-h-[300px] ${
+      className={`group relative flex aspect-[720/650] items-center justify-center overflow-hidden p-8 ${
         brand.imageFirst ? "" : "md:order-2"
       } ${brand.bg}`}
     >
