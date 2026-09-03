@@ -6,18 +6,24 @@ import { createPortal } from "react-dom";
 // Ronda 30: "¿Dónde comprar?" pasa de ser un link-ancla a "Dónde
 // encontrarla" (sección eliminada de la página de marca, quedaba
 // duplicada) a un modal con tiendas reales y cross-link a su sitio
-// oficial. Ejemplo con 3 cadenas con presencia real en México.
+// oficial.
 //
-// Nota sobre los logos: no existe ningún asset de estas 3 tiendas en
+// Ronda 115: el cliente mandó la lista definitiva de 5 retailers/apps de
+// delivery reales (reemplaza el placeholder de Walmart/Costco/OXXO):
+// Uber Eats, Rappi, Walmart, Soriana y Chedraui.
+//
+// Nota sobre los logos: no existe ningún asset de estos 5 retailers en
 // el material compartido del proyecto, y no corresponde descargar/usar
 // los logos oficiales de terceros sin permiso — se usa en su lugar un
 // wordmark de texto con el color de marca real de cada tienda. Fácil
 // de reemplazar por el logo oficial en cuanto Barcel confirme el
 // acuerdo con cada retailer.
 const RETAILERS = [
+  { name: "Uber Eats", href: "https://www.ubereats.com/mx", color: "#06C167" },
+  { name: "Rappi", href: "https://www.rappi.com.mx/", color: "#FF441F" },
   { name: "Walmart", href: "https://www.walmart.com.mx/", color: "#0071CE" },
-  { name: "Costco", href: "https://www.costco.com.mx/", color: "#E31837" },
-  { name: "OXXO", href: "https://www.oxxo.com/", color: "#DA291C" },
+  { name: "Soriana", href: "https://www.soriana.com/", color: "#EC1C24" },
+  { name: "Chedraui", href: "https://www.chedraui.com.mx/", color: "#E30613" },
 ];
 
 export default function WhereToBuyModal() {
