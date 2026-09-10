@@ -38,21 +38,43 @@ import { brands } from "@/data/brands";
 // interno daba una tinta visible de solo ~17-20px (Tostachos: bbox real
 // 552x323 sobre canvas 595x595 => tinta ocupa 54.3% de esa altura) frente a
 // los ~30-34px del resto — de ahí que se vieran mucho más chicos/ilegibles
-// en la tira, exactamente el reporte del cliente. Se midió el bbox real
-// (alpha>0) de cada PNG con PIL para calcular la altura de <img> que iguala
-// la tinta de estos dos al mismo target de ~30.4px (mobile) / ~34.3px (md)
-// que ya usan chips/takis/runners/big-mix/hot-nuts:
-//   pop.png:        canvas 595x595, bbox 541x429 => tinta 72.1% alto
-//   tostachos.png:  canvas 595x595, bbox 552x323 => tinta 54.3% alto
+// en la tira. Se calculó la altura de <img> que iguala solo la ALTURA de
+// tinta de estos dos al resto (~30.4px / ~34.3px).
+//
+// Ronda 124: igualar solo la ALTURA de tinta (Ronda 42/109/110/123) seguía
+// sin ser suficiente — el cliente reportó que Takis, Hot Nuts y Big Mix se
+// veían con "menor jerarquía y peso visual" que el resto, a pesar de tener
+// la misma altura de tinta que Chip's/Runners/Tostachos. Causa real: esas
+// tres marcas tienen un bbox de tinta casi CUADRADO (ancho ≈ alto: Hot Nuts
+// 345x429px, ratio ancho/alto 0.80; Takis 510x483px, ratio 1.06; Big Mix
+// 496x463px, ratio 1.07) mientras que Chip's/Runners/Tostachos son bboxes
+// muy anchos y bajos (ratio ~1.7). Iguala la altura y listo si el logo es
+// ancho — pero un bbox cuadrado con la misma altura ocupa mucha MENOS área
+// total (menos "masa" de tinta en pantalla) que uno ancho, así que se ve
+// más liviano/pequeño aunque la altura coincida en teoría.
+// Fix real: en vez de igualar altura de tinta, se iguala el ÁREA de tinta
+// renderizada en pantalla (conteo real de píxeles con alpha>128 en el PNG,
+// escalado al cuadrado del factor de reducción h_render/h_canvas — el área
+// escala con el cuadrado de la altura, no linealmente). Medido con canvas
+// 2D sobre cada PNG (conteo de píxeles opacos):
+//   chips   597x597, 104,997px opacos → área renderizada actual (62px) ≈ 1133px² (referencia, sin cambio)
+//   runners 597x597, 100,731px opacos → área actual (64px) ≈ 1159px² (referencia, sin cambio)
+//   golden-nuts 600x245, 109,266px opacos → área actual (25px) ≈ 1138px² (referencia, sin cambio; ya limitado por ancho, Ronda 110)
+//   tostachos 595x595, 113,424px opacos → área actual (63px) ≈ 1272px² (se ajusta a 59px ≈ 1116px² para igualar al resto)
+//   takis     597x597, 134,967px opacos → ERA 42px ≈ 669px² (¡solo 59% del área de chips!) → sube a 55px ≈ 1146px²
+//   hot-nuts  597x597, 109,234px opacos → ERA 47px ≈ 677px² (60% del área de chips) → sube a 61px ≈ 1140px²
+//   big-mix   597x597, 148,018px opacos → ERA 44px ≈ 805px² (71% del área de chips) → sube a 52px ≈ 1123px²
+//   pop       595x595, 136,603px opacos → ERA 48px ≈ 889px² (78% del área de chips) → sube a 54px ≈ 1125px²
+// Target ≈ 1120-1160px² de tinta renderizada para las 8 marcas por igual.
 const LOGO_SIZE: Record<string, string> = {
   chips: "h-[55px] md:h-[62px]",
-  takis: "h-[37px] md:h-[42px]",
+  takis: "h-[48px] md:h-[55px]",
   runners: "h-[57px] md:h-[64px]",
-  "big-mix": "h-[39px] md:h-[44px]",
-  "hot-nuts": "h-[42px] md:h-[47px]",
+  "big-mix": "h-[46px] md:h-[52px]",
+  "hot-nuts": "h-[54px] md:h-[61px]",
   "golden-nuts": "h-[22px] md:h-[25px]", // limitado por ancho de tinta (empata con Runners), no por altura
-  pop: "h-[42px] md:h-[48px]",
-  tostachos: "h-[56px] md:h-[63px]",
+  pop: "h-[48px] md:h-[54px]",
+  tostachos: "h-[53px] md:h-[59px]",
 };
 
 export default function LogoMarquee() {
