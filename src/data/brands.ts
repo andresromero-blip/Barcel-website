@@ -831,6 +831,10 @@ export const brands: Brand[] = [
     socialIcon: "text-white",
     imageFirst: false,
     logo: "/logos/pop.png",
+    // Ronda 119: logoHover reemplazado — el archivo anterior era un
+    // duplicado byte-a-byte de pop.png (placeholder, sin producto). El
+    // cliente entregó evidencia del hover real de Figma (logo + palomita
+    // asomando), recortado de ahí y limpiado a fondo transparente.
     logoHover: "/logos/pop-hover.png",
   },
   {
@@ -879,10 +883,15 @@ export const brands: Brand[] = [
     imageFirst: true,
     // Ronda 31: logo real + portafolio (carpeta "7) Golden Nuts 2" del
     // material compartido). logo = wordmark negro limpio (GN_LOGO_SIN_SOMBRA,
-    // buen contraste sobre goldennuts-gold); logoHover = versión blanca con
-    // resplandor rojo (GN_LOGO_SOMBRA_ROJA) — no hay un asset de "logo +
-    // producto asomando" como en las demás marcas, así que el hover usa las
-    // dos variantes reales que sí existen para dar el mismo efecto de "pop".
+    // buen contraste sobre goldennuts-gold).
+    // Ronda 119: logoHover reemplazado — la versión anterior (wordmark
+    // blanco con resplandor rojo) era solo una variante de color, no el
+    // asset "logo + producto asomando" que sí tienen las demás marcas y que
+    // pide el hover del Figma real. El cliente confirmó vía evidencia
+    // (capturas del Figma "Cards Categorías") que el hover correcto es un
+    // sartén de cacahuates enchilados con limón y flama, recortado del
+    // propio frame de Figma (no existía como archivo entregado aparte) y
+    // limpiado a fondo transparente con el mismo criterio que chips-hover.png.
     // flavors/heroImage: fotografía real de producto (carpeta "4) Imágenes
     // acompañamiento") en vez de renders de bolsa — es lo que existe para
     // esta marca; incluye un artefacto de franjas de color en píxeles de
@@ -931,6 +940,9 @@ export const brands: Brand[] = [
     socialIcon: "text-white",
     imageFirst: false,
     logo: "/logos/tostachos.png",
+    // Ronda 119: logoHover reemplazado — el archivo anterior era un
+    // duplicado byte-a-byte de tostachos.png (placeholder, sin producto).
+    // Mismo origen/criterio que el fix de pop-hover.png de esta misma ronda.
     logoHover: "/logos/tostachos-hover.png",
   },
 ];
