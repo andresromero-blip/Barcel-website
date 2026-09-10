@@ -255,7 +255,12 @@ export default function Hero() {
           {...(slide.cta.href.startsWith("http")
             ? { target: "_blank", rel: "noopener noreferrer" }
             : {})}
-          className={`flex min-h-[44px] items-center justify-center gap-1 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide shadow-md transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
+          // Ronda 121: borde 1:1 con Figma (node "Botón Blanco", 1:3158) —
+          // border-2 border-grey-300 (#b0b0b0), inside (box-sizing:border-box
+          // por defecto en Tailwind, no suma al tamaño de la caja). Figma no
+          // trae shadow-md en este botón, así que se quita — el borde es la
+          // única separación visual contra el banner.
+          className={`flex min-h-[44px] items-center justify-center gap-1 border-2 border-grey-300 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
         >
           {slide.cta.label}
           <span aria-hidden>↗</span>
