@@ -97,6 +97,31 @@ const SLIDES = [
   },
 ];
 
+// Ronda 120: flechas del carrusel 1:1 con Figma (node 1:3154 "Arrows", dentro
+// de 1:3146 "Carrusel"). El cliente marcó con un rectángulo rojo que el
+// estilo en vivo (cuadro semitransparente bg-white/20 + glifo tipográfico
+// ‹ › blanco) no correspondía al diseño real. Extraído vía get_design_context:
+// caja 56x56 (h-14 w-14) bg-white con border-2 border-grey-300 (sin blur, sin
+// transparencia), ícono real 24x24 "Google icons · arrow_left/arrow_right"
+// (SVG exportado de Figma, no un glifo de texto) en barcel-red (#ff2d50,
+// mismo token que el resto del sitio), separado 24px del borde (h-14 en vez
+// de h-9/h-11, left/right-6 en vez de left-2/left-4).
+function ArrowLeftIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-barcel-red" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M7.85 13L10.7 15.85C10.9 16.05 10.9958 16.2833 10.9875 16.55C10.9792 16.8167 10.8833 17.05 10.7 17.25C10.5 17.45 10.2625 17.5542 9.9875 17.5625C9.7125 17.5708 9.475 17.475 9.275 17.275L4.7 12.7C4.5 12.5 4.4 12.2667 4.4 12C4.4 11.7333 4.5 11.5 4.7 11.3L9.275 6.725C9.475 6.525 9.7125 6.42917 9.9875 6.4375C10.2625 6.44583 10.5 6.55 10.7 6.75C10.8833 6.95 10.9792 7.18333 10.9875 7.45C10.9958 7.71667 10.9 7.95 10.7 8.15L7.85 11H19C19.2833 11 19.5208 11.0958 19.7125 11.2875C19.9042 11.4792 20 11.7167 20 12C20 12.2833 19.9042 12.5208 19.7125 12.7125C19.5208 12.9042 19.2833 13 19 13H7.85Z" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-barcel-red" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M16.15 13H5C4.71667 13 4.47917 12.9042 4.2875 12.7125C4.09583 12.5208 4 12.2833 4 12C4 11.7167 4.09583 11.4792 4.2875 11.2875C4.47917 11.0958 4.71667 11 5 11H16.15L13.3 8.15C13.1 7.95 13.0042 7.71667 13.0125 7.45C13.0208 7.18333 13.1167 6.95 13.3 6.75C13.5 6.55 13.7375 6.44583 14.0125 6.4375C14.2875 6.42917 14.525 6.525 14.725 6.725L19.3 11.3C19.4 11.4 19.4708 11.5083 19.5125 11.625C19.5542 11.7417 19.575 11.8667 19.575 12C19.575 12.1333 19.5542 12.2583 19.5125 12.375C19.4708 12.4917 19.4 12.6 19.3 12.7L14.725 17.275C14.525 17.475 14.2875 17.5708 14.0125 17.5625C13.7375 17.5542 13.5 17.45 13.3 17.25C13.1167 17.05 13.0208 16.8167 13.0125 16.55C13.0042 16.2833 13.1 16.05 13.3 15.85L16.15 13Z" />
+    </svg>
+  );
+}
+
 const AUTOPLAY_MS = 6000;
 
 export default function Hero() {
@@ -201,17 +226,17 @@ export default function Hero() {
           type="button"
           aria-label="Anterior"
           onClick={prev}
-          className="absolute left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:left-4 md:flex md:h-11 md:w-11"
+          className="absolute left-6 top-1/2 hidden h-14 w-14 -translate-y-1/2 items-center justify-center border-2 border-grey-300 bg-white transition hover:bg-grey-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black md:flex"
         >
-          ‹
+          <ArrowLeftIcon />
         </button>
         <button
           type="button"
           aria-label="Siguiente"
           onClick={next}
-          className="absolute right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center bg-white/20 text-white backdrop-blur-sm transition hover:bg-white/35 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white sm:right-4 md:flex md:h-11 md:w-11"
+          className="absolute right-6 top-1/2 hidden h-14 w-14 -translate-y-1/2 items-center justify-center border-2 border-grey-300 bg-white transition hover:bg-grey-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black md:flex"
         >
-          ›
+          <ArrowRightIcon />
         </button>
       </div>
 
