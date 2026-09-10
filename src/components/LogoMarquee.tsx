@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { brands } from "@/data/brands";
 
@@ -50,21 +51,30 @@ export default function LogoMarquee() {
 
   return (
     <div className="overflow-hidden border-y border-black/5 bg-white">
-      <div className="flex w-max animate-marquee items-center py-5 hover:[animation-play-state:paused]">
+      {/* Ronda 122: medidas 1:1 con Figma (node "Barra de logos", 1:3159) —
+          barra de 96px de alto (h-24), cada logo en una caja fija de 80x80px
+          (w-20 h-20, antes w-32/w-40 variable) y separador de 40px + punto
+          de 8px (bg-grey-300, #b0b0b0, mismo token que el borde del CTA y
+          las flechas) + 40px entre cada logo — gap-x-10 (40px) en el flex
+          con un <span> de punto entre cada logo reproduce exactamente el
+          patrón logo-40-punto-40-logo del diseño. */}
+      <div className="flex h-24 w-max animate-marquee items-center gap-x-10 hover:[animation-play-state:paused]">
         {loop.map((brand, i) => (
-          <Link
-            key={`${brand.slug}-${i}`}
-            href={`/marcas/${brand.slug}`}
-            aria-label={`Ir a la página de ${brand.name}`}
-            className="flex w-32 shrink-0 items-center justify-center transition-opacity hover:opacity-70 focus-visible:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red md:w-40"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={brand.logo}
-              alt={brand.name}
-              className={`w-auto object-contain ${LOGO_SIZE[brand.slug] ?? "h-7 md:h-8"}`}
-            />
-          </Link>
+          <Fragment key={`${brand.slug}-${i}`}>
+            <Link
+              href={`/marcas/${brand.slug}`}
+              aria-label={`Ir a la página de ${brand.name}`}
+              className="flex h-20 w-20 shrink-0 items-center justify-center transition-opacity hover:opacity-70 focus-visible:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={brand.logo}
+                alt={brand.name}
+                className={`w-auto object-contain ${LOGO_SIZE[brand.slug] ?? "h-7 md:h-8"}`}
+              />
+            </Link>
+            <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-grey-300" />
+          </Fragment>
         ))}
       </div>
     </div>
