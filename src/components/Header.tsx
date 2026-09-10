@@ -161,18 +161,39 @@ export default function Header() {
               />
             </button>
             <div
-              className={`absolute left-1/2 top-full mt-3 w-56 -translate-x-1/2 bg-white shadow-xl transition-all duration-200 ${
+              className={`absolute left-1/2 top-full mt-3 w-64 -translate-x-1/2 bg-white shadow-xl transition-all duration-200 ${
                 marcasOpen ? "opacity-100" : "pointer-events-none translate-y-1 opacity-0"
               }`}
             >
+              {/* Ronda 125: logo real de cada marca en el desplegable — antes
+                  solo mostraba el nombre. Caja de color de marca
+                  (familyCardBg, mismo tono que usa el grid de familia en
+                  Home) con padding generoso + object-contain, para que la
+                  variación natural de "aire" entre los PNG de logo no
+                  produzca la misma disparidad de tamaño que se vio en el
+                  marquee (Ronda 122-124) — el fondo de color + el padding
+                  ya absorben esa diferencia visualmente. */}
               {brands.map((brand) => (
                 <a
                   key={brand.slug}
                   href={`/marcas/${brand.slug}`}
-                  className="flex items-center justify-between gap-2 px-4 py-3 font-display text-sm font-semibold text-barcel-black transition-colors hover:bg-barcel-cream"
+                  className="flex items-center gap-3 px-4 py-3 font-display text-sm font-semibold text-barcel-black transition-colors hover:bg-barcel-cream"
                 >
-                  {brand.name}
-                  <sup className="text-[0.6em]">®</sup>
+                  <span
+                    className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden p-1.5 ${brand.familyCardBg}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={brand.logo}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-full w-full object-contain"
+                    />
+                  </span>
+                  <span>
+                    {brand.name}
+                    <sup className="text-[0.6em]">®</sup>
+                  </span>
                 </a>
               ))}
             </div>
@@ -316,10 +337,23 @@ export default function Header() {
                   key={brand.slug}
                   href={`/marcas/${brand.slug}`}
                   onClick={handleNavClick}
-                  className="px-6 py-2.5 font-display text-sm font-semibold text-barcel-black/70 active:bg-barcel-cream"
+                  className="flex items-center gap-3 px-6 py-2.5 font-display text-sm font-semibold text-barcel-black/70 active:bg-barcel-cream"
                 >
-                  {brand.name}
-                  <sup className="text-[0.6em]">®</sup>
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden p-1 ${brand.familyCardBg}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={brand.logo}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-full w-full object-contain"
+                    />
+                  </span>
+                  <span>
+                    {brand.name}
+                    <sup className="text-[0.6em]">®</sup>
+                  </span>
                 </a>
               ))}
             </div>
