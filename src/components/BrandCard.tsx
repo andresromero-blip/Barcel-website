@@ -80,59 +80,111 @@ function MobileCard({ brand }: { brand: Brand }) {
 // frame); en md/lg se escalan hacia abajo para no romper en laptops más
 // angostas — Figma no define un breakpoint intermedio propio.
 function DesktopCard({ brand }: { brand: Brand }) {
-  return (
+  // Ronda 118 (parte 2): dos fixes.
+  //
+  // 1) Seam de subpíxel: antes el orden lógico/izq-der se resolvía con
+  //    flex-row-reverse (mismo DOM, dirección visual invertida por CSS).
+  //    Eso deja el split 50/50 de cada fila a merced del redondeo de
+  //    flex-grow, y como cada fila es un contenedor flex INDEPENDIENTE,
+  //    a ciertos anchos (zoom del navegador, DPI no entero) el punto de
+  //    corte de una fila puede caer medio píxel distinto al de la fila
+  //    de abajo — se ve como una rendija blanca justo en la esquina
+  //    donde se tocan las 4 zonas (logo/texto de una fila con la
+  //    siguiente). Fix: el orden ahora se resuelve intercambiando el
+  //    JSX real (no CSS), y el elemento que queda SEGUNDO en el DOM
+  //    (sea logo o texto, según el lado) se monta con -ml-px para
+  //    solaparse un hair sobre su vecino — como pinta después, tapa
+  //    cualquier rendija de redondeo sin que se note. md:-mt-px en el
+  //    contenedor de la fila hace lo mismo en el eje vertical (con la
+  //    fila anterior).
+  // 2) Hover del logo: Figma trae una interacción "Logo marca · Hover ·
+  //    Change to" en cada una de las 8 filas — mismo patrón de crossfade
+  //    ya usado en ProductSlider.tsx (flavor.image → flavor.hoverImage
+  //    con group-hover:opacity), aplicado aquí a brand.logo/logoHover
+  //    (campo que ya existía en brands.ts pero no se usaba en ningún
+  //    hover real, solo como fallback de brand.logo).
+  const textIsSecond = brand.imageFirst;
+
+  const logoBox = (
     <div
-      className={`hidden md:flex md:min-h-[360px] lg:min-h-[460px] xl:min-h-[650px] ${
-        brand.imageFirst ? "md:flex-row" : "md:flex-row-reverse"
+      className={`group/logo relative flex flex-1 items-center justify-center overflow-hidden p-10 lg:p-14 xl:p-16 ${brand.familyCardBg} ${
+        textIsSecond ? "" : "-ml-px"
       }`}
     >
-      {/* Logo marca: mitad de color, logo centrado */}
-      <div
-        className={`flex flex-1 items-center justify-center overflow-hidden p-10 lg:p-14 xl:p-16 ${brand.familyCardBg}`}
-      >
-        {brand.logo ? (
-          // eslint-disable-next-line @next/next/no-img-element
+      {brand.logo ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={brand.logo}
             alt={`Logo ${brand.name}`}
-            className="h-full max-h-[420px] w-full max-w-[420px] object-contain"
+            className={`h-full max-h-[420px] w-full max-w-[420px] object-contain ${
+              brand.logoHover ? "transition-opacity duration-300 ease-out group-hover/logo:opacity-0" : ""
+            }`}
           />
-        ) : (
-          <span
-            className={`font-display text-6xl font-black uppercase tracking-tight ${brand.logoText}`}
-          >
-            {brand.name}
-            <sup className="ml-1 text-[0.4em]">®</sup>
-          </span>
-        )}
-      </div>
-
-      {/* Card text: mitad blanca con título, tag, descripción y CTA */}
-      <Link
-        href={`/marcas/${brand.slug}`}
-        className="flex flex-1 flex-col justify-center gap-6 bg-white px-8 py-10 lg:gap-8 lg:px-12 xl:gap-12 xl:px-20"
-      >
-        <div className="flex flex-col gap-4 xl:gap-6">
-          <div className="flex items-start gap-3 xl:gap-4">
-            <h3 className="font-display text-3xl font-bold leading-none text-barcel-black lg:text-5xl xl:text-[64px]">
-              {brand.name}
-            </h3>
-            <sup className="mt-1 text-base text-barcel-black lg:text-xl xl:text-2xl">®</sup>
-          </div>
-          <p className={`font-display text-lg font-semibold lg:text-2xl xl:text-[36px] ${brand.familyCardText}`}>
-            {brand.tagline}
-          </p>
-        </div>
-        <p className="font-body text-sm leading-[1.3] text-barcel-black/70 lg:text-base xl:text-[24px]">
-          {brand.description}
-        </p>
-        <span className="group inline-flex w-fit items-center gap-2 py-2 font-body text-sm font-medium text-barcel-black underline xl:gap-4 xl:py-3 xl:text-lg">
-          Ver todos los productos
-          <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">
-            →
-          </span>
+          {brand.logoHover && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={brand.logoHover}
+              alt=""
+              aria-hidden="true"
+              className="absolute h-full max-h-[420px] w-full max-w-[420px] object-contain opacity-0 transition-opacity duration-300 ease-out group-hover/logo:opacity-100"
+            />
+          )}
+        </>
+      ) : (
+        <span
+          className={`font-display text-6xl font-black uppercase tracking-tight ${brand.logoText}`}
+        >
+          {brand.name}
+          <sup className="ml-1 text-[0.4em]">®</sup>
         </span>
-      </Link>
+      )}
+    </div>
+  );
+
+  const textBox = (
+    <Link
+      href={`/marcas/${brand.slug}`}
+      className={`flex flex-1 flex-col justify-center gap-6 bg-white px-8 py-10 lg:gap-8 lg:px-12 xl:gap-12 xl:px-20 ${
+        textIsSecond ? "-ml-px" : ""
+      }`}
+    >
+      <div className="flex flex-col gap-4 xl:gap-6">
+        <div className="flex items-start gap-3 xl:gap-4">
+          <h3 className="font-display text-3xl font-bold leading-none text-barcel-black lg:text-5xl xl:text-[64px]">
+            {brand.name}
+          </h3>
+          <sup className="mt-1 text-base text-barcel-black lg:text-xl xl:text-2xl">®</sup>
+        </div>
+        <p className={`font-display text-lg font-semibold lg:text-2xl xl:text-[36px] ${brand.familyCardText}`}>
+          {brand.tagline}
+        </p>
+      </div>
+      <p className="font-body text-sm leading-[1.3] text-barcel-black/70 lg:text-base xl:text-[24px]">
+        {brand.description}
+      </p>
+      <span className="group inline-flex w-fit items-center gap-2 py-2 font-body text-sm font-medium text-barcel-black underline xl:gap-4 xl:py-3 xl:text-lg">
+        Ver todos los productos
+        <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">
+          →
+        </span>
+      </span>
+    </Link>
+  );
+
+  return (
+    <div className="hidden md:flex md:min-h-[360px] md:-mt-px lg:min-h-[460px] xl:min-h-[650px]">
+      {brand.imageFirst ? (
+        <>
+          {logoBox}
+          {textBox}
+        </>
+      ) : (
+        <>
+          {textBox}
+          {logoBox}
+        </>
+      )}
     </div>
   );
 }
