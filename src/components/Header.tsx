@@ -161,27 +161,31 @@ export default function Header() {
               />
             </button>
             <div
-              className={`absolute left-1/2 top-full mt-3 w-64 -translate-x-1/2 bg-white shadow-xl transition-all duration-200 ${
+              className={`absolute left-1/2 top-full mt-3 w-[250px] -translate-x-1/2 border border-grey-300 bg-white transition-all duration-200 ${
                 marcasOpen ? "opacity-100" : "pointer-events-none translate-y-1 opacity-0"
               }`}
             >
-              {/* Ronda 125: logo real de cada marca en el desplegable — antes
-                  solo mostraba el nombre. Caja de color de marca
-                  (familyCardBg, mismo tono que usa el grid de familia en
-                  Home) con padding generoso + object-contain, para que la
-                  variación natural de "aire" entre los PNG de logo no
-                  produzca la misma disparidad de tamaño que se vio en el
-                  marquee (Ronda 122-124) — el fondo de color + el padding
-                  ya absorben esa diferencia visualmente. */}
+              {/* Ronda 125: logo real de cada marca en el desplegable — 1:1
+                  con Figma (node "Lista menu", 1:3385, dentro del frame
+                  "Marcas"): fila bg-white, gap-1 (4px), px-3 py-4, logo
+                  48x48 SIN caja de color (el propio PNG, tal como en el
+                  diseño) y nombre en font-display (Raleway) semibold 18px
+                  con el color de marca AA-verificado en Ronda 116
+                  (familyCardText, mismo token que el Tag del grid de
+                  familia — ya calibrado por marca contra fondo blanco, así
+                  que reutilizarlo aquí evita repetir el ejercicio manual
+                  de contraste). Contenedor: w-250px, borde grey-300 1px
+                  inside (mismo token que el CTA del Hero y las flechas),
+                  sin shadow (Figma no trae sombra). El símbolo ® no
+                  aparece en el mock de Figma pero el cliente lo pidió
+                  explícito para el dropdown — se mantiene. */}
               {brands.map((brand) => (
                 <a
                   key={brand.slug}
                   href={`/marcas/${brand.slug}`}
-                  className="flex items-center gap-3 px-4 py-3 font-display text-sm font-semibold text-barcel-black transition-colors hover:bg-barcel-cream"
+                  className="flex items-center gap-1 px-3 py-4 font-display text-lg font-semibold transition-colors hover:bg-barcel-cream"
                 >
-                  <span
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden p-1.5 ${brand.familyCardBg}`}
-                  >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={brand.logo}
@@ -190,7 +194,7 @@ export default function Header() {
                       className="h-full w-full object-contain"
                     />
                   </span>
-                  <span>
+                  <span className={brand.familyCardText}>
                     {brand.name}
                     <sup className="text-[0.6em]">®</sup>
                   </span>
@@ -332,16 +336,19 @@ export default function Header() {
             }`}
           >
             <div className="flex min-h-0 flex-col">
+              {/* Mismo criterio 1:1 que el desplegable desktop (Ronda 125,
+                  ver comentario arriba): logo sin caja de color + nombre en
+                  el color de marca AA-verificado (familyCardText), a
+                  tamaño reducido para la fila más compacta del acordeón
+                  mobile. */}
               {brands.map((brand) => (
                 <a
                   key={brand.slug}
                   href={`/marcas/${brand.slug}`}
                   onClick={handleNavClick}
-                  className="flex items-center gap-3 px-6 py-2.5 font-display text-sm font-semibold text-barcel-black/70 active:bg-barcel-cream"
+                  className="flex items-center gap-2 px-6 py-2.5 font-display text-sm font-semibold active:bg-barcel-cream"
                 >
-                  <span
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden p-1 ${brand.familyCardBg}`}
-                  >
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={brand.logo}
@@ -350,7 +357,7 @@ export default function Header() {
                       className="h-full w-full object-contain"
                     />
                   </span>
-                  <span>
+                  <span className={brand.familyCardText}>
                     {brand.name}
                     <sup className="text-[0.6em]">®</sup>
                   </span>
