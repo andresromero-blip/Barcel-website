@@ -37,13 +37,15 @@ export default function FamilyGrid() {
         )}
       </div>
 
-      {/* Ronda 116: la tarjeta nueva (BrandCard) ya es autocontenida
-          (franja de color + bloque blanco), así que en mobile es un
-          simple stack vertical con separación — igual que Figma (1
-          columna). El grid de 2-4 columnas en desktop es provisional
-          hasta trabajar el breakpoint desktop del rediseño (task
-          pendiente "Rediseño Figma 1:1 — Home (desktop)"). */}
-      <div className="container-page grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Ronda 117: BrandCard ya resuelve mobile vs. desktop internamente
+          (MobileCard = stack apilado, DesktopCard = fila full-width lado
+          a lado). En mobile este wrapper solo da el padding lateral y el
+          gap entre tarjetas (igual que container-page, sin el max-width
+          extra); en desktop (md+) las filas van pegadas sin gap y sin
+          padding lateral, tocando los bordes del contenedor de 1280px —
+          1:1 con Figma (node 1:3202 "Cards Categorías": 8 filas
+          full-width apiladas sin separación). */}
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 px-5 md:gap-0 md:px-0">
         {brands.map((brand) => {
           const isMatch = brand.name.toLowerCase().includes(normalized);
           return (
