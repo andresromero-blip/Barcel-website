@@ -34,47 +34,60 @@ const SOCIALS = [
 
 export default function Footer() {
   return (
-    <footer id="contacto" className="bg-barcel-black text-white">
-      <div className="container-page flex flex-col gap-8 py-12 md:flex-row md:items-center md:justify-between">
-        <a href="/" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logos/barcel-logo-horizontal.png"
-            alt="Barcel®"
-            className="h-9 w-auto object-contain object-left"
-          />
-        </a>
+    // Ronda 116: rediseño Figma 1:1 del footer de mobile (node 1:10523,
+    // "Footer interaction") — bg-grey-950 (#262626, el gris real del
+    // footer en Figma) en vez de barcel-black (#0f0f0f, más cerca de
+    // negro puro que se venía usando como aproximación). El layout en
+    // mobile pasa de una fila con flex-wrap a un stack vertical (logo+
+    // redes arriba, links debajo, copyright al final con su propio
+    // borde) — desde md: se conserva el layout horizontal que ya existía
+    // (no hay Figma desktop para el footer todavía).
+    <footer id="contacto" className="bg-grey-950 text-white">
+      <div className="container-page flex flex-col gap-8 py-4 md:flex-row md:items-center md:justify-between md:py-12">
+        <div className="flex items-center justify-between md:contents">
+          <a href="/" className="flex items-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logos/barcel-logo-horizontal.png"
+              alt="Barcel®"
+              className="h-9 w-auto object-contain object-left"
+            />
+          </a>
 
-        <nav className="flex flex-wrap gap-x-6 gap-y-3 font-body text-sm text-white/70">
+          {/* Redes: en mobile viven junto al logo (fila "Featured" de
+              Figma); en desktop se mueven al final de la fila (orden
+              original, sin cambios). */}
+          <div className="flex items-center gap-3 md:order-3">
+            {SOCIALS.map((social) => (
+              <a
+                key={social.label}
+                href={social.href}
+                aria-label={social.label}
+                className="flex h-9 w-9 items-center justify-center bg-white/10 transition-colors hover:bg-barcel-red"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                  <path d={social.path} />
+                </svg>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <nav className="flex flex-col gap-4 font-body text-sm text-white/70 md:flex-row md:flex-wrap md:items-center md:gap-x-6 md:gap-y-3">
           {FOOTER_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="transition-colors hover:text-white"
+              className="text-lg font-semibold tracking-wide text-white transition-colors hover:text-white/70 md:text-sm md:font-normal md:tracking-normal md:text-white/70"
             >
               {link.label}
             </a>
           ))}
         </nav>
-
-        <div className="flex items-center gap-3">
-          {SOCIALS.map((social) => (
-            <a
-              key={social.label}
-              href={social.href}
-              aria-label={social.label}
-              className="flex h-9 w-9 items-center justify-center bg-white/10 transition-colors hover:bg-barcel-red"
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current">
-                <path d={social.path} />
-              </svg>
-            </a>
-          ))}
-        </div>
       </div>
 
-      <div className="border-t border-white/10 py-5">
-        <p className="container-page text-center font-body text-xs text-white/50">
+      <div className="border-t-2 border-grey-800 py-4 md:border-t md:border-white/10 md:py-5">
+        <p className="container-page text-center font-body text-sm text-grey-300 md:text-xs md:text-white/50">
           © {new Date().getFullYear()} BARCEL® - Grupo Bimbo. Todos los
           derechos reservados.
         </p>

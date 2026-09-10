@@ -17,13 +17,16 @@ export default function FamilyGrid() {
       {/* Sin CTA "Nuestras botanas": ya no hay un catálogo/hub al que
           llevar — cada tarjeta de abajo enlaza directo a la página de esa
           marca con "Ver todos los productos →". */}
+      {/* Ronda 116: copy 1:1 con el rediseño Figma (Home > Categorías,
+          node 1:10497/1:10499-10500) — el subtítulo cambia, el título ya
+          coincidía. */}
       <div className="container-page mb-10">
         <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
           Conoce toda nuestra familia
         </h2>
         <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
           Explora nuestros productos y encuentra nuevos antojos de
-          Barcel<sup>®</sup>. Elige una marca para ver todo su portafolio.
+          Barcel<sup>®</sup>. Descubre todas las opciones llenas de sabor.
         </p>
         {hasQuery && (
           <p className="mt-2 font-display text-xs font-bold uppercase tracking-wide text-barcel-red">
@@ -34,7 +37,13 @@ export default function FamilyGrid() {
         )}
       </div>
 
-      <div className="flex flex-col divide-y divide-black/5">
+      {/* Ronda 116: la tarjeta nueva (BrandCard) ya es autocontenida
+          (franja de color + bloque blanco), así que en mobile es un
+          simple stack vertical con separación — igual que Figma (1
+          columna). El grid de 2-4 columnas en desktop es provisional
+          hasta trabajar el breakpoint desktop del rediseño (task
+          pendiente "Rediseño Figma 1:1 — Home (desktop)"). */}
+      <div className="container-page grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {brands.map((brand) => {
           const isMatch = brand.name.toLowerCase().includes(normalized);
           return (

@@ -45,6 +45,7 @@ const config: Config = {
           300: "#b0b0b0",
           400: "#888888",
           700: "#4f4f4f",
+          800: "#454545", // Colors base/Grey/800 — borde del copyright del footer (Ronda 116)
           950: "#262626", // Colors base/Grey/950
         },
         chips: {
@@ -107,6 +108,31 @@ const config: Config = {
         tostachos: {
           green: "#6CAB3B", // fondo del tile, extraído de Figma
           "green-700": "#4B7729", // 5.29:1 sobre blanco — AA (green-base solo da 2.79:1, no pasa)
+        },
+        // Ronda 116: rediseño Figma 1:1 del "Card categoria" del grid de
+        // familia (Home > Categorías, nodes 1:10502–1:10509). Son colores
+        // NUEVOS y DISTINTOS de los tokens de arriba (chips/takis/bigmix/
+        // etc.), que siguen usándose tal cual en el resto del sitio (hero
+        // de marca, portafolio, hovers…) — namespace aparte a propósito
+        // para no arrastrar este refresh de color a páginas que ya tienen
+        // su propio par texto/fondo verificado en AA. Todos verificados
+        // ≥3:1 sobre blanco (umbral de "texto grande" WCAG — el Tag de
+        // esta tarjeta es 24px/600, que ya califica como texto grande sin
+        // necesitar 4.5:1).
+        familyCard: {
+          chips: "#663025", // = chips.brown (Figma coincide 1:1 con el manual oficial)
+          // Excepción: Figma trae #981eff para Takis, pero el morado
+          // OFICIAL del Takis Global Brandbook 2025 (Ronda 44) es
+          // #570f8b — mismo criterio ya establecido en el proyecto: el
+          // manual de marca gana sobre la referencia visual de Figma.
+          // 11.37:1 sobre blanco, de sobra.
+          takis: "#570f8b",
+          bigmix: "#006dcb", // 5.19:1
+          runners: "#f5173c", // 4.14:1 (mismo valor que barcel.red-600)
+          hotnuts: "#e45012", // 3.85:1
+          pop: "#008ad4", // 3.76:1
+          goldennuts: "#9a7500", // 4.27:1
+          tostachos: "#51852b", // 4.43:1
         },
       },
       fontFamily: {

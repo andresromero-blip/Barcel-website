@@ -159,6 +159,21 @@ export type Brand = {
   // dejar un hueco o forzar un asset que no existe — así Chip's (sin
   // textura propia todavía) usa directamente bg-chips-brown.
   productDetailBg?: string;
+  // Ronda 116: color de la franja "Logo marca" en la tarjeta de familia
+  // del Home (rediseño Figma 1:1, ver familyCard.* en tailwind.config.ts).
+  // Campo aparte de `bg` a propósito: `bg` sigue siendo el color "clásico"
+  // de la marca usado en el resto del sitio (hero, portafolio, hovers),
+  // mientras que familyCardBg es específicamente el color que trae el
+  // nuevo Figma para esta tarjeta puntual — en la mayoría de las marcas
+  // coinciden en espíritu pero no siempre en el valor exacto.
+  familyCardBg: string;
+  // Mismo color que familyCardBg pero como clase "text-...": el Tag de
+  // esta tarjeta se pinta con el color de marca. Campo aparte (no
+  // `familyCardBg.replace("bg-", "text-")` en el componente) a propósito
+  // — Tailwind purga clases que no aparecen LITERALES en el código
+  // fuente (ver Ronda 20), así que una clase armada en tiempo de
+  // ejecución nunca se generaría en el CSS final.
+  familyCardText: string;
 };
 
 export const brands: Brand[] = [
@@ -166,13 +181,18 @@ export const brands: Brand[] = [
     slug: "chips",
     name: "Chip's",
     tagline: "Antojo picosito",
+    // Ronda 116: copy del "Card categoria" del rediseño Figma 1:1 (node
+    // 1:10502) — reemplaza la descripción anterior. El tagline ya
+    // coincidía 1:1, no cambia.
     description:
-      "Chip's se distingue por su corte grueso y su proceso de freído lento, que le dan una textura y sabor únicos. Descubre sus variantes icónicas de Jalapeño y de Fuego, además del NUEVO Crema y Especias, sin olvidar los clásicos Sal y Chipotle para disfrutar cada antojo.",
+      "Chip's es sabor sin filtro. Una marca intensa, juvenil y explosiva que convierte cada papa en una experiencia llena de crunch, picante y actitud mexicana.",
     // Chip's: color de marca corregido al manual oficial (café/terracota
     // PMS 483/484 C, ver nota completa en tailwind.config.ts) — el verde
     // que usaba el sitio era solo una referencia visual de Figma y además
     // corresponde al secundario de Jalapeño, no al color de marca.
     bg: "bg-chips-brown",
+    familyCardBg: "bg-familyCard-chips",
+    familyCardText: "text-familyCard-chips",
     logoText: "text-chips-brown",
     // 10.42:1 sobre blanco — AA de sobra (mejor que el 5.06:1 que daba el
     // verde-700 anterior).
@@ -283,9 +303,13 @@ export const brands: Brand[] = [
     slug: "takis",
     name: "Takis",
     tagline: "Fuego y sabor sin límites",
+    // Ronda 116: copy del "Card categoria" del rediseño Figma 1:1 (node
+    // 1:10503). Tagline ya coincidía 1:1, no cambia.
     description:
-      "Takis es una botana de maíz reconocida por sus sabores intensos y su experiencia única. Desde opciones sin picante hasta propuestas extremas, su portafolio ofrece botanas crujientes pensadas para quienes buscan intensidad y sabor en cada mordida.",
+      "En un mundo obsesionado con la aprobación externa, Takis alimenta el fuego interior de quienes se mantienen fieles a sí mismos. La vida es mejor cuando abres tu propio camino.",
     bg: "bg-takis-purple",
+    familyCardBg: "bg-familyCard-takis",
+    familyCardText: "text-familyCard-takis",
     logoText: "text-takis-yellow",
     textOnBg: "text-takis-purple",
     hoverBg: "hover:bg-takis-purple",
@@ -649,9 +673,13 @@ export const brands: Brand[] = [
     slug: "runners",
     name: "Runners",
     tagline: "Acelera tu emoción",
+    // Ronda 116: copy del "Card categoria" del rediseño Figma 1:1 (node
+    // 1:10505). Tagline ya coincidía 1:1, no cambia.
     description:
-      "Runners es la botana que enciende la diversión en cualquier momento. Con su icónica forma de coche, textura crujiente y variedad de sabores, convierte cualquier momento en un juego. Porque con Runners no hay que esperar: abres la bolsa y la diversión arranca.",
+      "Runners combina crunch, sabor y energía. Una botana dinámica y divertida creada para acompañar momentos rápidos, espontáneos y llenos de emoción con actitud y mucho antojo.",
     bg: "bg-runners-pink",
+    familyCardBg: "bg-familyCard-runners",
+    familyCardText: "text-familyCard-runners",
     logoText: "text-runners-yellow",
     // Ronda 35: runners-pink es la marca con menos margen de contraste del
     // sitio. text-barcel-black (#0f0f0f) sobre runners-pink solo da
@@ -689,9 +717,13 @@ export const brands: Brand[] = [
     slug: "big-mix",
     name: "Big Mix",
     tagline: "Mezcla, la fiesta y compartir",
+    // Ronda 116: copy del "Card categoria" del rediseño Figma 1:1 (node
+    // 1:10504). Tagline ya coincidía 1:1, no cambia.
     description:
-      "Big Mix es la botana ideal para los que quieren todo en un solo snack. Disfruta sabores como Queso, Fuego e Inglesa limón, en una mezcla crujiente, deliciosa y surtida para compartir o disfrutar en cualquier momento. Elige Big Mix y piensa en Big.",
+      "Mix mezcla sabor, diversión y actitud. Una botana explosiva y social creada para compartir, botanear y prender cualquier momento con variedad y crunch.",
     bg: "bg-bigmix-blue",
+    familyCardBg: "bg-familyCard-bigmix",
+    familyCardText: "text-familyCard-bigmix",
     logoText: "text-bigmix-yellow",
     // Ronda 35: bigmix-blue base solo da 4.00:1 sobre blanco (no pasa
     // AA) — se usa bigmix-blue-700 (5.09:1) para textOnBg.
@@ -721,10 +753,14 @@ export const brands: Brand[] = [
   {
     slug: "hot-nuts",
     name: "Hot Nuts",
-    tagline: "Picante que engancha",
+    // Ronda 116: el rediseño Figma 1:1 (node 1:10506) trae un tagline
+    // nuevo para Hot Nuts — reemplaza "Picante que engancha".
+    tagline: "Fuego y sabor que se siente",
     description:
-      "Hot Nuts® Original: cacahuates picositos con capa crujiente que truenan justo como te gustan. Si va a tronar, ¡que truene bien!",
+      "Prepárate para ponerle fuego al antojo. Descubre Hot Nuts y déjate llevar por una cubierta llena de sabor, cacahuates crujientes y una actitud que no pasa desapercibida.",
     bg: "bg-hotnuts-orange",
+    familyCardBg: "bg-familyCard-hotnuts",
+    familyCardText: "text-familyCard-hotnuts",
     logoText: "text-white",
     // Ronda 35: hotnuts-orange base solo da 3.50:1 sobre blanco (no pasa
     // AA) — se usa hotnuts-orange-700 (5.06:1) para textOnBg.
@@ -770,9 +806,14 @@ export const brands: Brand[] = [
     slug: "pop",
     name: "POP",
     tagline: "¡Que empiece el crunch!",
+    // Ronda 116: copy del "Card categoria" del rediseño Figma 1:1 (node
+    // 1:10507) — coincide 1:1 con la que ya había (tagline y descripción
+    // sin cambios).
     description:
       "¡Que empiece la función! Descubre POP y dale sabor a tus momentos favoritos con palomitas crujientes, dulces y picositas. Elige tu favorita y disfruta el antojo a tu manera.",
     bg: "bg-pop-blue",
+    familyCardBg: "bg-familyCard-pop",
+    familyCardText: "text-familyCard-pop",
     logoText: "text-white",
     // pop-blue base solo da 2.83:1 sobre blanco (no pasa AA) — se usa
     // pop-blue-700 (5.34:1) para textOnBg, mismo criterio que Big
@@ -795,10 +836,22 @@ export const brands: Brand[] = [
   {
     slug: "golden-nuts",
     name: "Golden Nuts",
-    tagline: "Sabor clásico, crunch dorado",
+    // Ronda 116: el rediseño Figma 1:1 (node 1:10508) trae un tagline
+    // nuevo para Golden Nuts — reemplaza "Sabor clásico, crunch dorado".
+    tagline: "Sabor que se disfruta",
+    // OJO: la "Descripción" de esta tarjeta en Figma (node 1:10508) trae
+    // el copy de Runners pegado por error — el párrafo literal dice
+    // "Runners combina crunch..." bajo el título "Golden Nuts", idéntico
+    // palabra por palabra al de la tarjeta de Runners. Es un error de
+    // contenido del archivo Figma, no un cambio de copy intencional —
+    // reproducirlo pondría el nombre de otra marca en la tarjeta de
+    // Golden Nuts. Se conserva la descripción real existente en vez de
+    // copiar el error 1:1.
     description:
       "Golden Nuts es el clásico que nunca falla. Cacahuates japoneses con el crunch perfecto para disfrutar solos, en mezcla o para compartir en cualquier momento.",
     bg: "bg-goldennuts-gold",
+    familyCardBg: "bg-familyCard-goldennuts",
+    familyCardText: "text-familyCard-goldennuts",
     logoText: "text-white",
     // Ronda 35: goldennuts-gold base solo da 2.60:1 sobre blanco (no pasa
     // AA, ni siquiera para texto grande) — se usa goldennuts-gold-700
@@ -854,10 +907,14 @@ export const brands: Brand[] = [
     // de la tarjeta "Tostachos" en Figma (node 145:4139).
     slug: "tostachos",
     name: "Tostachos",
+    // Ronda 116: tagline y descripción ya coinciden 1:1 con el "Card
+    // categoria" del rediseño Figma (node 1:10509) — sin cambios.
     tagline: "Queso, jalapeño y crunch",
     description:
       "¡Prepárate para el crunch! Descubre Tostachos y disfruta queso, jalapeño y mucho sabor en cada mordida. Una botana picosita para cualquier antojo.",
     bg: "bg-tostachos-green",
+    familyCardBg: "bg-familyCard-tostachos",
+    familyCardText: "text-familyCard-tostachos",
     logoText: "text-white",
     // tostachos-green base solo da 2.79:1 sobre blanco (no pasa AA) — se
     // usa tostachos-green-700 (5.29:1) para textOnBg.
