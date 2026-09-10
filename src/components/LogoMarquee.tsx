@@ -32,6 +32,18 @@ import { brands } from "@/data/brands";
 // (bbox de tinta real medido en el archivo, no el canvas con aire).
 // Valores fijos (no se recalculan en runtime) porque Tailwind JIT necesita
 // ver el string completo de la clase en el código.
+// Ronda 123: POP y Tostachos se agregaron al marquee en la Ronda 111 pero
+// NUNCA se dieron de alta en este mapa — caían en el fallback genérico
+// "h-7 md:h-8" (28px/32px de canvas), que combinado con su propio % de aire
+// interno daba una tinta visible de solo ~17-20px (Tostachos: bbox real
+// 552x323 sobre canvas 595x595 => tinta ocupa 54.3% de esa altura) frente a
+// los ~30-34px del resto — de ahí que se vieran mucho más chicos/ilegibles
+// en la tira, exactamente el reporte del cliente. Se midió el bbox real
+// (alpha>0) de cada PNG con PIL para calcular la altura de <img> que iguala
+// la tinta de estos dos al mismo target de ~30.4px (mobile) / ~34.3px (md)
+// que ya usan chips/takis/runners/big-mix/hot-nuts:
+//   pop.png:        canvas 595x595, bbox 541x429 => tinta 72.1% alto
+//   tostachos.png:  canvas 595x595, bbox 552x323 => tinta 54.3% alto
 const LOGO_SIZE: Record<string, string> = {
   chips: "h-[55px] md:h-[62px]",
   takis: "h-[37px] md:h-[42px]",
@@ -39,6 +51,8 @@ const LOGO_SIZE: Record<string, string> = {
   "big-mix": "h-[39px] md:h-[44px]",
   "hot-nuts": "h-[42px] md:h-[47px]",
   "golden-nuts": "h-[22px] md:h-[25px]", // limitado por ancho de tinta (empata con Runners), no por altura
+  pop: "h-[42px] md:h-[48px]",
+  tostachos: "h-[56px] md:h-[63px]",
 };
 
 export default function LogoMarquee() {
