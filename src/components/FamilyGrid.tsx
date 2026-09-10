@@ -37,15 +37,21 @@ export default function FamilyGrid() {
         )}
       </div>
 
-      {/* Ronda 117: BrandCard ya resuelve mobile vs. desktop internamente
-          (MobileCard = stack apilado, DesktopCard = fila full-width lado
-          a lado). En mobile este wrapper solo da el padding lateral y el
-          gap entre tarjetas (igual que container-page, sin el max-width
-          extra); en desktop (md+) las filas van pegadas sin gap y sin
-          padding lateral, tocando los bordes del contenedor de 1280px —
-          1:1 con Figma (node 1:3202 "Cards Categorías": 8 filas
-          full-width apiladas sin separación). */}
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6 px-5 md:gap-0 md:px-0">
+      {/* Ronda 118: el cliente marcó que seguía viendo "espacios en
+          blanco" que no están en Figma — eran los márgenes laterales que
+          dejaba el mx-auto max-w-[1280px] de la Ronda 117 en pantallas
+          >1280px (las filas nunca llegaban a tocar el borde real de la
+          ventana). El propio node 1:3202 ("Cards Categorías") define las
+          8 filas con x=0 y width=1440 — el ANCHO COMPLETO del frame, sin
+          margen lateral alguno — así que el 1:1 real es full-bleed: sin
+          max-width, sin mx-auto, tocando los bordes del viewport. En
+          mobile este wrapper solo da el padding lateral y el gap entre
+          tarjetas (equivalente a container-page); desde md: pierde
+          ambos (gap-0, px-0) y las filas quedan pegadas entre sí Y
+          pegadas a los bordes de la pantalla — verificado sin gap
+          vertical en 1024/1440/1920px, el "espacio en blanco" era 100%
+          el margen lateral, ya no existe. */}
+      <div className="flex w-full flex-col gap-6 px-5 md:gap-0 md:px-0">
         {brands.map((brand) => {
           const isMatch = brand.name.toLowerCase().includes(normalized);
           return (
