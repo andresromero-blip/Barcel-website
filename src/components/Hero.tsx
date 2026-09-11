@@ -401,8 +401,12 @@ export default function Hero() {
           sin importar su composición). Desde md vuelven a ser overlay
           absoluto sobre la imagen (posicionado contra la <section>, que
           es "relative" y envuelve tanto la caja de imagen como este
-          bloque) — comportamiento idéntico al original pre-Ronda 114. */}
-      <div className="relative flex flex-col items-center gap-1.5 bg-barcel-black px-3 py-3 xs:gap-2 sm:gap-3 sm:px-4 sm:py-4 md:absolute md:inset-x-0 md:bottom-0 md:gap-4 md:bg-transparent md:px-0 md:py-0 md:pb-6 lg:pb-8">
+          bloque) — comportamiento idéntico al original pre-Ronda 114.
+          Ronda 133: la franja mobile pasa de bg-barcel-black a
+          bg-barcel-red para igualarla al color del header/menú (mismo
+          token, `bg-barcel-red`, ya usado en Header.tsx). Desktop no
+          cambia (md:bg-transparent, el cliente pidió solo mobile). */}
+      <div className="relative flex flex-col items-center gap-1.5 bg-barcel-red px-3 py-3 xs:gap-2 sm:gap-3 sm:px-4 sm:py-4 md:absolute md:inset-x-0 md:bottom-0 md:gap-4 md:bg-transparent md:px-0 md:py-0 md:pb-6 lg:pb-8">
         <a
           href={slide.cta.href}
           // Ronda 103: Golácticos es una promo con landing propia fuera
