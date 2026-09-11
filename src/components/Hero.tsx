@@ -17,28 +17,23 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // colores de cada CTA son los tokens de marca ya verificados AA contra
 // fondo blanco en tailwind.config.ts (mismo criterio que el resto del
 // sitio, no valores nuevos).
-// Ronda 132: se reemplazaron los 7 banners por versiones ampliadas a
-// 3072x1536 (el doble de alto y 1.5x más anchas que el asset original
-// de 2048x768). El arte original de cada banner se mantiene A ESCALA
-// NATIVA (sin estirar), centrado horizontalmente (512px de margen a
-// cada lado) y anclado arriba (0-768px); el espacio nuevo — los 512px
-// de cada lado y los 768px de abajo — se rellenó con una extensión del
-// propio fondo de cada banner (para golacticos/takis-picante/
-// takis-picometro, generada con IA — Firefly Generative Expand; para
-// pop/chips-35-anos/hotnuts/runners-juegalos, con un desenfoque +
-// degradado del propio borde de la imagen vía Pillow, sin IA, porque la
-// generación de Firefly alucinaba texto ilegible en el fondo de esos 4).
-// El motivo del cambio: dar un "colchón" real debajo y a los costados
-// del arte original para que un futuro overlay de CTA nunca tape
-// contenido, sin depender de recortar dinámicamente con CSS.
-// Como el contenido real de CADA banner ahora vive siempre en la misma
-// franja (centrado, top-anchored, con ~512px de aire a cada lado y 768px
-// abajo), ya no hace falta un `object-position` distinto por banner —
-// `object-top` (centrado horizontal + anclado arriba) es seguro para
-// los 7 en cualquier proporción de contenedor: el margen agregado
-// absorbe el recorte lateral que pueda meter cualquier aspect-ratio del
-// contenedor, y anclar arriba garantiza que el recorte (si lo hay) caiga
-// siempre en el colchón de abajo, nunca en el arte real.
+// Ronda 132 (SUPERADA por la Ronda 136, ver abajo): se probó ampliar los
+// 7 banners a 3072x1536 rellenando los márgenes nuevos con una extensión
+// generada del propio fondo (IA o blur, según el banner) para crear un
+// "colchón" sin contenido donde el CTA pudiera vivir sin taparlo.
+// Ronda 135: el cliente empezó a mandar versiones de banner YA recortadas
+// a propósito para cada contexto en vez de depender de un colchón
+// generado — primero para mobile (1672x941, ~16:9, igual al contenedor
+// mobile).
+// Ronda 136: el cliente mandó también la versión desktop dedicada de 6
+// de los 7 banners (1774x887, exactamente 2:1 — la MISMA proporción del
+// contenedor desktop, `md:aspect-[1774/887]`), reemplazando el asset
+// ampliado de la Ronda 132. Con el asset ya recortado 1:1 a la proporción
+// del contenedor, el "colchón" de la Ronda 132 ya no hace falta en
+// desktop — object-cover no recorta nada (cover y contain dan el mismo
+// resultado cuando el ratio del contenedor es idéntico al de la imagen).
+// El banner "Pop" se eliminó del carrusel en la Ronda 136 (el cliente no
+// mandó versión desktop para él y pidió quitarlo, mobile incluido).
 const SLIDES = [
   {
     id: "golacticos",
@@ -74,18 +69,6 @@ const SLIDES = [
       href: "/marcas/runners",
       // Fondo blanco solido + texto rosa Runners: 5.04:1 de contraste (AA)
       variant: "text-runners-pink-700",
-    },
-  },
-  {
-    id: "pop",
-    image: "/hero/slide-pop.jpg",
-    mobileImage: "/hero/slide-pop-mobile.jpg",
-    alt: "Nuevas Pop sabor extra mantequilla — encuéntralas en tu tiendita",
-    cta: {
-      label: "Descubre las nuevas Pop",
-      href: "#marcas",
-      // Fondo blanco solido + texto rojo oscuro: 5.7:1 de contraste (AA)
-      variant: "text-barcel-red-dark",
     },
   },
   {
@@ -353,18 +336,16 @@ export default function Hero() {
           diseño dedicado para mobile (la opción 2 que el cliente no
           eligió esta vez). Desde md se mantiene 2048:768 sin ningún
           cambio — cero recorte ahí, igual que siempre. */}
-      {/* Ronda 132: assets pasaron de 2048x768 a 3072x1536 — se actualiza
-          el aspect-ratio de md en adelante a la proporción real del
-          nuevo asset (3072:1536 = 2:1) para mantener el mismo criterio
-          de cero-recorte de las Rondas 130/131 (container ratio = asset
-          ratio). Mobile se deja en 16:9 (no en 2:1): con estos banners
-          más altos, forzar 2:1 en mobile daría una caja demasiado alta
-          en pantallas angostas; 16:9 sigue sin recortar nada verticalmente
-          (el asset es más "alto" que el contenedor: cover ajusta por
-          ancho) y solo recorta un poco de los costados — lo cual ahora
-          es seguro para los 7 banners gracias al margen de 512px por
-          lado explicado arriba. */}
-      <div className="relative aspect-[16/9] max-h-[85vh] min-h-[100px] w-full md:aspect-[3072/1536]">
+      {/* Ronda 136: assets desktop pasaron de 3072x1536 (ampliado con
+          colchón, Ronda 132) a 1774x887, la medida real que mandó el
+          cliente para esta caja — sigue siendo 2:1 (misma proporción,
+          `md:aspect-[1774/887]`), así que el criterio de cero-recorte de
+          las Rondas 130/131/132 (container ratio = asset ratio) se
+          mantiene igual, solo cambió el número real del asset. Mobile
+          se deja en 16:9 (no en 2:1), igual que en la Ronda 132: usa su
+          propio asset dedicado (Ronda 135, ver mobileImage arriba) que
+          sí es 16:9, por lo que tampoco recorta nada ahí. */}
+      <div className="relative aspect-[16/9] max-h-[85vh] min-h-[100px] w-full md:aspect-[1774/887]">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
@@ -373,12 +354,13 @@ export default function Hero() {
               i === index ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* Ronda 135: el cliente mandó un set de 7 banners recortados
+            {/* Ronda 135: el cliente mandó un set de banners recortados
                 a propósito para mobile (1672x941, prácticamente 16:9 —
                 la MISMA proporción del contenedor mobile), así que ya no
                 hace falta ningún recorte de emergencia ahí: object-cover
-                con esta imagen es casi un mapeo 1:1. Desktop sigue usando
-                el asset ampliado 3072x1536 de la Ronda 132, sin cambios. */}
+                con esta imagen es casi un mapeo 1:1. Ronda 136: desktop
+                pasó a su propio asset dedicado (1774x887, 2:1, ver
+                abajo) — mismo criterio, tampoco recorta nada. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={s.mobileImage}
