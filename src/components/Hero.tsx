@@ -53,8 +53,12 @@ const SLIDES = [
     mobileImage: "/hero/slide-chips-35-anos-mobile.jpg",
     alt: "Chip's Jalapeño 35 años — celebrando a los que no dan de sus Chip's Jalapeño",
     cta: {
+      // Ronda 142: el cliente marcó que este CTA debía llevar directo al
+      // producto (Chip's Jalapeño), no al hub de la marca — llevaba a
+      // /marcas/chips desde que se armó este banner (Ronda 103), nunca
+      // se actualizó cuando el sabor recibió su propia página de detalle.
       label: "Descubre Chip's Jalapeño",
-      href: "/marcas/chips",
+      href: "/marcas/chips/jalapeno",
       // Fondo blanco solido + texto café Chip's: 10.42:1 de contraste (AA)
       variant: "text-chips-brown",
     },

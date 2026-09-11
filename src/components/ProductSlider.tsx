@@ -1,10 +1,47 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Flavor } from "@/data/brands";
 import TakisTape from "./TakisTape";
 import { SPICE_LEVELS } from "./Picometro";
+
+// Ronda 142: controladores del slider (flechas, pausa/play, dots) — el
+// cliente marcó con una captura de Figma que estos controles "hacen
+// falta" en vivo. Mismos SVG que ya usa el carrusel del Hero (Ronda 210,
+// "flechas 1:1 con Figma") para no inventar un segundo set de iconos.
+function ArrowLeftIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 text-barcel-red sm:h-6 sm:w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M7.85 13L10.7 15.85C10.9 16.05 10.9958 16.2833 10.9875 16.55C10.9792 16.8167 10.8833 17.05 10.7 17.25C10.5 17.45 10.2625 17.5542 9.9875 17.5625C9.7125 17.5708 9.475 17.475 9.275 17.275L4.7 12.7C4.5 12.5 4.4 12.2667 4.4 12C4.4 11.7333 4.5 11.5 4.7 11.3L9.275 6.725C9.475 6.525 9.7125 6.42917 9.9875 6.4375C10.2625 6.44583 10.5 6.55 10.7 6.75C10.8833 6.95 10.9792 7.18333 10.9875 7.45C10.9958 7.71667 10.9 7.95 10.7 8.15L7.85 11H19C19.2833 11 19.5208 11.0958 19.7125 11.2875C19.9042 11.4792 20 11.7167 20 12C20 12.2833 19.9042 12.5208 19.7125 12.7125C19.5208 12.9042 19.2833 13 19 13H7.85Z" />
+    </svg>
+  );
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-5 w-5 text-barcel-red sm:h-6 sm:w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M16.15 13H5C4.71667 13 4.47917 12.9042 4.2875 12.7125C4.09583 12.5208 4 12.2833 4 12C4 11.7167 4.09583 11.4792 4.2875 11.2875C4.47917 11.0958 4.71667 11 5 11H16.15L13.3 8.15C13.1 7.95 13.0042 7.71667 13.0125 7.45C13.0208 7.18333 13.1167 6.95 13.3 6.75C13.5 6.55 13.7375 6.44583 14.0125 6.4375C14.2875 6.42917 14.525 6.525 14.725 6.725L19.3 11.3C19.4 11.4 19.4708 11.5083 19.5125 11.625C19.5542 11.7417 19.575 11.8667 19.575 12C19.575 12.1333 19.5542 12.2583 19.5125 12.375C19.4708 12.4917 19.4 12.6 19.3 12.7L14.725 17.275C14.525 17.475 14.2875 17.5708 14.0125 17.5625C13.7375 17.5542 13.5 17.45 13.3 17.25C13.1167 17.05 13.0208 16.8167 13.0125 16.55C13.0042 16.2833 13.1 16.05 13.3 15.85L16.15 13Z" />
+    </svg>
+  );
+}
+
+function PauseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="6" y="5" width="4" height="14" />
+      <rect x="14" y="5" width="4" height="14" />
+    </svg>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M7 5L19 12L7 19V5Z" />
+    </svg>
+  );
+}
 
 const CARD_CLASSNAME =
   "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
@@ -357,44 +394,190 @@ export default function ProductSlider({
   // entre tarjetas) — exactamente el reporte de "la url no corresponde
   // a la página" / "no pasa nada".
   //
-  // Fix real: una sola fuente de verdad en JS (nada de timers, nada de
-  // pelear con una regla CSS aparte). Dos flags booleanos — "¿está el
-  // mouse encima?" y "¿hay un dedo/click presionado?" — y CADA evento
-  // relevante (enter/leave/down/up/cancel) recalcula el estilo inline
-  // de inmediato a partir de ambos. Sin temporizadores no hay ventana
-  // en la que un estado viejo se quede pegado.
+  // Ronda 142: el cliente mandó una captura de Figma marcando que "hacen
+  // falta los controladores del slider" — flechas prev/next, un botón
+  // explícito de pausa/play (no solo :hover, que en touch no existe) y
+  // dots de navegación. Eso obliga a abandonar la animación por CSS
+  // keyframes (Ronda 33/45, animate-marquee): una vez pausada por CSS,
+  // "saltar" a una posición arbitraria (flecha/dot) requiere pelear
+  // contra el propio keyframe, que sigue "dueño" del transform aunque
+  // esté en paused (los estilos inline NO ganan sobre una animación
+  // activa, solo sobre CSS normal). Se reemplaza por una posición en px
+  // llevada en un ref (offsetRef) y animada a mano vía
+  // requestAnimationFrame — control total: el autoplay avanza el
+  // offset cada frame, las flechas/dots lo saltan directo, y "pausa" es
+  // simplemente "no avanzar este frame". Los 4 sets duplicados (loop,
+  // ya existían para el loop CSS) siguen sirviendo de colchón: el
+  // offset se mantiene siempre en la ventana (-2×W, 0) — dentro de los
+  // sets 2º-4º — y se corrige con saltos invisibles de ±W cuando se
+  // acerca a cualquier borde, para nunca quedarse sin contenido
+  // duplicado hacia ningún lado (autoplay solo resta; las flechas/dots
+  // pueden sumar).
   const trackRef = useRef<HTMLDivElement>(null);
   const isHovering = useRef(false);
   const isPointerDown = useRef(false);
-  const applyPlayState = () => {
+  const [playing, setPlaying] = useState(true);
+  const playingRef = useRef(true);
+  const offsetRef = useRef(0);
+  const oneSetWidthRef = useRef(0);
+  const cardOffsetsRef = useRef<number[]>([]); // offsetLeft de cada sabor único (primer set)
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeIndexRef = useRef(0);
+
+  const applyTransform = (smooth = false) => {
     if (!trackRef.current) return;
-    trackRef.current.style.animationPlayState =
-      isHovering.current || isPointerDown.current ? "paused" : "running";
+    trackRef.current.style.transition = smooth
+      ? "transform 400ms cubic-bezier(0.22, 1, 0.36, 1)"
+      : "none";
+    trackRef.current.style.transform = `translateX(${offsetRef.current}px)`;
   };
+
+  const measure = () => {
+    if (!trackRef.current) return;
+    const kids = Array.from(trackRef.current.children) as HTMLElement[];
+    if (kids.length < flavors.length * 2) return;
+    oneSetWidthRef.current = kids[flavors.length].offsetLeft - kids[0].offsetLeft;
+    cardOffsetsRef.current = kids
+      .slice(0, flavors.length)
+      .map((el) => el.offsetLeft - kids[0].offsetLeft);
+    if (offsetRef.current === 0 && oneSetWidthRef.current > 0) {
+      // Arranca en el 2º set: dejar colchón de un set completo hacia
+      // atrás (para que la flecha "Anterior" siempre tenga de dónde
+      // tomar contenido) sin mover nada visualmente (sets idénticos).
+      offsetRef.current = -oneSetWidthRef.current;
+      applyTransform(false);
+    }
+  };
+
+  // Índice del sabor más cercano al borde izquierdo visible, para
+  // resaltar el dot correspondiente.
+  const closestIndex = () => {
+    const W = oneSetWidthRef.current;
+    const offsets = cardOffsetsRef.current;
+    if (!W || offsets.length === 0) return 0;
+    const posInSet = (((-offsetRef.current) % W) + W) % W;
+    let best = 0;
+    let bestDist = Infinity;
+    offsets.forEach((o, i) => {
+      const d = Math.abs(o - posInSet);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    });
+    return best;
+  };
+
+  const wrap = () => {
+    const W = oneSetWidthRef.current;
+    if (!W) return;
+    // Mantiene offsetRef dentro de (-2W, 0) — siempre dentro de los
+    // sets 2º-4º de los 4 duplicados — con saltos de ±W indetectables
+    // porque cada set renderiza el mismo contenido.
+    while (offsetRef.current <= -2 * W) offsetRef.current += W;
+    while (offsetRef.current > 0) offsetRef.current -= W;
+  };
+
+  useEffect(() => {
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flavors.length]);
+
+  useEffect(() => {
+    const SPEED_PX_PER_SEC = 34; // ritmo similar al animate-marquee previo (45s por set en viewports típicos)
+    let last = performance.now();
+    let raf = 0;
+    let frame = 0;
+    const tick = (now: number) => {
+      const dt = now - last;
+      last = now;
+      const shouldPlay =
+        playingRef.current && !isHovering.current && !isPointerDown.current;
+      if (shouldPlay && oneSetWidthRef.current > 0) {
+        offsetRef.current -= (SPEED_PX_PER_SEC * dt) / 1000;
+        wrap();
+        applyTransform(false);
+      }
+      // Recalcular el dot activo ~6 veces por segundo, no cada frame —
+      // de sobra para que se sienta instantáneo sin re-renderizar a 60fps.
+      frame += 1;
+      if (frame % 10 === 0) {
+        const idx = closestIndex();
+        if (idx !== activeIndexRef.current) {
+          activeIndexRef.current = idx;
+          setActiveIndex(idx);
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const step = () => {
+    if (!trackRef.current || trackRef.current.children.length < 2) return 0;
+    const a = trackRef.current.children[0] as HTMLElement;
+    const b = trackRef.current.children[1] as HTMLElement;
+    return b.offsetLeft - a.offsetLeft;
+  };
+
+  const goPrev = () => {
+    setPlaying(false);
+    playingRef.current = false;
+    offsetRef.current += step();
+    wrap();
+    applyTransform(true);
+  };
+  const goNext = () => {
+    setPlaying(false);
+    playingRef.current = false;
+    offsetRef.current -= step();
+    wrap();
+    applyTransform(true);
+  };
+  const goToFlavor = (i: number) => {
+    if (!oneSetWidthRef.current) return;
+    setPlaying(false);
+    playingRef.current = false;
+    // Salta al sabor i dentro del set en el que ya está parado, para
+    // que el salto siempre sea corto (nunca más de un set completo).
+    const W = oneSetWidthRef.current;
+    const base = Math.floor(-offsetRef.current / W) * W;
+    offsetRef.current = -(base + cardOffsetsRef.current[i]);
+    wrap();
+    applyTransform(true);
+  };
+  const togglePlay = () => {
+    setPlaying((p) => {
+      playingRef.current = !p;
+      return !p;
+    });
+  };
+
   const handleMouseEnter = () => {
     isHovering.current = true;
-    applyPlayState();
   };
   const handleMouseLeave = () => {
     isHovering.current = false;
     isPointerDown.current = false;
-    applyPlayState();
   };
   const handlePointerDown = () => {
     isPointerDown.current = true;
-    applyPlayState();
   };
   const handlePointerUp = () => {
     isPointerDown.current = false;
-    applyPlayState();
   };
 
   return (
     <>
-      <div className="overflow-hidden">
+      <div className="relative">
+        <div className="overflow-hidden">
         <div
           ref={trackRef}
-          className="flex w-max animate-marquee items-stretch gap-6 py-2 sm:gap-8"
+          className="flex w-max items-stretch gap-6 py-2 sm:gap-8"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onPointerDown={handlePointerDown}
@@ -426,6 +609,63 @@ export default function ProductSlider({
               </button>
             )
           )}
+        </div>
+        </div>
+
+        {/* Ronda 142: flechas prev/next — mismo componente visual que ya
+            usa el Hero (border-2 border-grey-300 bg-white, ícono rojo),
+            ocultas en mobile igual que ahí (el swipe nativo + los dots
+            ya cubren la navegación en touch, y a este ancho de tarjeta
+            —w-64, 256px— las flechas pegadas al borde tapan parte de la
+            primera/última tarjeta visible). */}
+        <button
+          type="button"
+          aria-label="Sabor anterior"
+          onClick={goPrev}
+          className="absolute left-0 top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-grey-300 bg-white transition hover:bg-grey-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black sm:flex sm:h-14 sm:w-14"
+        >
+          <ArrowLeftIcon />
+        </button>
+        <button
+          type="button"
+          aria-label="Siguiente sabor"
+          onClick={goNext}
+          className="absolute right-0 top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-grey-300 bg-white transition hover:bg-grey-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black sm:flex sm:h-14 sm:w-14"
+        >
+          <ArrowRightIcon />
+        </button>
+      </div>
+
+      {/* Ronda 142: botón de pausa/play (esencial en touch — sin :hover
+          real, es la única forma de detener el carrusel para poder leer
+          con calma o hacer tap con puntería) + dots, uno por sabor
+          único, mismo patrón visual que los dots del Hero (Ronda 28/210:
+          activo = píldora roja alargada, inactivo = punto gris). */}
+      <div className="mt-4 flex items-center justify-center gap-3">
+        <button
+          type="button"
+          aria-label={playing ? "Pausar carrusel" : "Reanudar carrusel"}
+          aria-pressed={!playing}
+          onClick={togglePlay}
+          className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-grey-300 bg-white text-barcel-black transition hover:bg-grey-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black"
+        >
+          {playing ? <PauseIcon /> : <PlayIcon />}
+        </button>
+        <div className="flex items-center gap-1.5">
+          {flavors.map((flavor, i) => (
+            <button
+              key={flavor.slug ?? flavor.name}
+              type="button"
+              aria-label={`Ir a ${flavor.name}`}
+              aria-current={i === activeIndex}
+              onClick={() => goToFlavor(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex
+                  ? "w-6 bg-barcel-red"
+                  : "w-1.5 bg-grey-200 hover:bg-grey-300"
+              }`}
+            />
+          ))}
         </div>
       </div>
 

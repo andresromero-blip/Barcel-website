@@ -367,18 +367,25 @@ export default function BrandPage({
 
       {/* Portafolio de productos — protagonista de la página, no escondido
           en un acordeón: es la razón por la que alguien entra a esta
-          página de marca. Slider continuo (mismo mecanismo que el
-          marquee de logos del Home), pausa al pasar el cursor para poder
-          hacer clic con calma sobre cualquier SKU. */}
+          página de marca. Ronda 142: el carrusel ya no depende solo del
+          :hover para pausarse (ver ProductSlider.tsx) — ahora tiene un
+          botón de pausa/play explícito, así que el copy se actualiza
+          para reflejarlo ("pasa el cursor" asumía mouse, no servía en
+          touch). Texto exacto que pidió el cliente, en una sola línea:
+          max-w-xl (Ronda 116) lo forzaba a partir en dos — se cambia a
+          max-w-none whitespace-nowrap desde sm (~640px ya alcanza el
+          ancho de esta oración a text-sm/base; en el breakpoint base,
+          angosto de verdad, se deja partir en varias líneas en vez de
+          desbordar el contenedor). */}
       <section id="portafolio" className="scroll-mt-20 bg-white py-16 md:py-20">
         <div className="container-page">
           <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
             Portafolio de productos
           </h2>
           {brand.flavors && brand.flavors.length > 0 ? (
-            <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
-              Pasa el cursor para pausar el carrusel y haz clic en tu sabor
-              favorito para verlo de cerca.
+            <p className="mt-2 font-body text-sm text-barcel-black/70 sm:whitespace-nowrap md:text-base">
+              Explora nuestros sabores. Usa el botón de pausa para detener
+              el carrusel y haz clic en tu favorito para verlo de cerca.
             </p>
           ) : (
             <p className="mt-2 max-w-xl font-body text-sm text-barcel-black/70 md:text-base">
