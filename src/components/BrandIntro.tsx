@@ -4,9 +4,9 @@ export default function BrandIntro() {
       <div className="container-page flex flex-col items-center gap-6 text-center">
         <h2 className="font-teko text-4xl font-bold uppercase text-barcel-red md:text-5xl">
           Sabor y calidad,
-          <br className="hidden sm:block" /> ¡así es Barcel<sup className="text-[0.5em]">®</sup>!
+          <br /> ¡así es Barcel<sup className="text-[0.5em]">®</sup>!
         </h2>
-        <p className="max-w-xl font-display text-base font-semibold italic text-barcel-black/80 md:text-lg">
+        <p className="max-w-xl font-display text-base font-semibold text-barcel-black/80 md:text-lg">
           Prepárate para entrar al lado de las botanas con verdadera actitud.
         </p>
         <p className="max-w-2xl font-body text-sm leading-relaxed text-barcel-black/70 md:text-base">
@@ -16,7 +16,7 @@ export default function BrandIntro() {
           mezclas nuevas que se vuelven favoritas desde la primera probada,
           en Barcel<sup>®</sup> cada producto tiene algo que decir.
         </p>
-        <p className="font-display text-sm font-bold uppercase tracking-wide text-barcel-black">
+        <p className="max-w-xl font-display text-base font-semibold text-barcel-black/80 md:text-lg">
           Explora, elige y encuentra tu próximo antojo.
         </p>
 

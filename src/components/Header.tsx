@@ -272,10 +272,19 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — el contenedor tenía max-h-[32rem] (512px) fijo con
+          overflow-hidden: con el acordeón de Marcas cerrado cabía de sobra,
+          pero al abrirlo (8 filas de logo+nombre, Ronda 125) el contenido
+          real supera esos 512px y el resto queda recortado sin forma de
+          hacer scroll — el reporte del cliente ("no permite bajar", se
+          corta en POP). Fix: el techo ahora es la altura real del
+          viewport menos el header (calc(100dvh-4rem), 4rem = top-16) en
+          vez de un valor fijo, y overflow-y-auto para que cuando el
+          acordeón abierto exceda esa altura el propio menú haga scroll
+          interno en vez de cortar contenido. */}
       <div
-        className={`fixed inset-x-0 top-16 z-40 origin-top overflow-hidden bg-white transition-all duration-300 ease-out lg:hidden ${
-          menuOpen ? "max-h-[32rem] opacity-100" : "max-h-0 opacity-0"
+        className={`fixed inset-x-0 top-16 z-40 origin-top overflow-y-auto bg-white transition-all duration-300 ease-out lg:hidden ${
+          menuOpen ? "max-h-[calc(100dvh-4rem)] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="container-page flex flex-col gap-1 py-4">
