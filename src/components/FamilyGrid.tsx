@@ -7,15 +7,19 @@ import { useSearch } from "./SearchContext";
 
 // Ronda 137: en mobile Figma no muestra las 8 marcas de una — el Figma
 // (node 1:10510/1:10511, "Boton" con la instancia "Botón primario") trae
-// un botón "Ver todas las categorías" para revelar el resto. Node de la
-// URL compartida por el cliente (1-10371) no cargó por un bug del server
-// del MCP de Figma (mismo error de parseo en cada intento, con o sin
-// screenshot/code-connect) — el conteo exacto de tarjetas visibles por
-// default se confirmó directo con el cliente: 4 (Chip's, Takis, Runners,
-// Big Mix), quedando Hot Nuts/POP/Golden Nuts/Tostachos detrás del botón.
-// Solo aplica a mobile/tablet (md:hidden en el botón, y las tarjetas
-// extra usan `md:block` para que desktop siga mostrando las 8 sin
-// cambios — desktop nunca tuvo pedido de colapsarse).
+// un botón para revelar el resto. Node de la URL compartida por el
+// cliente (1-10371) no cargó por un bug del server del MCP de Figma
+// (mismo error de parseo en cada intento, con o sin screenshot/code-
+// connect) — el conteo exacto de tarjetas visibles por default se
+// confirmó directo con el cliente: 4 (Chip's, Takis, Runners, Big Mix),
+// quedando Hot Nuts/POP/Golden Nuts/Tostachos detrás del botón. Solo
+// aplica a mobile/tablet (md:hidden en el botón, y las tarjetas extra
+// usan `md:block` para que desktop siga mostrando las 8 sin cambios —
+// desktop nunca tuvo pedido de colapsarse).
+// Ronda 138: el copy real del botón ("Ver todas las marcas", no
+// "categorías" como decía el node de Figma) y el estilo (sin
+// mayúsculas forzadas) los corrigió el cliente después de ver el
+// primer deploy — ver el comentario junto al <button> más abajo.
 const DEFAULT_VISIBLE_MOBILE = 4;
 
 export default function FamilyGrid() {
@@ -99,19 +103,24 @@ export default function FamilyGrid() {
         })}
       </div>
 
-      {/* Ronda 137: botón "Ver todas las categorías" — 1:1 con el botón
-          de Figma (node 1:10511, fondo barcel-red-dark #ce0728, borde
-          blanco de 2px, texto Raleway bold 12px blanco, ícono chevron).
-          Solo mobile/tablet (md:hidden): desktop siempre muestra las 8
+      {/* Ronda 138: el cliente corrigió la copia del botón (Figma decía
+          "Ver todas las categorías", pero el copy real que pidió es "Ver
+          todas las marcas") y el estilo de texto — el resto del botón
+          seguía 1:1 con Figma (node 1:10511, fondo barcel-red-dark
+          #ce0728, borde blanco de 2px, ícono chevron), pero ese node usa
+          `uppercase` (mayúsculas forzadas por CSS); el cliente pidió que
+          NO vaya todo en altas, así que se quita esa clase y el texto
+          queda en sentence case tal como se escribe abajo. Solo
+          mobile/tablet (md:hidden): desktop siempre muestra las 8
           tarjetas, no tiene el botón. */}
       {showCollapseButton && (
         <div className="mt-6 flex justify-center px-5 md:hidden">
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="flex items-center gap-3 border-2 border-white bg-barcel-red-dark px-3 py-3 font-display text-xs font-bold uppercase tracking-wide text-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95"
+            className="flex items-center gap-3 border-2 border-white bg-barcel-red-dark px-3 py-3 font-display text-xs font-bold tracking-wide text-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95"
           >
-            Ver todas las categorías
+            Ver todas las marcas
             <svg
               viewBox="0 0 24 24"
               className="h-5 w-5 shrink-0"

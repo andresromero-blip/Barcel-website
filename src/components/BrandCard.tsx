@@ -18,14 +18,22 @@ import type { Brand } from "@/data/brands";
 function MobileCard({ brand }: { brand: Brand }) {
   return (
     <div className="flex flex-col overflow-hidden md:hidden">
-      {/* Logo marca: franja de color, h-200px en Figma */}
+      {/* Logo marca: franja de color, h-200px en Figma.
+          Ronda 138: el cliente pidió que en mobile el logo se vea siempre
+          "con producto" — el mismo asset que DesktopCard (más abajo) solo
+          muestra al hacer :hover (brand.logoHover, "logo real con
+          microinteracción de hover: producto asomando", ver brands.ts).
+          En mobile no existe hover real (dispositivo táctil), así que ese
+          estado pasa a ser el default: brand.logoHover ?? brand.logo, con
+          fallback al logo simple para cualquier marca que no tenga
+          logoHover cargado todavía. */}
       <div
         className={`relative flex h-[200px] items-center justify-center overflow-hidden p-8 ${brand.familyCardBg}`}
       >
         {brand.logo ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={brand.logo}
+            src={brand.logoHover ?? brand.logo}
             alt={`Logo ${brand.name}`}
             className="h-full w-full max-w-[70%] object-contain"
           />
