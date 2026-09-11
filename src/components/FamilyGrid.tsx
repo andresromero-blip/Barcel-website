@@ -103,34 +103,34 @@ export default function FamilyGrid() {
         })}
       </div>
 
-      {/* Ronda 138: el cliente corrigió la copia del botón (Figma decía
-          "Ver todas las categorías", pero el copy real que pidió es "Ver
-          todas las marcas") y el estilo de texto — el resto del botón
-          seguía 1:1 con Figma (node 1:10511, fondo barcel-red-dark
-          #ce0728, borde blanco de 2px, ícono chevron), pero ese node usa
-          `uppercase` (mayúsculas forzadas por CSS); el cliente pidió que
-          NO vaya todo en altas, así que se quita esa clase y el texto
-          queda en sentence case tal como se escribe abajo. Solo
-          mobile/tablet (md:hidden): desktop siempre muestra las 8
-          tarjetas, no tiene el botón. */}
+      {/* Ronda 139: el cliente pidió que este botón deje de ser un botón
+          con fondo de color (el estilo 1:1-con-Figma de la Ronda 137/138,
+          bg-barcel-red-dark + borde blanco) y en vez de eso use "el mismo
+          puntaje y tipografía" que el CTA link "Ver todos los productos →"
+          de cada tarjeta (BrandCard.tsx, MobileCard: font-body text-sm
+          font-semibold text-barcel-black underline). "Puntaje" = ratio de
+          contraste: texto negro (#0f0f0f) sobre blanco da ~19.6:1 (AAA de
+          sobra), muy por encima del 5.7:1 que daba blanco sobre
+          barcel-red-dark — mismo criterio, ahora currentColor (negro) en
+          vez de blanco fijo. El alcance de este cambio es SOLO este botón
+          (confirmado con el cliente) — el resto de los CTAs del sitio
+          (Hero, modales, Contacto, etc.) no se tocan. Solo mobile/tablet
+          (md:hidden): desktop siempre muestra las 8 tarjetas, no tiene
+          este botón. */}
       {showCollapseButton && (
         <div className="mt-6 flex justify-center px-5 md:hidden">
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="flex items-center gap-3 border-2 border-white bg-barcel-red-dark px-3 py-3 font-display text-xs font-bold tracking-wide text-white transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95"
+            className="group inline-flex items-center gap-1.5 font-body text-sm font-semibold text-barcel-black underline"
           >
             Ver todas las marcas
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
+            <span
+              className="transition-transform group-hover:translate-x-1"
               aria-hidden="true"
             >
-              <path d="m6 9 6 6 6-6" />
-            </svg>
+              →
+            </span>
           </button>
         </div>
       )}
