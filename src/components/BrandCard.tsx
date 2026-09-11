@@ -111,11 +111,32 @@ function DesktopCard({ brand }: { brand: Brand }) {
   //    con group-hover:opacity), aplicado aquí a brand.logo/logoHover
   //    (campo que ya existía en brands.ts pero no se usaba en ningún
   //    hover real, solo como fallback de brand.logo).
+  //
+  // Ronda 141: el cliente marcó (screenshot con anotaciones) que la línea
+  // divisoria logo/texto NO caía en el mismo eje vertical entre filas
+  // consecutivas que alternan de lado (ej. Big Mix con logo a la derecha
+  // vs Hot Nuts con logo a la izquierda) — se veía un "escalón" en el
+  // límite entre ambas mitades al pasar de una fila a la siguiente.
+  // Causa real: logoBox y textBox usaban `flex-1` (flex-basis 0%), que
+  // solo reparte el espacio 50/50 si AMBOS tienen el mismo padding
+  // horizontal total — y no lo tenían (textBox: px-8/lg:px-12/xl:px-20 vs
+  // logoBox: p-10/lg:p-14/xl:p-16, valores puestos independientemente en
+  // la Ronda 117 sin verificar que coincidieran). Con box-sizing:border-box
+  // esa diferencia de padding se traduce 1:1 en una diferencia de ancho
+  // final entre las dos mitades (verificado en vivo: 1040.5px vs 1008.5px
+  // a 2048px de viewport, una diferencia de 32px — exactamente el delta
+  // de padding xl:px-20 vs xl:p-16). Como el lado que "gana" espacio
+  // cambia de signo entre breakpoints (md/lg vs xl), el escalón ni
+  // siquiera es consistente en dirección. Fix: `basis-1/2 grow-0 shrink-0`
+  // en vez de `flex-1` en ambas mitades — fuerza 50/50 exacto por ancho,
+  // sin importar cuánto padding tenga cada una, así el eje central queda
+  // perfectamente alineado en las 8 filas del grid, no solo en las 2 que
+  // el cliente marcó.
   const textIsSecond = brand.imageFirst;
 
   const logoBox = (
     <div
-      className={`group/logo relative flex flex-1 items-center justify-center overflow-hidden p-10 lg:p-14 xl:p-16 ${brand.familyCardBg} ${
+      className={`group/logo relative flex basis-1/2 grow-0 shrink-0 items-center justify-center overflow-hidden p-10 lg:p-14 xl:p-16 ${brand.familyCardBg} ${
         textIsSecond ? "" : "-ml-px"
       }`}
     >
@@ -153,7 +174,7 @@ function DesktopCard({ brand }: { brand: Brand }) {
   const textBox = (
     <Link
       href={`/marcas/${brand.slug}`}
-      className={`flex flex-1 flex-col justify-center gap-6 bg-white px-8 py-10 lg:gap-8 lg:px-12 xl:gap-12 xl:px-20 ${
+      className={`flex basis-1/2 grow-0 shrink-0 flex-col justify-center gap-6 bg-white px-8 py-10 lg:gap-8 lg:px-12 xl:gap-12 xl:px-20 ${
         textIsSecond ? "-ml-px" : ""
       }`}
     >
