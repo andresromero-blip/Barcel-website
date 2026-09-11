@@ -216,17 +216,48 @@ export default function Hero() {
           un problema de proporción sino de que object-cover, por
           definición, siempre recorta cuando el aspect-ratio del
           contenedor no es idéntico al de la imagen.
-          Fix real (no otro ajuste de aspect-ratio): en mobile la imagen
-          pasa a object-contain — se ve COMPLETA, sin recortar nada,
-          nunca más. Como eso deja franjas vacías arriba/abajo dentro de
-          la caja 4:3/3:2, se agrega una segunda copia de la misma imagen
-          detrás, a pantalla completa con object-cover + blur (efecto
-          "story" de Instagram) para que esas franjas no se vean como
-          barras negras planas sino como fondo ambiental de la propia
-          pieza. Desde md se mantiene object-cover a pantalla completa,
-          sin cambios (el aspect-ratio real del asset ya no necesita
-          recortar en desktop). */}
-      <div className="relative aspect-[4/3] max-h-[85vh] min-h-[200px] w-full sm:aspect-[3/2] md:aspect-[2048/768]">
+          Fix (parcial, corregido en Ronda 128): pasar la imagen a
+          object-contain en mobile y rellenar las franjas resultantes con
+          una segunda copia desenfocada de fondo (efecto "story").
+
+          Ronda 128: el cliente reportó el resultado de la Ronda 127 como
+          "se ven espacios entre el banner, no es responsive, parece un
+          error" — con razón. Causa real: la caja seguía forzando un
+          aspect-ratio (4:3, luego 3:2) mucho más angosto/alto que el de
+          la imagen real (2048:768 ≈ 2.67:1). Eso estaba bien mientras la
+          imagen usaba object-cover (Rondas 104-114): el sobrante se
+          recortaba en silencio por los bordes. Pero en cuanto la Ronda
+          127 cambió a object-contain para dejar de recortar, ESE MISMO
+          desfase de proporción pasó a verse como una franja vacía
+          — y el "fondo desenfocado" pensado para disimularla se veía mal
+          por la misma razón geométrica: object-cover, dentro de una caja
+          mucho más alta que ancha respecto a la imagen, tiene que
+          agrandar la imagen hasta cubrir el alto completo, lo que recorta
+          la mayor parte del ANCHO — el fondo terminaba mostrando un
+          fragmento angosto y muy ampliado del centro de la imagen
+          (con estos banners, casi siempre pared/cielo de fondo, un color
+          casi plano), que desenfocado ya no se lee como "fondo ambiental
+          de la foto" sino como un degradado gris liso — de ahí que
+          pareciera un glitch/error en vez de un fondo intencional.
+          Fix real: la caja deja de tener un aspect-ratio propio distinto
+          al de la imagen — usa el mismo (2048:768) en TODOS los
+          breakpoints, igual que ya se hacía desde md. Con la proporción
+          del contenedor idéntica a la de la imagen, object-contain
+          muestra la pieza completa ocupando el 100% de la caja, sin
+          ninguna franja que rellenar — por lo que la segunda copia
+          desenfocada ya no hace falta y se elimina (era un parche para
+          un problema de proporción, no la solución). El único costo es
+          que el banner es más bajo en mobile que con la caja 4:3 de la
+          Ronda 113 (p. ej. ~140px de alto en un iPhone de 390px de ancho
+          en vez de ~290px) — pero esa altura es la real del asset, sin
+          ningún recorte ni hueco; agrandar el banner otra vez sin volver
+          a introducir el desfase de proporción requeriría rehacer los
+          assets con menos "aire" alrededor del contenido, no un ajuste
+          de CSS. `min-h-[100px]` queda solo como piso de seguridad para
+          viewports absurdamente angostos (no se activa en ningún
+          teléfono real: incluso a 320px de ancho la proporción real ya
+          da ~120px). */}
+      <div className="relative aspect-[2048/768] max-h-[85vh] min-h-[100px] w-full">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
@@ -235,20 +266,11 @@ export default function Hero() {
               i === index ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* Fondo desenfocado — solo mobile/tablet, rellena las franjas
-                que deja el object-contain de abajo sin recortar el arte. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={s.image}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl brightness-75 md:hidden"
-            />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={s.image}
               alt={s.alt}
-              className="absolute inset-0 h-full w-full object-contain md:object-cover"
+              className="absolute inset-0 h-full w-full object-contain"
               loading={i === 0 ? "eager" : "lazy"}
             />
           </div>
