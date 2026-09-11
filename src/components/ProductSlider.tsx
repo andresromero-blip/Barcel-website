@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Flavor } from "@/data/brands";
-import TakisTape from "./TakisTape";
 import { SPICE_LEVELS } from "./Picometro";
 
 // Ronda 142: controladores del slider (flechas, pausa/play, dots) — el
@@ -186,28 +185,29 @@ function CardContent({
           />
         )}
       </div>
-      {/* Ronda 44: nombre de sabor en font-takisMark (sustituto de la
-          "TAKIS® Font" del brandbook, ver globals.css) solo para Takis —
-          Permanent Marker es de un solo peso, sin font-extrabold falso.
-          Ronda 45: el manual (03.4, pág. 37) exige que ese nombre vaya
-          siempre dentro del "manchón" amarillo — TakisTape.
-          Ronda 56: cada composición del Global Brandbook YA trae el
-          nombre del sabor quemado en la imagen (su propia cinta
-          amarilla). En hover, nuestra propia TakisTape quedaba flotando
-          encima de esa cinta ya impresa — dos nombres pisándose. Se
-          desvanece la nuestra en hover (mismo criterio que la bolsa)
-          cuando hay hoverImage, dejando solo la cinta real de la
-          composición. */}
+      {/* Ronda 143: el cliente marcó (screenshot + link a Figma
+          node-id=1-3760, el frame REAL del rediseño de "Portafolio de
+          productos") que el nombre de sabor aquí NO lleva el manchón
+          amarillo (TakisTape) ni la fuente manuscrita (font-takisMark,
+          Permanent Marker) — eso quedó de la Ronda 44/45, cuando esta
+          sección todavía no tenía su propio pase de rediseño Figma 1:1
+          (tarea #204, aún pendiente para el resto del portafolio). El
+          frame 1-3760 muestra el nombre en texto plano, en negritas,
+          mayúsculas, color takis-purple, en la misma fuente oficial del
+          brandbook que ya usa el H1 del hero de Takis (font-takisDisplay
+          = Veneer/Anton, ver globals.css y TakisHero.tsx) — no
+          font-display genérico. Se quita TakisTape/font-takisMark de
+          aquí; ambos siguen existiendo y se usan en otras piezas del
+          brandbook (ej. las composiciones oficiales con cinta quemada
+          en la imagen, que no se tocan). */}
       {isTakis ? (
-        <TakisTape
-          className={`relative px-3 py-1 transition-opacity duration-300 ${
+        <span
+          className={`relative px-3 py-1 font-takisDisplay text-base font-bold uppercase leading-tight tracking-wide text-takis-purple transition-opacity duration-300 sm:text-xl md:text-2xl ${
             flavor.hoverImage ? "group-hover:opacity-0" : ""
           }`}
         >
-          <span className="font-takisMark text-base uppercase leading-tight sm:text-xl md:text-2xl">
-            {flavor.name}
-          </span>
-        </TakisTape>
+          {flavor.name}
+        </span>
       ) : (
         // Ronda 98 (revertida en Ronda 100): se probó reemplazar este
         // texto por la etiqueta de yute como imagen (flavor.nameImage).
