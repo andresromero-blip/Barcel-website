@@ -17,11 +17,40 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // colores de cada CTA son los tokens de marca ya verificados AA contra
 // fondo blanco en tailwind.config.ts (mismo criterio que el resto del
 // sitio, no valores nuevos).
+// Ronda 131: `mobilePosition` — object-position del recorte de cada
+// banner SOLO por debajo de md (ver historial completo junto al
+// contenedor de imagen, más abajo). Se definió mirando cada uno de los
+// 7 JPG a resolución completa y ubicando en qué % del ancho vive el
+// contenido crítico (logo/wordmark/producto), para que el recorte de
+// mobile caiga sobre fondo/decoración y no sobre ese contenido:
+//   - chips-35-anos: bolsa + "35 años" viven entre ~8%-45% del ancho
+//     (bien a la izquierda) — se desplaza el encuadre a la izquierda
+//     (20% en vez del 50% centrado) para no cortar la bolsa.
+//   - pop: el wordmark "NUEVAS POP" vive entre ~10%-40% del ancho —
+//     mismo criterio, encuadre a la izquierda (20%). Este es el banner
+//     que originó el problema en la Ronda 127 (wordmark cortado); con
+//     este ajuste el wordmark completo queda dentro del recorte.
+//   - golacticos y takis-picometro: tienen contenido (personajes /
+//     termómetro + texto) literal pegado a AMBOS bordes de la imagen
+//     — no existe ningún encuadre que evite recortar algo en alguno de
+//     los dos lados. Se deja centrado a propósito: es la opción que
+//     protege el elemento más importante de cada uno (el logo
+//     "GOLACTICOS" y la fila de 7 bolsas de Takis), aceptando que la
+//     decoración de los extremos (los 2 personajes, el termómetro) se
+//     recorte parcialmente en mobile — ya no es posible evitarlo sin
+//     pedir un recorte nuevo del asset (ver Ronda 131 más abajo).
+//   - runners-juegalos y hotnuts: el contenido ya vive centrado de forma
+//     natural — centrado por defecto, sin ajuste.
+//   - takis-picante: tiene texto pegado a AMBOS bordes ("TODOS INTENSOS"
+//     / "NO TODOS PICANTES"), mismo caso que golacticos — se centra
+//     para proteger el personaje + producto (el elemento más grande y
+//     reconocible) en vez de perseguir un lado de texto a costa del otro.
 const SLIDES = [
   {
     id: "golacticos",
     image: "/hero/slide-golacticos.jpg",
     alt: "La Promo Golácticos Barcel — compra, encuentra tu código y regístrate para ganar premios",
+    mobilePosition: "object-center",
     cta: {
       label: "Conoce la promo",
       href: "https://www.golacticosbarcel.com",
@@ -33,6 +62,7 @@ const SLIDES = [
     id: "chips-35-anos",
     image: "/hero/slide-chips-35-anos.jpg",
     alt: "Chip's Jalapeño 35 años — celebrando a los que no dan de sus Chip's Jalapeño",
+    mobilePosition: "object-[20%_center]",
     cta: {
       label: "Descubre Chip's Jalapeño",
       href: "/marcas/chips",
@@ -44,6 +74,7 @@ const SLIDES = [
     id: "runners-juegalos",
     image: "/hero/slide-runners-juegalos.jpg",
     alt: "Runners Juégalos — pruébalos",
+    mobilePosition: "object-center",
     cta: {
       label: "Descubre Runners",
       href: "/marcas/runners",
@@ -55,6 +86,7 @@ const SLIDES = [
     id: "pop",
     image: "/hero/slide-pop.jpg",
     alt: "Nuevas Pop sabor extra mantequilla — encuéntralas en tu tiendita",
+    mobilePosition: "object-[20%_center]",
     cta: {
       label: "Descubre las nuevas Pop",
       href: "#marcas",
@@ -66,6 +98,7 @@ const SLIDES = [
     id: "takis-picante",
     image: "/hero/slide-takis-picante.jpg",
     alt: "Takis Intense Nacho — todos intensos, no todos picantes",
+    mobilePosition: "object-center",
     cta: {
       label: "Descubre Takis",
       href: "/marcas/takis",
@@ -77,6 +110,7 @@ const SLIDES = [
     id: "takis-picometro",
     image: "/hero/slide-takis-picometro.jpg",
     alt: "Los 7 sabores de Takis y su nivel de picor — todos intensos, no todos picantes",
+    mobilePosition: "object-center",
     cta: {
       label: "Elige tu nivel de picor",
       href: "/marcas/takis",
@@ -88,6 +122,7 @@ const SLIDES = [
     id: "hotnuts",
     image: "/hero/slide-hotnuts.jpg",
     alt: "Hot Nuts — si va a tronar, ¡que truene bien!",
+    mobilePosition: "object-center",
     cta: {
       label: "Descubre Hot Nuts",
       href: "/marcas/hot-nuts",
@@ -298,8 +333,33 @@ export default function Hero() {
           requeriría que el cliente entregue una versión de cada banner
           recortada a propósito para mobile (p. ej. 4:3 o 1:1, con el
           contenido importante ya encuadrado para ese formato), no un
-          ajuste de CSS sobre el mismo asset panorámico. */}
-      <div className="relative aspect-[2048/768] max-h-[85vh] min-h-[100px] w-full">
+          ajuste de CSS sobre el mismo asset panorámico.
+
+          Ronda 131: el cliente pidió explícitamente "soluciones" — se le
+          presentaron 3 caminos reales (recorte inteligente por banner
+          ahora mismo / pedir crops nuevos de diseño para mobile /
+          separar texto e imagen a futuro) y eligió el primero: aceptar
+          ALGO de recorte lateral (como en las Rondas 104-114) pero
+          dirigido con criterio banner por banner, en vez de un recorte
+          ciego centrado. Se subió la caja mobile/tablet de 2048:768 a
+          16:9 (más alta que el asset real → +50% de alto, 211px en vez
+          de 140px en un iPhone de 390px — bastante menos agresivo que
+          el 4:3 de la Ronda 113/129, que solo dejaba ver el 50% del
+          ancho) y se le da a cada slide su propio `mobilePosition`
+          (object-position) según dónde vive su contenido crítico —
+          revisado 1:1 contra los 7 JPG a resolución completa, ver el
+          comentario junto al array SLIDES para el detalle banner por
+          banner. Aviso importante para el cliente: en 2 de los 7
+          banners (Golácticos, Takis Picómetro) el contenido llega hasta
+          AMBOS bordes de la imagen (personajes/termómetro pegados a los
+          extremos) — ningún object-position evita recortar algo ahí, se
+          protegió el elemento más importante de cada uno (el logo y la
+          fila de bolsas) a costa de la decoración de las esquinas. Esto
+          ya no es ajustable por CSS: solo se resuelve con un recorte de
+          diseño dedicado para mobile (la opción 2 que el cliente no
+          eligió esta vez). Desde md se mantiene 2048:768 sin ningún
+          cambio — cero recorte ahí, igual que siempre. */}
+      <div className="relative aspect-[16/9] max-h-[85vh] min-h-[100px] w-full md:aspect-[2048/768]">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
@@ -312,7 +372,7 @@ export default function Hero() {
             <img
               src={s.image}
               alt={s.alt}
-              className="absolute inset-0 h-full w-full object-cover"
+              className={`absolute inset-0 h-full w-full object-cover ${s.mobilePosition}`}
               loading={i === 0 ? "eager" : "lazy"}
             />
           </div>
