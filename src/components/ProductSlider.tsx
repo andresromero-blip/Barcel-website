@@ -414,6 +414,7 @@ export default function ProductSlider({
   // duplicado hacia ningún lado (autoplay solo resta; las flechas/dots
   // pueden sumar).
   const trackRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
   const isHovering = useRef(false);
   const isPointerDown = useRef(false);
   const [playing, setPlaying] = useState(true);
@@ -421,6 +422,20 @@ export default function ProductSlider({
   const offsetRef = useRef(0);
   const oneSetWidthRef = useRef(0);
   const cardOffsetsRef = useRef<number[]>([]); // offsetLeft de cada sabor único (primer set)
+  // Ronda 142 (verificado contra el archivo de Figma real, viendo el
+  // frame directamente — el cliente tiene 8 sabores Takis pero SOLO 4
+  // dots en el diseño): los dots no son "uno por sabor", son "una por
+  // página" — cuántas tarjetas caben de una vez en el viewport
+  // (cardsPerView). Con 8 sabores y ~2 tarjetas visibles a la vez en el
+  // ancho del frame de Figma, 8÷2=4 páginas — coincide exacto. Se
+  // recalcula en cada resize (cardsPerView cambia con el breakpoint:
+  // las tarjetas son más angostas en mobile/tablet, w-64→sm:w-96→
+  // md:w-[32rem]) en vez de asumir un número fijo, para que el mismo
+  // criterio sea válido en cualquier marca (menos de 8 sabores) y en
+  // cualquier ancho de pantalla.
+  const cardsPerViewRef = useRef(1);
+  const dotsCountRef = useRef(1);
+  const [dotsCount, setDotsCount] = useState(1);
   const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(0);
 
@@ -433,13 +448,24 @@ export default function ProductSlider({
   };
 
   const measure = () => {
-    if (!trackRef.current) return;
+    if (!trackRef.current || !viewportRef.current) return;
     const kids = Array.from(trackRef.current.children) as HTMLElement[];
     if (kids.length < flavors.length * 2) return;
     oneSetWidthRef.current = kids[flavors.length].offsetLeft - kids[0].offsetLeft;
     cardOffsetsRef.current = kids
       .slice(0, flavors.length)
       .map((el) => el.offsetLeft - kids[0].offsetLeft);
+    const cardStep = kids.length > 1 ? kids[1].offsetLeft - kids[0].offsetLeft : 0;
+    if (cardStep > 0) {
+      const perView = Math.max(
+        1,
+        Math.round(viewportRef.current.clientWidth / cardStep)
+      );
+      cardsPerViewRef.current = perView;
+      const pages = Math.max(1, Math.ceil(flavors.length / perView));
+      dotsCountRef.current = pages;
+      setDotsCount(pages);
+    }
     if (offsetRef.current === 0 && oneSetWidthRef.current > 0) {
       // Arranca en el 2º set: dejar colchón de un set completo hacia
       // atrás (para que la flecha "Anterior" siempre tenga de dónde
@@ -449,8 +475,8 @@ export default function ProductSlider({
     }
   };
 
-  // Índice del sabor más cercano al borde izquierdo visible, para
-  // resaltar el dot correspondiente.
+  // Sabor más cercano al borde izquierdo visible → página (dot)
+  // correspondiente = ese índice dividido entre cardsPerView.
   const closestIndex = () => {
     const W = oneSetWidthRef.current;
     const offsets = cardOffsetsRef.current;
@@ -466,6 +492,10 @@ export default function ProductSlider({
       }
     });
     return best;
+  };
+  const closestPage = () => {
+    const perView = Math.max(1, cardsPerViewRef.current);
+    return Math.min(dotsCountRef.current - 1, Math.round(closestIndex() / perView));
   };
 
   const wrap = () => {
@@ -500,14 +530,15 @@ export default function ProductSlider({
         wrap();
         applyTransform(false);
       }
-      // Recalcular el dot activo ~6 veces por segundo, no cada frame —
-      // de sobra para que se sienta instantáneo sin re-renderizar a 60fps.
+      // Recalcular el dot (página) activo ~6 veces por segundo, no cada
+      // frame — de sobra para que se sienta instantáneo sin
+      // re-renderizar a 60fps.
       frame += 1;
       if (frame % 10 === 0) {
-        const idx = closestIndex();
-        if (idx !== activeIndexRef.current) {
-          activeIndexRef.current = idx;
-          setActiveIndex(idx);
+        const page = closestPage();
+        if (page !== activeIndexRef.current) {
+          activeIndexRef.current = page;
+          setActiveIndex(page);
         }
       }
       raf = requestAnimationFrame(tick);
@@ -538,12 +569,19 @@ export default function ProductSlider({
     wrap();
     applyTransform(true);
   };
-  const goToFlavor = (i: number) => {
-    if (!oneSetWidthRef.current) return;
+  const goToPage = (page: number) => {
+    if (!oneSetWidthRef.current || cardOffsetsRef.current.length === 0) return;
     setPlaying(false);
     playingRef.current = false;
-    // Salta al sabor i dentro del set en el que ya está parado, para
-    // que el salto siempre sea corto (nunca más de un set completo).
+    // El dot N lleva al sabor N×cardsPerView (el primero de esa
+    // página); clamp al último sabor real por si flavors.length no es
+    // múltiplo exacto de cardsPerView (última página más corta).
+    const i = Math.min(
+      cardOffsetsRef.current.length - 1,
+      page * cardsPerViewRef.current
+    );
+    // Salta dentro del set en el que ya está parado, para que el salto
+    // siempre sea corto (nunca más de un set completo).
     const W = oneSetWidthRef.current;
     const base = Math.floor(-offsetRef.current / W) * W;
     offsetRef.current = -(base + cardOffsetsRef.current[i]);
@@ -574,7 +612,7 @@ export default function ProductSlider({
   return (
     <>
       <div className="relative">
-        <div className="overflow-hidden">
+        <div className="overflow-hidden" ref={viewportRef}>
         <div
           ref={trackRef}
           className="flex w-max items-stretch gap-6 py-2 sm:gap-8"
@@ -638,9 +676,12 @@ export default function ProductSlider({
 
       {/* Ronda 142: botón de pausa/play (esencial en touch — sin :hover
           real, es la única forma de detener el carrusel para poder leer
-          con calma o hacer tap con puntería) + dots, uno por sabor
-          único, mismo patrón visual que los dots del Hero (Ronda 28/210:
-          activo = píldora roja alargada, inactivo = punto gris). */}
+          con calma o hacer tap con puntería) + dots. Verificado contra
+          el archivo de Figma real: NO es un dot por sabor — son páginas
+          (cuántas tarjetas caben de una vez, ver dotsCount/cardsPerView
+          arriba), mismo patrón visual que los dots del Hero (Ronda
+          28/210: activo = píldora roja alargada, inactivo = punto
+          gris). */}
       <div className="mt-4 flex items-center justify-center gap-3">
         <button
           type="button"
@@ -652,13 +693,13 @@ export default function ProductSlider({
           {playing ? <PauseIcon /> : <PlayIcon />}
         </button>
         <div className="flex items-center gap-1.5">
-          {flavors.map((flavor, i) => (
+          {Array.from({ length: dotsCount }, (_, i) => (
             <button
-              key={flavor.slug ?? flavor.name}
+              key={i}
               type="button"
-              aria-label={`Ir a ${flavor.name}`}
+              aria-label={`Ir a la página ${i + 1}`}
               aria-current={i === activeIndex}
-              onClick={() => goToFlavor(i)}
+              onClick={() => goToPage(i)}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 i === activeIndex
                   ? "w-6 bg-barcel-red"
