@@ -255,30 +255,51 @@ export default function Hero() {
           que la imagen se vea más alta sin recortar contenido (mismo
           requisito de la Ronda 127) es agrandar la CAJA por encima de lo
           que da su proporción real — lo que vuelve a dejar franjas
-          arriba/abajo por definición geométrica de object-contain. La
-          diferencia con la Ronda 127 es CÓMO se rellenan esas franjas:
-          en vez del "fondo desenfocado" (que ampliaba tanto una porción
-          angosta de la imagen que se veía como un degradado gris plano,
-          el bug que el cliente reportó como "parece un error"), aquí se
-          dejan lisas, del mismo negro sólido (`bg-barcel-black`) que ya
-          tiene la <section> por detrás y que ya usa el bloque de
-          CTA/dots de abajo (Ronda 114) — no hace falta ninguna imagen ni
-          capa extra, es simplemente el fondo por defecto asomando. Como
-          es el mismo negro puro en ambos lados, el bloque de imagen y el
-          bloque de CTA se leen como UNA sola pieza continua (estilo
-          "letterbox" de cine/Instagram) en vez de dos elementos
-          separados con un corte visible entre ellos — así el negro dejó
-          de ser "una franja rara" para ser, a propósito, el fondo de
-          toda la sección. Se vuelve al aspect-ratio más alto de la
-          Ronda 113 (4:3 en el breakpoint base, 3:2 desde sm) para el
-          espacio vertical extra que pidió el cliente; desde md se
-          mantiene 2048:768 (el real del asset, sin ninguna franja —
-          nunca hubo queja ahí). `object-contain` en todos los
-          breakpoints (a partir de md el contenedor ya tiene la
-          proporción exacta de la imagen, así que contain y cover dan
-          exactamente el mismo resultado — se deja contain fijo para no
-          tener que alternar por breakpoint). */}
-      <div className="relative aspect-[4/3] max-h-[85vh] min-h-[220px] w-full sm:aspect-[3/2] md:aspect-[2048/768]">
+          arriba/abajo por definición geométrica de object-contain. Se
+          intentó rellenarlas con negro sólido (`bg-barcel-black`, el
+          mismo fondo de la <section>) en vez de blur, pensando que al
+          ser el mismo negro que el bloque de CTA de abajo se leería como
+          una sola pieza "letterbox" intencional.
+
+          Ronda 130: el cliente rechazó esto de forma tajante y con
+          razón — dos franjas negras grandes (arriba Y abajo de la
+          imagen, ~140px cada una en un iPhone de 390px) encima del
+          bloque negro del CTA es objetivamente MUCHO negro para un
+          "banner", sea o no el mismo tono: "esas franjas negras no
+          deben existir, el banner debe cubrir la totalidad del espacio
+          asignado". Tiene razón en el diagnóstico de fondo: con estos
+          assets (2048x768 fijo) hay tres propiedades que NO se pueden
+          cumplir las tres a la vez —
+            (1) cubrir el 100% de la caja sin ningún espacio vacío,
+            (2) nunca recortar nada del arte (el requisito de la Ronda 127),
+            (3) que la caja sea más alta/angosta que la proporción real
+                del asset (lo que pedía la Ronda 129).
+          Cualquier combinación de 2 de las 3 es posible; las 3 juntas no
+          — es geometría, no un bug de CSS. Entre "más alto" (129) y
+          "cero recorte + cero franjas" (127/cliente original), el
+          cliente ahora prioriza expresamente (1) y (2): que el banner
+          rellene TODO el espacio asignado, sin cortar el arte. Eso solo
+          es posible si el espacio asignado (la caja) tiene EXACTAMENTE
+          la proporción real del asset (2048:768) — entonces no sobra
+          ancho ni alto que recortar ni que dejar vacío: la imagen llena
+          el 100% de la caja en cualquier ancho de pantalla (por eso
+          "responsive": la caja se adapta a la proporción de la imagen
+          en vez de forzar una propia). Se revierte al criterio de la
+          Ronda 128 — 2048:768 en TODOS los breakpoints, sin variantes
+          por tamaño — y de paso se cambia `object-contain` por
+          `object-cover`: con la proporción de la caja ya idéntica a la
+          de la imagen ambos se ven IGUAL (no hay margen que recortar ni
+          que enseñar de más), pero "cover" dice explícitamente en el
+          código la garantía que ahora es un requisito de negocio: cero
+          espacio vacío, siempre. El banner vuelve a ser más bajo en
+          mobile (~140px en un iPhone de 390px) que con la caja alta de
+          la Ronda 129 — es la altura real de estos assets sin recortar
+          ni dejar franjas; subir esa altura sin violar (1) o (2)
+          requeriría que el cliente entregue una versión de cada banner
+          recortada a propósito para mobile (p. ej. 4:3 o 1:1, con el
+          contenido importante ya encuadrado para ese formato), no un
+          ajuste de CSS sobre el mismo asset panorámico. */}
+      <div className="relative aspect-[2048/768] max-h-[85vh] min-h-[100px] w-full">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
@@ -291,7 +312,7 @@ export default function Hero() {
             <img
               src={s.image}
               alt={s.alt}
-              className="absolute inset-0 h-full w-full object-contain"
+              className="absolute inset-0 h-full w-full object-cover"
               loading={i === 0 ? "eager" : "lazy"}
             />
           </div>
