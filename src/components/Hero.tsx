@@ -17,40 +17,33 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // colores de cada CTA son los tokens de marca ya verificados AA contra
 // fondo blanco en tailwind.config.ts (mismo criterio que el resto del
 // sitio, no valores nuevos).
-// Ronda 131: `mobilePosition` — object-position del recorte de cada
-// banner SOLO por debajo de md (ver historial completo junto al
-// contenedor de imagen, más abajo). Se definió mirando cada uno de los
-// 7 JPG a resolución completa y ubicando en qué % del ancho vive el
-// contenido crítico (logo/wordmark/producto), para que el recorte de
-// mobile caiga sobre fondo/decoración y no sobre ese contenido:
-//   - chips-35-anos: bolsa + "35 años" viven entre ~8%-45% del ancho
-//     (bien a la izquierda) — se desplaza el encuadre a la izquierda
-//     (20% en vez del 50% centrado) para no cortar la bolsa.
-//   - pop: el wordmark "NUEVAS POP" vive entre ~10%-40% del ancho —
-//     mismo criterio, encuadre a la izquierda (20%). Este es el banner
-//     que originó el problema en la Ronda 127 (wordmark cortado); con
-//     este ajuste el wordmark completo queda dentro del recorte.
-//   - golacticos y takis-picometro: tienen contenido (personajes /
-//     termómetro + texto) literal pegado a AMBOS bordes de la imagen
-//     — no existe ningún encuadre que evite recortar algo en alguno de
-//     los dos lados. Se deja centrado a propósito: es la opción que
-//     protege el elemento más importante de cada uno (el logo
-//     "GOLACTICOS" y la fila de 7 bolsas de Takis), aceptando que la
-//     decoración de los extremos (los 2 personajes, el termómetro) se
-//     recorte parcialmente en mobile — ya no es posible evitarlo sin
-//     pedir un recorte nuevo del asset (ver Ronda 131 más abajo).
-//   - runners-juegalos y hotnuts: el contenido ya vive centrado de forma
-//     natural — centrado por defecto, sin ajuste.
-//   - takis-picante: tiene texto pegado a AMBOS bordes ("TODOS INTENSOS"
-//     / "NO TODOS PICANTES"), mismo caso que golacticos — se centra
-//     para proteger el personaje + producto (el elemento más grande y
-//     reconocible) en vez de perseguir un lado de texto a costa del otro.
+// Ronda 132: se reemplazaron los 7 banners por versiones ampliadas a
+// 3072x1536 (el doble de alto y 1.5x más anchas que el asset original
+// de 2048x768). El arte original de cada banner se mantiene A ESCALA
+// NATIVA (sin estirar), centrado horizontalmente (512px de margen a
+// cada lado) y anclado arriba (0-768px); el espacio nuevo — los 512px
+// de cada lado y los 768px de abajo — se rellenó con una extensión del
+// propio fondo de cada banner (para golacticos/takis-picante/
+// takis-picometro, generada con IA — Firefly Generative Expand; para
+// pop/chips-35-anos/hotnuts/runners-juegalos, con un desenfoque +
+// degradado del propio borde de la imagen vía Pillow, sin IA, porque la
+// generación de Firefly alucinaba texto ilegible en el fondo de esos 4).
+// El motivo del cambio: dar un "colchón" real debajo y a los costados
+// del arte original para que un futuro overlay de CTA nunca tape
+// contenido, sin depender de recortar dinámicamente con CSS.
+// Como el contenido real de CADA banner ahora vive siempre en la misma
+// franja (centrado, top-anchored, con ~512px de aire a cada lado y 768px
+// abajo), ya no hace falta un `object-position` distinto por banner —
+// `object-top` (centrado horizontal + anclado arriba) es seguro para
+// los 7 en cualquier proporción de contenedor: el margen agregado
+// absorbe el recorte lateral que pueda meter cualquier aspect-ratio del
+// contenedor, y anclar arriba garantiza que el recorte (si lo hay) caiga
+// siempre en el colchón de abajo, nunca en el arte real.
 const SLIDES = [
   {
     id: "golacticos",
     image: "/hero/slide-golacticos.jpg",
     alt: "La Promo Golácticos Barcel — compra, encuentra tu código y regístrate para ganar premios",
-    mobilePosition: "object-center",
     cta: {
       label: "Conoce la promo",
       href: "https://www.golacticosbarcel.com",
@@ -62,7 +55,6 @@ const SLIDES = [
     id: "chips-35-anos",
     image: "/hero/slide-chips-35-anos.jpg",
     alt: "Chip's Jalapeño 35 años — celebrando a los que no dan de sus Chip's Jalapeño",
-    mobilePosition: "object-[20%_center]",
     cta: {
       label: "Descubre Chip's Jalapeño",
       href: "/marcas/chips",
@@ -74,7 +66,6 @@ const SLIDES = [
     id: "runners-juegalos",
     image: "/hero/slide-runners-juegalos.jpg",
     alt: "Runners Juégalos — pruébalos",
-    mobilePosition: "object-center",
     cta: {
       label: "Descubre Runners",
       href: "/marcas/runners",
@@ -86,7 +77,6 @@ const SLIDES = [
     id: "pop",
     image: "/hero/slide-pop.jpg",
     alt: "Nuevas Pop sabor extra mantequilla — encuéntralas en tu tiendita",
-    mobilePosition: "object-[20%_center]",
     cta: {
       label: "Descubre las nuevas Pop",
       href: "#marcas",
@@ -98,7 +88,6 @@ const SLIDES = [
     id: "takis-picante",
     image: "/hero/slide-takis-picante.jpg",
     alt: "Takis Intense Nacho — todos intensos, no todos picantes",
-    mobilePosition: "object-center",
     cta: {
       label: "Descubre Takis",
       href: "/marcas/takis",
@@ -110,7 +99,6 @@ const SLIDES = [
     id: "takis-picometro",
     image: "/hero/slide-takis-picometro.jpg",
     alt: "Los 7 sabores de Takis y su nivel de picor — todos intensos, no todos picantes",
-    mobilePosition: "object-center",
     cta: {
       label: "Elige tu nivel de picor",
       href: "/marcas/takis",
@@ -122,7 +110,6 @@ const SLIDES = [
     id: "hotnuts",
     image: "/hero/slide-hotnuts.jpg",
     alt: "Hot Nuts — si va a tronar, ¡que truene bien!",
-    mobilePosition: "object-center",
     cta: {
       label: "Descubre Hot Nuts",
       href: "/marcas/hot-nuts",
@@ -359,7 +346,18 @@ export default function Hero() {
           diseño dedicado para mobile (la opción 2 que el cliente no
           eligió esta vez). Desde md se mantiene 2048:768 sin ningún
           cambio — cero recorte ahí, igual que siempre. */}
-      <div className="relative aspect-[16/9] max-h-[85vh] min-h-[100px] w-full md:aspect-[2048/768]">
+      {/* Ronda 132: assets pasaron de 2048x768 a 3072x1536 — se actualiza
+          el aspect-ratio de md en adelante a la proporción real del
+          nuevo asset (3072:1536 = 2:1) para mantener el mismo criterio
+          de cero-recorte de las Rondas 130/131 (container ratio = asset
+          ratio). Mobile se deja en 16:9 (no en 2:1): con estos banners
+          más altos, forzar 2:1 en mobile daría una caja demasiado alta
+          en pantallas angostas; 16:9 sigue sin recortar nada verticalmente
+          (el asset es más "alto" que el contenedor: cover ajusta por
+          ancho) y solo recorta un poco de los costados — lo cual ahora
+          es seguro para los 7 banners gracias al margen de 512px por
+          lado explicado arriba. */}
+      <div className="relative aspect-[16/9] max-h-[85vh] min-h-[100px] w-full md:aspect-[3072/1536]">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
@@ -372,7 +370,7 @@ export default function Hero() {
             <img
               src={s.image}
               alt={s.alt}
-              className={`absolute inset-0 h-full w-full object-cover ${s.mobilePosition}`}
+              className="absolute inset-0 h-full w-full object-cover object-top"
               loading={i === 0 ? "eager" : "lazy"}
             />
           </div>
