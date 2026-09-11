@@ -43,6 +43,7 @@ const SLIDES = [
   {
     id: "golacticos",
     image: "/hero/slide-golacticos.jpg",
+    mobileImage: "/hero/slide-golacticos-mobile.jpg",
     alt: "La Promo Golácticos Barcel — compra, encuentra tu código y regístrate para ganar premios",
     cta: {
       label: "Conoce la promo",
@@ -54,6 +55,7 @@ const SLIDES = [
   {
     id: "chips-35-anos",
     image: "/hero/slide-chips-35-anos.jpg",
+    mobileImage: "/hero/slide-chips-35-anos-mobile.jpg",
     alt: "Chip's Jalapeño 35 años — celebrando a los que no dan de sus Chip's Jalapeño",
     cta: {
       label: "Descubre Chip's Jalapeño",
@@ -65,6 +67,7 @@ const SLIDES = [
   {
     id: "runners-juegalos",
     image: "/hero/slide-runners-juegalos.jpg",
+    mobileImage: "/hero/slide-runners-juegalos-mobile.jpg",
     alt: "Runners Juégalos — pruébalos",
     cta: {
       label: "Descubre Runners",
@@ -76,6 +79,7 @@ const SLIDES = [
   {
     id: "pop",
     image: "/hero/slide-pop.jpg",
+    mobileImage: "/hero/slide-pop-mobile.jpg",
     alt: "Nuevas Pop sabor extra mantequilla — encuéntralas en tu tiendita",
     cta: {
       label: "Descubre las nuevas Pop",
@@ -87,6 +91,7 @@ const SLIDES = [
   {
     id: "takis-picante",
     image: "/hero/slide-takis-picante.jpg",
+    mobileImage: "/hero/slide-takis-picante-mobile.jpg",
     alt: "Takis Intense Nacho — todos intensos, no todos picantes",
     cta: {
       label: "Descubre Takis",
@@ -98,6 +103,7 @@ const SLIDES = [
   {
     id: "takis-picometro",
     image: "/hero/slide-takis-picometro.jpg",
+    mobileImage: "/hero/slide-takis-picometro-mobile.jpg",
     alt: "Los 7 sabores de Takis y su nivel de picor — todos intensos, no todos picantes",
     cta: {
       label: "Elige tu nivel de picor",
@@ -109,6 +115,7 @@ const SLIDES = [
   {
     id: "hotnuts",
     image: "/hero/slide-hotnuts.jpg",
+    mobileImage: "/hero/slide-hotnuts-mobile.jpg",
     alt: "Hot Nuts — si va a tronar, ¡que truene bien!",
     cta: {
       label: "Descubre Hot Nuts",
@@ -366,11 +373,24 @@ export default function Hero() {
               i === index ? "opacity-100" : "opacity-0"
             }`}
           >
+            {/* Ronda 135: el cliente mandó un set de 7 banners recortados
+                a propósito para mobile (1672x941, prácticamente 16:9 —
+                la MISMA proporción del contenedor mobile), así que ya no
+                hace falta ningún recorte de emergencia ahí: object-cover
+                con esta imagen es casi un mapeo 1:1. Desktop sigue usando
+                el asset ampliado 3072x1536 de la Ronda 132, sin cambios. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.mobileImage}
+              alt={s.alt}
+              className="absolute inset-0 block h-full w-full object-cover md:hidden"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={s.image}
               alt={s.alt}
-              className="absolute inset-0 h-full w-full object-cover object-top"
+              className="absolute inset-0 hidden h-full w-full object-cover object-top md:block"
               loading={i === 0 ? "eager" : "lazy"}
             />
           </div>
