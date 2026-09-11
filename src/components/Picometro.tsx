@@ -27,6 +27,16 @@ export type SpiceLevel = keyof typeof SPICE_LEVELS;
 // descripción que ahora vive a su lado (Ronda 79). No se toca el
 // default: ProductDetail.tsx (las otras 5 marcas) sigue usando el
 // tamaño original, que no fue objetado.
+//
+// Ronda 147: node-id=1-3858 (Figma "Barce site", el frame real de la
+// página de sabor de Takis) muestra el Picómetro junto a la descripción
+// como SOLO el ícono — sin las líneas de texto "Picómetro"/"Extremo" que
+// compact venía agregando al lado. No es un recorte de contenido: cada
+// PNG (ver public/picometro/*.png) ya trae el nivel horneado en la propia
+// imagen, rotado en el borde izquierdo ("EXTREMO", "PICANTE", etc.) — el
+// texto suelto era una etiqueta redundante que no está en la referencia.
+// `compact` solo se usa en este componente (grep confirma cero usos más),
+// así que este cambio no toca el Picómetro grande de ProductDetail.tsx.
 export default function Picometro({
   level,
   compact = false,
@@ -36,31 +46,30 @@ export default function Picometro({
 }) {
   const info = SPICE_LEVELS[level];
 
+  if (compact) {
+    return (
+      /* eslint-disable-next-line @next/next/no-img-element */
+      <img
+        src={info.image}
+        alt={`Picómetro — nivel de picante: ${info.label}`}
+        className="h-20 w-auto object-contain sm:h-24"
+      />
+    );
+  }
+
   return (
-    <div className={`flex items-center ${compact ? "gap-3" : "gap-4"}`}>
+    <div className="flex items-center gap-4">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={info.image}
         alt={`Picómetro — nivel de picante: ${info.label}`}
-        className={compact ? "h-14 w-auto object-contain sm:h-16" : "h-28 w-auto object-contain md:h-32"}
+        className="h-28 w-auto object-contain md:h-32"
       />
       <div className="flex flex-col gap-1">
-        <p
-          className={
-            compact
-              ? "font-display text-[10px] font-bold uppercase tracking-[0.12em] text-barcel-black/50"
-              : "font-display text-xs font-bold uppercase tracking-[0.15em] text-barcel-black/50"
-          }
-        >
+        <p className="font-display text-xs font-bold uppercase tracking-[0.15em] text-barcel-black/50">
           Picómetro
         </p>
-        <p
-          className={
-            compact
-              ? "font-teko text-xl font-bold uppercase leading-none text-barcel-black sm:text-2xl"
-              : "font-teko text-3xl font-bold uppercase leading-none text-barcel-black md:text-4xl"
-          }
-        >
+        <p className="font-teko text-3xl font-bold uppercase leading-none text-barcel-black md:text-4xl">
           {info.label}
         </p>
       </div>

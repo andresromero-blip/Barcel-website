@@ -172,30 +172,41 @@ export default function TakisProductDetail({
             flujo normal ya pinta encima del background-image del padre;
             el z-10 solo creaba un contexto de apilamiento que atrapaba
             el modal "¿Dónde comprar?" (ver nota arriba). */}
-        <div className="bg-barcel-black">
-          <nav
-            aria-label="Ruta de navegación"
-            className="container-page flex flex-wrap items-center gap-1.5 py-3 font-body text-xs text-white md:text-sm"
+        {/* Ronda 147: node-id=1-3858 (Figma "Barce site", el frame real de
+            esta página) muestra el breadcrumb flotando directo sobre el
+            fondo morado/textura de marca — no sobre una barra sólida negra.
+            La barra bg-barcel-black era un fix de contraste de la Ronda 65,
+            pero ese problema era específico de TEXTO NEGRO sobre este
+            fondo (el acordeón, que ya vive en su propia tarjeta blanca);
+            texto BLANCO (que es lo que usa este breadcrumb, igual que en
+            Figma) ya tenía contraste de sobra sobre el morado oscuro sin
+            necesitar una barra sólida detrás — se quita el div/bg de más
+            para que el fondo de marca se vea completo desde el borde
+            superior, como en la referencia. El separador "→" reemplaza el
+            "/" para igualar el estilo del breadcrumb de Contacto (Ronda
+            146) y de este mismo frame. */}
+        <nav
+          aria-label="Ruta de navegación"
+          className="container-page flex flex-wrap items-center gap-1.5 py-3 font-body text-xs text-white md:text-sm"
+        >
+          <Link href="/" className="text-white/80 transition-colors hover:text-white">
+            Inicio
+          </Link>
+          <span aria-hidden="true" className="text-white/50">
+            →
+          </span>
+          <Link
+            href={`/marcas/${brand.slug}`}
+            className="text-white/80 transition-colors hover:text-white"
           >
-            <Link href="/" className="text-white/80 transition-colors hover:text-white">
-              Inicio
-            </Link>
-            <span aria-hidden="true" className="text-white/50">
-              /
-            </span>
-            <Link
-              href={`/marcas/${brand.slug}`}
-              className="text-white/80 transition-colors hover:text-white"
-            >
-              {brand.name}
-              <sup className="text-[0.7em]">®</sup>
-            </Link>
-            <span aria-hidden="true" className="text-white/50">
-              /
-            </span>
-            <span className="text-white">{fullName}</span>
-          </nav>
-        </div>
+            {brand.name}
+            <sup className="text-[0.7em]">®</sup>
+          </Link>
+          <span aria-hidden="true" className="text-white/50">
+            →
+          </span>
+          <span className="text-white">{fullName}</span>
+        </nav>
 
         {/* Ronda 64: navegación entre sabores (no entre presentaciones,
             ver nota arriba) — oculta en mobile para no competir por
@@ -247,51 +258,40 @@ export default function TakisProductDetail({
                 Ronda 79: la descripción se saca de este bloque — ahora
                 comparte fila con el Picómetro (ver abajo) en vez de ir
                 apilada debajo del nombre.
-                Ronda 83: "centra el título 'Blue Heat'" — el manchón con
-                el nombre del sabor (nameImage) pasa de estar pegado a la
-                izquierda (heredaba el items-start de la tarjeta) a
-                centrado con mx-auto/mx-auto+text-center. Solo se centra
-                el título; la descripción y el resto de la tarjeta siguen
-                alineados a la izquierda como antes.
-                Nota técnica: la tarjeta padre usa items-start, así que
-                este wrapper se encogía al ancho exacto de la imagen (sin
-                sobrar espacio) y mx-auto no tenía nada que centrar — se
-                agrega w-full aquí para que el wrapper sí ocupe todo el
-                ancho de la tarjeta y mx-auto pueda centrar la imagen
-                dentro de él.
-                Ronda 86: "esa ubicación hace más grande el contenedor,
-                no queremos eso" — la Ronda 85 le había dado a
-                "Presentación" su propio bloque (label + valor apilados +
-                border-t + padding propio), lo que sumaba alto extra a la
-                tarjeta. Se quita ese bloque de más abajo y se integra
-                aquí como una sola línea de texto chico, pegada arriba de
-                la línea divisoria que ya existe sobre la descripción —
-                no agrega una sección nueva, solo una línea dentro del
-                espacio que ya ocupaba el nombre. */}
+                Ronda 147: node-id=1-3858 (Figma "Barce site", el frame real
+                de esta página exacta) reemplaza dos decisiones de rondas
+                anteriores que quedaron superadas por el diseño real:
+                1) El nombre del sabor (antes flavor.nameImage — el manchón
+                   amarillo con fuente manuscrita, ver Ronda 64) se muestra
+                   en Figma como texto plano en negritas, mayúsculas, color
+                   morado de marca (text-takis-purple), en la fuente oficial
+                   del brandbook (font-takisDisplay = Veneer/Anton) — el
+                   mismo criterio ya aplicado al nombre de sabor en el
+                   slider de portafolio (Ronda 143, mismo tipo de manchón
+                   descartado por la misma razón: quedó de antes de que
+                   esta pieza tuviera su propio pase de Figma 1:1). Se deja
+                   de leer flavor.nameImage aquí (el campo en brands.ts no
+                   se borra — no se usa en ningún otro lado, ver grep, así
+                   que no hay riesgo de dejar algo roto) y Takis pasa a
+                   compartir la misma rama de texto que ya usan Chip's y el
+                   resto de marcas, con su propia fuente/color de marca.
+                2) "Centra el título" (Ronda 83) se revierte: en el frame
+                   real el nombre, "Presentación:" y la descripción están
+                   los tres alineados a la izquierda, no centrados — se
+                   quita mx-auto/text-center de ambos elementos de este
+                   bloque. */}
             <div className="flex w-full flex-col gap-3">
-              {flavor.nameImage ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={flavor.nameImage}
-                  alt={fullName}
-                  className="mx-auto h-auto w-full max-w-[280px] sm:max-w-sm md:max-w-[22rem]"
-                />
-              ) : (
-                // Ronda 100: Chip's usaba nameImage (etiqueta de yute)
-                // hasta que el cliente pidió volver a texto — al quitar
-                // ese campo en brands.ts, Chip's cae aquí igual que
-                // cualquier marca sin nameImage. Se le da su propia
-                // fuente (Introhead, la misma del H1 del hero — ver
-                // globals.css) en vez del font-teko genérico, que sigue
-                // siendo el default para el resto de marcas.
-                <h1
-                  className={`text-center text-6xl font-bold uppercase leading-[0.9] text-barcel-black ${
-                    brand.slug === "chips" ? "font-introhead" : "font-teko"
-                  }`}
-                >
-                  {fullName}
-                </h1>
-              )}
+              <h1
+                className={`text-6xl font-bold uppercase leading-[0.9] ${
+                  brand.slug === "takis"
+                    ? "font-takisDisplay text-takis-purple"
+                    : brand.slug === "chips"
+                      ? "font-introhead text-barcel-black"
+                      : "font-teko text-barcel-black"
+                }`}
+              >
+                {fullName}
+              </h1>
               {sizesText && (
                 // Ronda 87: "sube un punto y mejora su legibilidad
                 // aumentando su peso" — de text-xs (12px) a 13px y de
@@ -299,7 +299,7 @@ export default function TakisProductDetail({
                 // arregla contraste, así que también se sube la opacidad
                 // de /50 a /60 (antes ~3.6:1 sobre blanco, no pasa AA;
                 // con /60 queda ~5:1, sí pasa AA para texto normal).
-                <p className="text-center font-body text-[13px] font-medium text-barcel-black/60">
+                <p className="font-body text-[13px] font-medium text-barcel-black/60">
                   Presentación: {sizesText}
                   {!flavor.nutrition && " — de ejemplo, pendiente de confirmar con Barcel"}
                 </p>
