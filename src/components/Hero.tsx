@@ -239,25 +239,46 @@ export default function Hero() {
           casi plano), que desenfocado ya no se lee como "fondo ambiental
           de la foto" sino como un degradado gris liso — de ahí que
           pareciera un glitch/error en vez de un fondo intencional.
-          Fix real: la caja deja de tener un aspect-ratio propio distinto
-          al de la imagen — usa el mismo (2048:768) en TODOS los
-          breakpoints, igual que ya se hacía desde md. Con la proporción
-          del contenedor idéntica a la de la imagen, object-contain
-          muestra la pieza completa ocupando el 100% de la caja, sin
-          ninguna franja que rellenar — por lo que la segunda copia
-          desenfocada ya no hace falta y se elimina (era un parche para
-          un problema de proporción, no la solución). El único costo es
-          que el banner es más bajo en mobile que con la caja 4:3 de la
-          Ronda 113 (p. ej. ~140px de alto en un iPhone de 390px de ancho
-          en vez de ~290px) — pero esa altura es la real del asset, sin
-          ningún recorte ni hueco; agrandar el banner otra vez sin volver
-          a introducir el desfase de proporción requeriría rehacer los
-          assets con menos "aire" alrededor del contenido, no un ajuste
-          de CSS. `min-h-[100px]` queda solo como piso de seguridad para
-          viewports absurdamente angostos (no se activa en ningún
-          teléfono real: incluso a 320px de ancho la proporción real ya
-          da ~120px). */}
-      <div className="relative aspect-[2048/768] max-h-[85vh] min-h-[100px] w-full">
+          Fix (Ronda 128, corregido a su vez en Ronda 129): la caja dejó
+          de tener un aspect-ratio propio distinto al de la imagen — usó
+          el mismo (2048:768) en TODOS los breakpoints. Sin ninguna
+          franja que rellenar, se quitó la segunda copia desenfocada.
+          El costo (documentado entonces, subestimado en la práctica): el
+          banner quedaba muy bajo en mobile (~140px de alto en un iPhone
+          de 390px de ancho) — visualmente "aplastado" contra el bloque
+          negro del CTA de abajo, que el cliente terminó leyendo como
+          "todavía queda una franja negra" (Ronda 129) y pidió
+          explícitamente más alto: "si la solución es ampliar el
+          espacio para los banners de manera vertical hazlo".
+
+          Ronda 129: con el ancho fijo al del viewport, la ÚNICA forma de
+          que la imagen se vea más alta sin recortar contenido (mismo
+          requisito de la Ronda 127) es agrandar la CAJA por encima de lo
+          que da su proporción real — lo que vuelve a dejar franjas
+          arriba/abajo por definición geométrica de object-contain. La
+          diferencia con la Ronda 127 es CÓMO se rellenan esas franjas:
+          en vez del "fondo desenfocado" (que ampliaba tanto una porción
+          angosta de la imagen que se veía como un degradado gris plano,
+          el bug que el cliente reportó como "parece un error"), aquí se
+          dejan lisas, del mismo negro sólido (`bg-barcel-black`) que ya
+          tiene la <section> por detrás y que ya usa el bloque de
+          CTA/dots de abajo (Ronda 114) — no hace falta ninguna imagen ni
+          capa extra, es simplemente el fondo por defecto asomando. Como
+          es el mismo negro puro en ambos lados, el bloque de imagen y el
+          bloque de CTA se leen como UNA sola pieza continua (estilo
+          "letterbox" de cine/Instagram) en vez de dos elementos
+          separados con un corte visible entre ellos — así el negro dejó
+          de ser "una franja rara" para ser, a propósito, el fondo de
+          toda la sección. Se vuelve al aspect-ratio más alto de la
+          Ronda 113 (4:3 en el breakpoint base, 3:2 desde sm) para el
+          espacio vertical extra que pidió el cliente; desde md se
+          mantiene 2048:768 (el real del asset, sin ninguna franja —
+          nunca hubo queja ahí). `object-contain` en todos los
+          breakpoints (a partir de md el contenedor ya tiene la
+          proporción exacta de la imagen, así que contain y cover dan
+          exactamente el mismo resultado — se deja contain fijo para no
+          tener que alternar por breakpoint). */}
+      <div className="relative aspect-[4/3] max-h-[85vh] min-h-[220px] w-full sm:aspect-[3/2] md:aspect-[2048/768]">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
