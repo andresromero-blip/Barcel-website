@@ -516,7 +516,11 @@ export default function ProductSlider({
   }, [flavors.length]);
 
   useEffect(() => {
-    const SPEED_PX_PER_SEC = 34; // ritmo similar al animate-marquee previo (45s por set en viewports típicos)
+    // Ronda 144: "la velocidad de esos slider debe subir x1.5" — 34px/s
+    // (Ronda 142) era el ritmo original del animate-marquee que reemplazó.
+    // Se sube directo a 51px/s (34 * 1.5), mismo mecanismo (rAF), sin
+    // tocar wrap()/measure() ni el resto del carrusel.
+    const SPEED_PX_PER_SEC = 51;
     let last = performance.now();
     let raf = 0;
     let frame = 0;
