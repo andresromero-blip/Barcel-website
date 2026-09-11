@@ -394,6 +394,29 @@ export default function Hero() {
         >
           <ArrowRightIcon />
         </button>
+
+        {/* CTA overlay — Ronda 134: en mobile el CTA se mueve DENTRO de la
+            caja de la imagen (antes vivía en la franja de abajo, junto a
+            los dots). Se ubica en la mitad inferior del banner, que es
+            justo el "colchón" de fondo sin contenido real que la Ronda 132
+            agregó a cada asset (pensado explícitamente para esto: "para
+            que un futuro overlay de CTA nunca tape contenido"), así que es
+            seguro para los 7 banners. Libera la franja de abajo para que
+            solo lleve los dots (Ronda 134 también la achica). Desde md se
+            oculta — el CTA de desktop sigue viviendo en el bloque de abajo
+            junto a los dots, sin cambios respecto a la Ronda 114. */}
+        <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center px-3 xs:bottom-5 sm:bottom-6 sm:px-4 md:hidden">
+          <a
+            href={slide.cta.href}
+            {...(slide.cta.href.startsWith("http")
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
+            className={`flex min-h-[44px] items-center justify-center gap-1 border-2 border-grey-300 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs ${slide.cta.variant}`}
+          >
+            {slide.cta.label}
+            <span aria-hidden>↗</span>
+          </a>
+        </div>
       </div>
 
       {/* CTA + dots — Ronda 114: en mobile van FUERA de la caja de la
@@ -405,8 +428,15 @@ export default function Hero() {
           Ronda 133: la franja mobile pasa de bg-barcel-black a
           bg-barcel-red para igualarla al color del header/menú (mismo
           token, `bg-barcel-red`, ya usado en Header.tsx). Desktop no
-          cambia (md:bg-transparent, el cliente pidió solo mobile). */}
-      <div className="relative flex flex-col items-center gap-1.5 bg-barcel-red px-3 py-3 xs:gap-2 sm:gap-3 sm:px-4 sm:py-4 md:absolute md:inset-x-0 md:bottom-0 md:gap-4 md:bg-transparent md:px-0 md:py-0 md:pb-6 lg:pb-8">
+          cambia (md:bg-transparent, el cliente pidió solo mobile).
+          Ronda 134: el CTA se mueve al overlay sobre la imagen (arriba,
+          dentro de la caja del banner) en mobile — esta franja ahora solo
+          lleva los dots, así que se reduce el padding vertical (py-3 →
+          py-2, se quita el gap ya que queda un solo elemento). El CTA
+          sigue existiendo aquí SOLO desde md (hidden md:flex) porque en
+          desktop no cambia nada (Ronda 114: ahí siempre fue overlay,
+          CTA+dots apilados juntos). */}
+      <div className="relative flex flex-col items-center gap-1.5 bg-barcel-red px-3 py-2 sm:px-4 sm:py-3 md:absolute md:inset-x-0 md:bottom-0 md:gap-4 md:bg-transparent md:px-0 md:py-0 md:pb-6 lg:pb-8">
         <a
           href={slide.cta.href}
           // Ronda 103: Golácticos es una promo con landing propia fuera
@@ -420,7 +450,9 @@ export default function Hero() {
           // por defecto en Tailwind, no suma al tamaño de la caja). Figma no
           // trae shadow-md en este botón, así que se quita — el borde es la
           // única separación visual contra el banner.
-          className={`flex min-h-[44px] items-center justify-center gap-1 border-2 border-grey-300 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 xs:px-5 xs:text-xs sm:px-5 sm:py-3 md:px-7 md:text-base ${slide.cta.variant}`}
+          // Ronda 134: oculto en mobile (hidden) — ese CTA ahora vive como
+          // overlay dentro de la caja de la imagen, ver más arriba.
+          className={`hidden min-h-[44px] items-center justify-center gap-1 border-2 border-grey-300 bg-white px-4 py-2 text-center font-display text-[11px] font-extrabold uppercase tracking-wide transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95 md:flex md:px-7 md:text-base ${slide.cta.variant}`}
         >
           {slide.cta.label}
           <span aria-hidden>↗</span>
