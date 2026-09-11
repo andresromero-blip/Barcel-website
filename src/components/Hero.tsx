@@ -204,20 +204,54 @@ export default function Hero() {
           bg-barcel-black), así nunca se superpone a NINGÚN banner sin
           importar su composición. Desde md se mantiene el overlay
           absoluto original, sin ningún cambio (el cliente nunca reportó
-          problema en desktop). */}
+          problema en desktop).
+
+          Ronda 127: la Ronda 113 redujo el recorte cambiando el
+          aspect-ratio (2.67:1 → 4:3 en mobile) pero seguía usando
+          object-cover — un aspect-ratio más angosto que el de la imagen
+          real SIGUE recortando los bordes izq/der sin importar cuál se
+          elija, solo cambia cuánto. El cliente lo confirmó con captura
+          real: en "Nuevas Pop" el wordmark "NUEVAS POP" (pegado al borde
+          izquierdo del arte 2048x768) queda cortado a la mitad — no es
+          un problema de proporción sino de que object-cover, por
+          definición, siempre recorta cuando el aspect-ratio del
+          contenedor no es idéntico al de la imagen.
+          Fix real (no otro ajuste de aspect-ratio): en mobile la imagen
+          pasa a object-contain — se ve COMPLETA, sin recortar nada,
+          nunca más. Como eso deja franjas vacías arriba/abajo dentro de
+          la caja 4:3/3:2, se agrega una segunda copia de la misma imagen
+          detrás, a pantalla completa con object-cover + blur (efecto
+          "story" de Instagram) para que esas franjas no se vean como
+          barras negras planas sino como fondo ambiental de la propia
+          pieza. Desde md se mantiene object-cover a pantalla completa,
+          sin cambios (el aspect-ratio real del asset ya no necesita
+          recortar en desktop). */}
       <div className="relative aspect-[4/3] max-h-[85vh] min-h-[200px] w-full sm:aspect-[3/2] md:aspect-[2048/768]">
         {SLIDES.map((s, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <div
             key={s.id}
-            src={s.image}
-            alt={s.alt}
             aria-hidden={i !== index}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            className={`absolute inset-0 h-full w-full overflow-hidden transition-opacity duration-700 ${
               i === index ? "opacity-100" : "opacity-0"
             }`}
-            loading={i === 0 ? "eager" : "lazy"}
-          />
+          >
+            {/* Fondo desenfocado — solo mobile/tablet, rellena las franjas
+                que deja el object-contain de abajo sin recortar el arte. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.image}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl brightness-75 md:hidden"
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={s.image}
+              alt={s.alt}
+              className="absolute inset-0 h-full w-full object-contain md:object-cover"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          </div>
         ))}
 
         {/* arrow nav — ocultas en mobile (los dots + swipe/autoplay ya
