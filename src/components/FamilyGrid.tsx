@@ -20,6 +20,11 @@ import { useSearch } from "./SearchContext";
 // "categorías" como decía el node de Figma) y el estilo (sin
 // mayúsculas forzadas) los corrigió el cliente después de ver el
 // primer deploy — ver el comentario junto al <button> más abajo.
+// Ronda 139/140: dos vueltas sobre la tipografía del botón — la 139 lo
+// dejó como link subrayado sin contenedor (malinterpretando "mismo
+// puntaje y tipografía que 'Ver todos los productos'"); la 140 corrige:
+// el cliente quería la tipografía de ese link (font-body, sin
+// uppercase) pero CON contenedor — ver el comentario junto al <button>.
 const DEFAULT_VISIBLE_MOBILE = 4;
 
 export default function FamilyGrid() {
@@ -103,26 +108,27 @@ export default function FamilyGrid() {
         })}
       </div>
 
-      {/* Ronda 139: el cliente pidió que este botón deje de ser un botón
-          con fondo de color (el estilo 1:1-con-Figma de la Ronda 137/138,
-          bg-barcel-red-dark + borde blanco) y en vez de eso use "el mismo
-          puntaje y tipografía" que el CTA link "Ver todos los productos →"
-          de cada tarjeta (BrandCard.tsx, MobileCard: font-body text-sm
-          font-semibold text-barcel-black underline). "Puntaje" = ratio de
-          contraste: texto negro (#0f0f0f) sobre blanco da ~19.6:1 (AAA de
-          sobra), muy por encima del 5.7:1 que daba blanco sobre
-          barcel-red-dark — mismo criterio, ahora currentColor (negro) en
-          vez de blanco fijo. El alcance de este cambio es SOLO este botón
-          (confirmado con el cliente) — el resto de los CTAs del sitio
-          (Hero, modales, Contacto, etc.) no se tocan. Solo mobile/tablet
-          (md:hidden): desktop siempre muestra las 8 tarjetas, no tiene
-          este botón. */}
+      {/* Ronda 140: la Ronda 139 había interpretado "mismo puntaje y
+          tipografía que 'Ver todos los productos'" como "conviértete en
+          ese mismo link subrayado sin contenedor" — el cliente aclaró que
+          se refería solo a la TIPOGRAFÍA (font-body, no font-display; texto
+          normal, no uppercase) y al "puntaje" de contraste (negro sobre
+          blanco, ~19.6:1, AAA de sobra), pero el botón SÍ debe seguir
+          siendo un botón con contenedor (borde + caja), como el resto de
+          los botones secundarios del sitio (mismo patrón "Botón Blanco" de
+          Hero.tsx: border-2 border-grey-300 bg-white, corner-radius 0 —
+          Ronda 19). Por eso: se mantiene el contenedor, pero el texto pasa
+          de font-display text-xs font-bold uppercase (Figma) a font-body
+          text-sm font-semibold sin uppercase — la tipografía real de "Ver
+          todos los productos", no la de un botón. Alcance sigue acotado a
+          este botón únicamente. Solo mobile/tablet (md:hidden): desktop
+          siempre muestra las 8 tarjetas, no tiene este botón. */}
       {showCollapseButton && (
         <div className="mt-6 flex justify-center px-5 md:hidden">
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="group inline-flex items-center gap-1.5 font-body text-sm font-semibold text-barcel-black underline"
+            className="group flex min-h-[44px] items-center gap-1.5 border-2 border-grey-300 bg-white px-5 py-2.5 font-body text-sm font-semibold text-barcel-black transition-transform hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-black active:scale-95"
           >
             Ver todas las marcas
             <span
