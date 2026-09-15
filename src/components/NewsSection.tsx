@@ -44,7 +44,27 @@ export default function NewsSection() {
           las 2 imágenes casi cuadradas esto deja un margen mínimo arriba/
           abajo dentro del tile — se usa bg-barcel-cream (mismo tono que el
           fondo de la sección) para que ese margen se mimetice con la página
-          en vez de verse como una caja de letterbox. */}
+          en vez de verse como una caja de letterbox.
+
+          Ronda 165: el cliente pidió que "todos los contenedores sean
+          simétricos en mobile" (aclarado: de esta sección). Medición real en
+          vivo (getBoundingClientRect de cada <img> vs. su caja, 164x204px,
+          aspect-ratio 4/5 = 0.804 confirmado igual en las 6): con
+          object-contain puro, 2 de las 6 imágenes son casi cuadradas
+          (no-es-cumple-sin-fiesta 1200x1196 ≈ 1.003; runners-juegalos
+          1194x1196 ≈ 0.998) — al ser MÁS anchas que la caja (0.804), quedan
+          limitadas por ancho y dejan ~20px de banda vacía arriba/abajo
+          (≈20% del alto del tile). Las otras 4 imágenes (≈0.75–0.80 de
+          aspecto) casi no dejan banda (0–5px). Resultado: 2 tiles se ven con
+          un marco visible y 4 se ven "a sangre" — esa inconsistencia tile a
+          tile es la asimetría real que reportó el cliente (las cajas ya
+          eran idénticas en tamaño, confirmado por DOM). Fix: en vez de dejar
+          el margen como un efecto secundario distinto por imagen, se agrega
+          un padding interno IGUAL en las 6 (p-3) — así las 4 imágenes que
+          antes llegaban a los bordes ahora también respiran con el mismo
+          margen mínimo, y el marco de cream queda parejo y deliberado en
+          todos los tiles por igual, sin recortar ningún píxel de ninguna
+          imagen (Ronda 164 se mantiene intacta). */}
       <div className="container-page grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
         {news.map((item) => (
           <a
@@ -52,13 +72,13 @@ export default function NewsSection() {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`group relative flex aspect-[4/5] overflow-hidden bg-barcel-cream text-left transition-transform duration-300 hover:-translate-y-1 ${item.span}`}
+            className={`group relative flex aspect-[4/5] overflow-hidden bg-barcel-cream p-3 text-left transition-transform duration-300 hover:-translate-y-1 ${item.span}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.image}
               alt={item.label}
-              className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+              className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
             />
             {item.isVideo && <PlayIcon />}
           </a>
