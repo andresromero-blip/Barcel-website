@@ -97,7 +97,28 @@ function CardContent({
         // (ver nota en el <span>, evita que "Ver más información" se
         // parta en 2 líneas). sm:/md: no se tocan: a esos anchos el CTA
         // ya cabía en una sola línea de sobra.
-        <div className="pointer-events-none absolute inset-2 z-20 flex flex-col items-center justify-center gap-3 bg-white p-3 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:inset-8 sm:gap-4 sm:p-5 md:inset-10 md:p-6">
+        //
+        // Ronda 151: el cliente preguntó si el hover en mobile es buena
+        // práctica y, dado que no lo es (no existe :hover real en touch —
+        // WCAG 2.1 SC 1.4.13, y en iOS Safari un elemento con :hover
+        // requiere DOS taps: el primero solo dispara el :hover, el
+        // segundo recién sigue el link), pidió que "no debería existir
+        // ese comportamiento en el prototipo" en mobile. Para ESTE swap en
+        // particular (imagen base+picómetro → composición oficial del
+        // brandbook) la solución NO es forzarlo visible siempre en mobile:
+        // esta caja es "position: absolute" y se pinta ENCIMA del picómetro
+        // (mismo z-20, pero esta caja va antes en el DOM → el picómetro,
+        // que va después, pintaría arriba solo parcialmente, dejando un
+        // resultado a medias). Se opta por lo inverso: el swap se
+        // desactiva por completo debajo de md (group-hover ya no dispara
+        // ahí, vía "md:group-hover"), así el picómetro y el nombre del
+        // sabor (recién arreglados en Ronda 149/siempre) se quedan
+        // SIEMPRE visibles en mobile — sin depender de tap/hover — y el
+        // CTA "Pruébalo" para estos sabores se resuelve con un overlay
+        // propio, mobile-only, más abajo (ver el bloque final de este
+        // componente). El swap con composición real sigue existiendo tal
+        // cual, pero solo de md: en adelante (mouse/hover real).
+        <div className="pointer-events-none absolute inset-2 z-20 flex flex-col items-center justify-center gap-3 bg-white p-3 opacity-0 transition-opacity duration-300 ease-out sm:inset-8 sm:gap-4 sm:p-5 md:inset-10 md:p-6 md:group-hover:opacity-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={flavor.hoverImage}
@@ -152,9 +173,17 @@ function CardContent({
         // completamente tapado, invisible. Se omite solo para esos
         // sabores en vez de borrar el código: los que aún no tengan
         // sliderImage siguen usando el mismo tratamiento de antes.
+        // Ronda 151: mismo criterio que la caja de composición de Takis —
+        // este fondo de yute reemplaza visualmente al nombre del sabor
+        // (ver el <span> de más abajo, que se oculta junto con él) en vez
+        // de sumarse a él, así que forzarlo "siempre visible" en mobile
+        // dejaría el nombre del sabor invisible por defecto sin hover real
+        // que lo traiga de vuelta. Se desactiva el swap debajo de md
+        // (md:group-hover en vez de group-hover) para que el nombre del
+        // sabor se quede siempre visible en mobile.
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-300 ease-out md:group-hover:opacity-100"
           style={{ backgroundImage: "url(/products/chips/sku-hover-bg.jpg)" }}
         />
       )}
@@ -197,7 +226,12 @@ function CardContent({
             alt={`Picómetro: ${SPICE_LEVELS[flavor.spiceLevel].label}`}
             className={`absolute left-2 top-1/2 z-20 h-28 w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-lg sm:h-36 md:h-44 ${
               flavor.hoverImage
-                ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
+                ? // Ronda 151: el swap a composición ya no dispara en mobile
+                  // (ver nota arriba, caja de composición) — este fade-out
+                  // se restringe a md: en adelante para que el picómetro
+                  // (recién arreglado en Ronda 149) nunca desaparezca sin
+                  // hover real disponible para revertirlo.
+                  "transition-opacity duration-300 ease-out md:group-hover:opacity-0"
                 : ""
             }`}
           />
@@ -224,7 +258,9 @@ function CardContent({
             aria-hidden="true"
             className={`h-full w-auto object-contain drop-shadow-xl ${
               isTakis && flavor.hoverImage
-                ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
+                ? // Ronda 151: mismo criterio — sin hover real en mobile, la
+                  // imagen base del producto no debe poder desaparecer ahí.
+                  "transition-opacity duration-300 ease-out md:group-hover:opacity-0"
                 : ""
             }`}
           />
@@ -248,7 +284,10 @@ function CardContent({
       {isTakis ? (
         <span
           className={`relative px-3 py-1 font-takisDisplay text-base font-bold uppercase leading-tight tracking-wide text-takis-purple transition-opacity duration-300 sm:text-xl md:text-2xl ${
-            flavor.hoverImage ? "group-hover:opacity-0" : ""
+            // Ronda 151: nombre del sabor siempre visible en mobile — solo
+            // se oculta junto con el swap a composición, que ahora es
+            // exclusivo de md: en adelante.
+            flavor.hoverImage ? "md:group-hover:opacity-0" : ""
           }`}
         >
           {flavor.name}
@@ -277,7 +316,10 @@ function CardContent({
                   // nota de cardClass) sea lo único que cambie, sin el
                   // nombre encima. Sigue vigente para los sabores que
                   // aún no tienen sliderImage.
-                  "font-introhead transition-opacity duration-300 group-hover:opacity-0"
+                  // Ronda 151: igual que el resto — el swap de yute ya no
+                  // dispara en mobile, así que el nombre no debe poder
+                  // ocultarse ahí tampoco.
+                  "font-introhead transition-opacity duration-300 md:group-hover:opacity-0"
               : "font-display"
           }`}
         >
@@ -330,22 +372,48 @@ function CardContent({
           (inset-x-0 les da el ancho completo de la tarjeta, no el inset
           reducido de la composición), pero nowrap lo deja garantizado
           también si el texto o el padding cambian a futuro. */}
-      {hasComposition ? null : isTakis ? (
-        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
+      {/* Ronda 151: los 3 CTAs de abajo dependían de :hover (invisibles por
+          defecto, opacity-0 → group-hover:opacity-100) sin ninguna
+          alternativa en mobile — exactamente el patrón que el cliente
+          preguntó si era buena práctica (no lo es: no hay :hover real en
+          touch, WCAG 2.1 SC 1.4.13) y pidió eliminar. Fix: base
+          opacity-100 (visible siempre) + "md:opacity-0" recién oculta el
+          CTA a partir de md (mouse real) para restaurar el comportamiento
+          de hover que el cliente ya aprobó en Rondas 56-92 en esa
+          resolución. group-hover:opacity-100 (sin prefijo) se deja tal
+          cual: por debajo de md la opacidad base ya es 100, así que ese
+          hover es un no-op ahí — solo entra en juego junto con
+          md:opacity-0 a partir de md. */}
+      {hasComposition ? (
+        // Ronda 151: para los sabores con composición oficial (swap
+        // desactivado en mobile, ver la caja de composición más arriba)
+        // hace falta un CTA propio para mobile — reutiliza el mismo
+        // overlay+pill de abajo pero SOLO por debajo de md (md:hidden),
+        // ya que de md en adelante el CTA real vive dentro de la caja
+        // blanca de la composición (evita duplicar "Pruébalo" dos veces
+        // sobre la misma tarjeta en desktop).
+        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center md:hidden">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg">
+            Pruébalo
+            <span aria-hidden>→</span>
+          </span>
+        </span>
+      ) : isTakis ? (
+        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 sm:bottom-5">
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Pruébalo
             <span aria-hidden>→</span>
           </span>
         </span>
       ) : isChips ? (
-        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
+        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 sm:bottom-5">
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-chips-brown px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Pruébalo
             <span aria-hidden>→</span>
           </span>
         </span>
       ) : (
-        <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
+        <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 sm:text-base">
           Pruébalo
           <span aria-hidden>→</span>
         </span>
