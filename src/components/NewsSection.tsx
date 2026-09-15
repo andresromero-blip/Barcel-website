@@ -29,7 +29,22 @@ export default function NewsSection() {
           queda un tile solo en su fila con espacio vacío al lado, a
           diferencia del patrón anterior "1 grande + 4 chicos" pensado solo
           para 5 items). Cada tile ahora es un <a> real hacia la publicación
-          de Instagram (antes solo abría un modal interno). */}
+          de Instagram (antes solo abría un modal interno).
+
+          Ronda 164: el cliente reportó que las imágenes se veían "cortadas"
+          dentro del tile — con object-cover sobre una caja de proporción fija
+          (min-h fijo + ancho fluido de la columna), cualquier imagen cuya
+          proporción real no coincidiera exactamente con la caja perdía
+          contenido por los bordes (en estas 6 piezas reales de Instagram el
+          texto vive pegado arriba/abajo del post, así que el recorte se
+          notaba mucho). Las 6 imágenes actuales son retrato ~4:5 (2 de ellas
+          casi 1:1) — se fija esa proporción real en el tile (aspect-[4/5],
+          en vez de un min-h arbitrario) y se cambia a object-contain: la
+          imagen completa siempre es visible, sin recortar ningún borde. Para
+          las 2 imágenes casi cuadradas esto deja un margen mínimo arriba/
+          abajo dentro del tile — se usa bg-barcel-cream (mismo tono que el
+          fondo de la sección) para que ese margen se mimetice con la página
+          en vez de verse como una caja de letterbox. */}
       <div className="container-page grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
         {news.map((item) => (
           <a
@@ -37,13 +52,13 @@ export default function NewsSection() {
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`group relative flex min-h-[180px] overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1 md:min-h-[220px] ${item.span}`}
+            className={`group relative flex aspect-[4/5] overflow-hidden bg-barcel-cream text-left transition-transform duration-300 hover:-translate-y-1 ${item.span}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={item.image}
               alt={item.label}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
             />
             {item.isVideo && <PlayIcon />}
           </a>
