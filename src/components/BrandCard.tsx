@@ -1,5 +1,10 @@
+"use client";
+
+// Ronda 162: se agrega "use client" por el mismo motivo que
+// LogoMarquee.tsx/OtherBrandsGrid.tsx — el onClick de isBrandNavEnabled
+// en los <Link> requiere que este componente sea Client Component.
 import Link from "next/link";
-import type { Brand } from "@/data/brands";
+import { isBrandNavEnabled, type Brand } from "@/data/brands";
 
 // Ronda 116: rediseño Figma 1:1 MOBILE del grid de familia (Home >
 // Categorías, "Card categoria", nodes 1:10502–1:10509) — tarjeta apilada:
@@ -61,8 +66,13 @@ function MobileCard({ brand }: { brand: Brand }) {
         <p className="font-body text-sm leading-[1.3] text-barcel-black/70">
           {brand.description}
         </p>
+        {/* Ronda 162: click interceptado para marcas no habilitadas —
+            ver isBrandNavEnabled en data/brands.ts. */}
         <Link
           href={`/marcas/${brand.slug}`}
+          onClick={(e) => {
+            if (!isBrandNavEnabled(brand.slug)) e.preventDefault();
+          }}
           className="group mt-1 inline-flex w-fit items-center gap-1.5 font-body text-sm font-semibold text-barcel-black underline"
         >
           Ver todos los productos
@@ -172,8 +182,13 @@ function DesktopCard({ brand }: { brand: Brand }) {
   );
 
   const textBox = (
+    // Ronda 162: click interceptado para marcas no habilitadas — ver
+    // isBrandNavEnabled en data/brands.ts.
     <Link
       href={`/marcas/${brand.slug}`}
+      onClick={(e) => {
+        if (!isBrandNavEnabled(brand.slug)) e.preventDefault();
+      }}
       className={`flex basis-1/2 grow-0 shrink-0 flex-col justify-center gap-6 bg-white px-8 py-10 lg:gap-8 lg:px-12 xl:gap-12 xl:px-20 ${
         textIsSecond ? "-ml-px" : ""
       }`}

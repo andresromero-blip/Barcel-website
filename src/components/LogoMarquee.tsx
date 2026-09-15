@@ -1,6 +1,13 @@
+"use client";
+
+// Ronda 162: se agrega "use client" — el componente pasó a tener un
+// onClick real en los <Link> (interceptar navegación a marcas
+// deshabilitadas, ver isBrandNavEnabled) y Next.js no permite pasar un
+// event handler como prop desde un Server Component a un Client
+// Component (Link) sin que el padre también sea Client Component.
 import { Fragment } from "react";
 import Link from "next/link";
-import { brands } from "@/data/brands";
+import { brands, isBrandNavEnabled } from "@/data/brands";
 
 // Ronda 42: los .png de logo NO vienen recortados al contenido real — cada
 // archivo tiene una cantidad distinta de "aire" (canvas cuadrado 597x597 con
@@ -105,8 +112,13 @@ export default function LogoMarquee() {
       <div className="flex h-24 w-max animate-marquee items-center gap-x-10 hover:[animation-play-state:paused]">
         {loop.map((brand, i) => (
           <Fragment key={`${brand.slug}-${i}`}>
+            {/* Ronda 162: click interceptado para marcas no habilitadas —
+                ver isBrandNavEnabled en data/brands.ts. */}
             <Link
               href={`/marcas/${brand.slug}`}
+              onClick={(e) => {
+                if (!isBrandNavEnabled(brand.slug)) e.preventDefault();
+              }}
               aria-label={`Ir a la página de ${brand.name}`}
               className="flex h-20 w-20 shrink-0 items-center justify-center transition-opacity hover:opacity-70 focus-visible:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red"
             >

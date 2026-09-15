@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSearch } from "./SearchContext";
 import { searchProducts, POPULAR_SEARCHES } from "@/data/search";
+import { isBrandNavEnabled } from "@/data/brands";
 
 // Buscador overlay — 1:1 con el comportamiento del wireframe de Figma
 // (node 107:2968, "Buscador (overlay) – Desktop"): panel a todo el
@@ -118,10 +119,18 @@ export default function SearchOverlay() {
             {results.length > 0 ? (
               <div className="flex flex-col gap-3">
                 {results.map((result) => (
+                  // Ronda 162: click interceptado para marcas no habilitadas
+                  // — ver isBrandNavEnabled en data/brands.ts.
                   <Link
                     key={result.key}
                     href={result.href}
-                    onClick={closeSearch}
+                    onClick={(e) => {
+                      if (!isBrandNavEnabled(result.brand.slug)) {
+                        e.preventDefault();
+                        return;
+                      }
+                      closeSearch();
+                    }}
                     className="group flex items-center gap-4 bg-barcel-black/[0.04] p-3 transition-colors hover:bg-barcel-cream"
                   >
                     <div className="flex h-14 w-14 shrink-0 items-center justify-center bg-barcel-cream md:h-16 md:w-16">

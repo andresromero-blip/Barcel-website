@@ -1,5 +1,10 @@
+"use client";
+
+// Ronda 162: se agrega "use client" por el mismo motivo que LogoMarquee.tsx
+// — el onClick de isBrandNavEnabled en el <Link> requiere que este
+// componente sea Client Component.
 import Link from "next/link";
-import type { Brand } from "@/data/brands";
+import { isBrandNavEnabled, type Brand } from "@/data/brands";
 import { LOGO_SIZE } from "./LogoMarquee";
 
 // Ronda 54: extraído de BrandPage.tsx ("Explora otras marcas") para
@@ -38,9 +43,14 @@ export default function OtherBrandsGrid({
       )}
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
         {brands.map((b) => (
+          // Ronda 162: click interceptado para marcas no habilitadas — ver
+          // isBrandNavEnabled en data/brands.ts.
           <Link
             key={b.slug}
             href={`/marcas/${b.slug}`}
+            onClick={(e) => {
+              if (!isBrandNavEnabled(b.slug)) e.preventDefault();
+            }}
             aria-label={`Ir a la página de ${b.name}`}
             className={`group flex items-center justify-center gap-3 border-2 border-barcel-black/10 bg-white px-5 py-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:shadow-md ${b.hoverBg}`}
           >

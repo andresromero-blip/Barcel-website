@@ -1068,3 +1068,27 @@ export const brands: Brand[] = [
     logoHover: "/logos/tostachos-hover.png",
   },
 ];
+
+// Ronda 162: el cliente pidió deshabilitar TODOS los enlaces del sitio que
+// lleven a las 6 marcas que no son Takis ni Chip's — "sin modificar la UI",
+// es decir, tarjetas/logos/links deben verse y responder al hover EXACTO
+// igual que hoy, solo que el click ya no debe navegar. En vez de tocar la
+// lógica de navegación en cada uno de los ~7 puntos del sitio que arman un
+// <Link href={`/marcas/${slug}`}> (Header desktop/mobile, grid de Home,
+// marquee de logos, "Explora otras marcas", resultados del buscador), se
+// centraliza la regla acá: cada uno de esos Link llama a
+// isBrandNavEnabled(slug) y, si da false, hace e.preventDefault() en el
+// onClick — el elemento sigue siendo el mismo <a>/<Link> con las mismas
+// clases, mismo href (por accesibilidad/SEO no se borra), mismo hover;
+// solo el click deja de tener efecto. Los sabores de Takis/Chip's son los
+// únicos con flavor.slug propio (ver Brand.flavors), así que las demás 6
+// marcas nunca generan links de sabor — no hace falta tocar
+// ProductSlider.tsx/RelatedProductsSlider.tsx/breadcrumb de producto.
+export const NAV_ENABLED_BRAND_SLUGS: ReadonlySet<string> = new Set([
+  "chips",
+  "takis",
+]);
+
+export function isBrandNavEnabled(slug: string): boolean {
+  return NAV_ENABLED_BRAND_SLUGS.has(slug);
+}

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSearch } from "./SearchContext";
 import SearchOverlay from "./SearchOverlay";
-import { brands } from "@/data/brands";
+import { brands, isBrandNavEnabled } from "@/data/brands";
 
 // Rutas raíz-relativas (no fragmentos sueltos) para que la nav funcione
 // igual desde cualquier página: "/#seccion" navega al Home y baja al
@@ -179,10 +179,17 @@ export default function Header() {
                   sin shadow (Figma no trae sombra). El símbolo ® no
                   aparece en el mock de Figma pero el cliente lo pidió
                   explícito para el dropdown — se mantiene. */}
+              {/* Ronda 162: onClick con preventDefault para las 6 marcas
+                  no habilitadas (ver isBrandNavEnabled en data/brands.ts)
+                  — el <a> queda idéntico (mismo href, mismas clases,
+                  mismo hover), solo deja de navegar. */}
               {brands.map((brand) => (
                 <a
                   key={brand.slug}
                   href={`/marcas/${brand.slug}`}
+                  onClick={(e) => {
+                    if (!isBrandNavEnabled(brand.slug)) e.preventDefault();
+                  }}
                   className="flex items-center gap-1 px-3 py-4 font-display text-lg font-semibold transition-colors hover:bg-barcel-cream"
                 >
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden">
@@ -350,11 +357,19 @@ export default function Header() {
                   el color de marca AA-verificado (familyCardText), a
                   tamaño reducido para la fila más compacta del acordeón
                   mobile. */}
+              {/* Ronda 162: mismo criterio que el dropdown desktop — click
+                  interceptado para las 6 marcas no habilitadas, sin tocar
+                  el resto del comportamiento (handleNavClick sigue
+                  cerrando el menú mobile igual, incluso cuando el link
+                  está deshabilitado). */}
               {brands.map((brand) => (
                 <a
                   key={brand.slug}
                   href={`/marcas/${brand.slug}`}
-                  onClick={handleNavClick}
+                  onClick={(e) => {
+                    if (!isBrandNavEnabled(brand.slug)) e.preventDefault();
+                    handleNavClick();
+                  }}
                   className="flex items-center gap-2 px-6 py-2.5 font-display text-sm font-semibold active:bg-barcel-cream"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden">
