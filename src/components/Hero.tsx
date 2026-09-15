@@ -170,6 +170,25 @@ export default function Hero() {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
+      {/* Ronda 148: el Home entero no tenía NINGÚN <h1> — este carrusel
+          es puro banner de imagen (SLIDES solo trae image/alt/cta, sin
+          texto de headline), así que el primer encabezado real de la
+          página era el <h2> de BrandIntro.tsx más abajo. Un crawler
+          tradicional y, más todavía, un buscador de IA arman su
+          entendimiento de "qué es esta página" apoyándose fuerte en el
+          <h1> — sin uno, el Home queda con una señal de identidad más
+          débil que cualquier página de marca (que sí tiene <h1> vía
+          brand.tagline). Se agrega un <h1> real pero visualmente oculto
+          (sr-only, utilidad nativa de Tailwind) en vez de un titular
+          visible: el diseño del hero-carrusel ya está aprobado por el
+          cliente y no es parte del alcance de este cambio (solo la capa
+          técnica) — sr-only es exactamente la técnica estándar para este
+          caso (headline real para crawlers/lectores de pantalla, cero
+          impacto visual). */}
+      <h1 className="sr-only">
+        Barcel® — Chip&apos;s, Takis, Runners, Big Mix, Hot Nuts, POP, Golden
+        Nuts y Tostachos: botanas con sabor y calidad
+      </h1>
       {/* Historial de este bloque (Rondas 104-107): con los banners
           originales, casi cuadrados (1440x900), no había forma de que la
           imagen llegara de borde a borde en pantallas anchas sin recortar

@@ -224,12 +224,21 @@ export default function BrandPage({
             <div
               className={`mt-6 border-t pt-5 ${isLightText ? "border-white/20" : "border-barcel-black/15"}`}
             >
+              {/* Ronda 148: cliente pidió pasar los textos visibles del
+                  sitio por buenas prácticas de SEO/identidad algorítmica
+                  para buscadores de IA. "Síguelos" a secas es un label
+                  huérfano de contexto — ni el texto plano ni un lector de
+                  pantalla en modo rápido saben a qué se refiere sin bajar
+                  a leer los aria-label de cada ícono. "en redes sociales"
+                  lo hace autocontenido (coincide además con el término que
+                  la gente realmente busca) sin romper el diseño: sigue
+                  siendo una sola línea corta en el eyebrow de 11px. */}
               <p
                 className={`mb-3 font-display text-[11px] font-bold uppercase tracking-wide ${
                   isLightText ? "text-white/80" : "text-black"
                 }`}
               >
-                Síguelos
+                Síguelos en redes sociales
               </p>
               {/* Ronda 38: los botones de redes con caja al 10% de opacidad
                   pasaban desapercibidos — se resolvió con caja sólida
@@ -379,8 +388,16 @@ export default function BrandPage({
           desbordar el contenedor). */}
       <section id="portafolio" className="scroll-mt-20 bg-white py-16 md:py-20">
         <div className="container-page">
+          {/* Ronda 148: este <h2> se repetía IDÉNTICO ("Portafolio de
+              productos", sin más) en las 8 páginas de marca — para un
+              crawler tradicional o un buscador de IA que arma un resumen
+              por URL, encabezados duplicados entre páginas restan
+              señal de qué hace única a cada una. Se agrega el nombre real
+              de la marca para que cada H2 sea distinto y describa el
+              contenido real de esa página (mismo criterio que el <h1> de
+              arriba, que ya usa {"{brand.tagline}"} por marca). */}
           <h2 className="font-teko text-3xl font-bold uppercase text-barcel-red md:text-4xl">
-            Portafolio de productos
+            Portafolio de productos {brand.name}
           </h2>
           {brand.flavors && brand.flavors.length > 0 ? (
             <p className="mt-2 font-body text-sm text-barcel-black/70 sm:whitespace-nowrap md:text-base">
@@ -420,11 +437,18 @@ export default function BrandPage({
           "Portafolio de productos" y "También te puede antojar", en vez
           del label chiquito que tenía antes) y fondo cream para separarla
           visualmente del blanco del portafolio de arriba. */}
+      {/* Ronda 148: subheading genérico ("Descubre el resto del portafolio
+          Barcel.") sin una sola palabra de qué vende Barcel — se enriquece
+          con términos reales de categoría (marcas, botanas, sabores) que
+          es lo que la gente y los motores de búsqueda con IA usan para
+          entender de qué trata el sitio, sin tocar el <p> genérico que ya
+          renderiza OtherBrandsGrid (mismo componente/estilo, solo cambia
+          el string). */}
       <section className="bg-barcel-cream py-14 md:py-16">
         <OtherBrandsGrid
           brands={otherBrands}
           heading="Explora otras marcas"
-          subheading="Descubre el resto del portafolio Barcel."
+          subheading="Descubre las demás marcas de botanas Barcel®: sabores y antojos para cada momento."
         />
       </section>
     </>

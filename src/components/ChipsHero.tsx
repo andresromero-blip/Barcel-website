@@ -83,8 +83,13 @@ const LOGO_BOX_DESKTOP =
 export default function ChipsHero({ brand }: { brand: Brand }) {
   const followText = (
     <div className="mt-6 border-t border-white/20 pt-5">
+      {/* Ronda 148: mismo criterio de SEO/identidad algorítmica aplicado
+          en BrandPage.tsx — "Síguelos" solo no dice a qué canal, "en
+          redes sociales" lo hace autocontenido sin romper el eyebrow de
+          una línea. Este hero de Chip's es un componente aparte
+          (bespoke), así que el string se repite aquí a propósito. */}
       <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-wide text-white/80">
-        Síguelos
+        Síguelos en redes sociales
       </p>
       <div className="flex items-center gap-2.5">
         {BRAND_SOCIALS.map((social) => (

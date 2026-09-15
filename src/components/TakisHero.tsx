@@ -46,8 +46,13 @@ export default function TakisHero({ brand }: { brand: Brand }) {
   // alternar con el bloque de mobile, ninguna otra clase cambia.
   const followText = (
     <div className="mt-6 border-t border-white/20 pt-5">
+      {/* Ronda 148: mismo criterio de SEO/identidad algorítmica aplicado
+          en BrandPage.tsx y ChipsHero.tsx — "Síguelos" solo no dice a
+          qué canal; "en redes sociales" lo hace autocontenido sin romper
+          el eyebrow de una línea. Hero bespoke de Takis, string repetido
+          a propósito (no hay componente compartido entre los tres). */}
       <p className="mb-3 font-display text-[11px] font-bold uppercase tracking-wide text-white/80">
-        Síguelos
+        Síguelos en redes sociales
       </p>
       <div className="flex items-center gap-2.5">
         {BRAND_SOCIALS.map((social) => (

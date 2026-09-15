@@ -481,12 +481,16 @@ export default function TakisProductDetail({
         </section>
       )}
 
-      {/* Ronda 68: selector de marcas reintegrado — ver nota arriba. */}
+      {/* Ronda 68: selector de marcas reintegrado — ver nota arriba.
+          Ronda 148: subheading enriquecido con términos de categoría
+          (marcas, botanas, sabores) por SEO/identidad algorítmica — mismo
+          cambio y mismo criterio que en BrandPage.tsx (idéntico string,
+          debe mantenerse sincronizado ahí también). */}
       <section className="bg-barcel-cream py-14 md:py-16">
         <OtherBrandsGrid
           brands={otherBrands}
           heading="Explora otras marcas"
-          subheading="Descubre el resto del portafolio Barcel."
+          subheading="Descubre las demás marcas de botanas Barcel®: sabores y antojos para cada momento."
         />
       </section>
     </>
