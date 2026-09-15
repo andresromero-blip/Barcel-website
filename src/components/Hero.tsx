@@ -358,7 +358,28 @@ export default function Hero() {
           ya no es ajustable por CSS: solo se resuelve con un recorte de
           diseño dedicado para mobile (la opción 2 que el cliente no
           eligió esta vez). Desde md se mantiene 2048:768 sin ningún
-          cambio — cero recorte ahí, igual que siempre. */}
+          cambio — cero recorte ahí, igual que siempre.
+
+          Ronda 167: el cliente pidió expandir el espacio vertical del
+          hero en mobile "al menos 50px" hacia abajo, y esta vez SÍ
+          entregó un set de banners mobile rediseñados a propósito para
+          la nueva medida (1672x1164, en vez de los 1672x941 ~16:9 de la
+          Ronda 135) — la opción 2 que había quedado pendiente desde la
+          Ronda 131. Con asset dedicado a la proporción exacta de la
+          caja, se aplica el mismo criterio de cero-recorte de las
+          Rondas 130/136 (container ratio = asset ratio): la caja mobile
+          pasa de `aspect-[16/9]` a `aspect-[1672/1164]` (≈1.436:1) —
+          210.9px de alto en un iPhone de 375px de ancho bajo la Ronda
+          131 pasan a ≈261px (justo los +50px pedidos). Al calzar la
+          proporción real del asset con la de la caja, object-cover no
+          recorta nada en ninguno de los 6 banners actualizados — el
+          recorte lateral dirigido de la Ronda 131 ya no aplica para
+          ellos. El banner "Pop" NO se reintegra en esta ronda —
+          sigue sin versión desktop (motivo original de su baja en la
+          Ronda 136) — su nueva imagen mobile queda guardada en
+          public/hero/pendientes/ hasta que el cliente decida. Desde md
+          se mantiene 2048:768 sin ningún cambio — cero recorte ahí,
+          igual que siempre. */}
       {/* Ronda 136: assets desktop pasaron de 3072x1536 (ampliado con
           colchón, Ronda 132) a 1774x887, la medida real que mandó el
           cliente para esta caja — sigue siendo 2:1 (misma proporción,
@@ -368,7 +389,7 @@ export default function Hero() {
           se deja en 16:9 (no en 2:1), igual que en la Ronda 132: usa su
           propio asset dedicado (Ronda 135, ver mobileImage arriba) que
           sí es 16:9, por lo que tampoco recorta nada ahí. */}
-      <div className="relative aspect-[16/9] max-h-[85vh] min-h-[100px] w-full md:aspect-[1774/887]">
+      <div className="relative aspect-[1672/1164] max-h-[85vh] min-h-[100px] w-full md:aspect-[1774/887]">
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
@@ -383,7 +404,10 @@ export default function Hero() {
                 hace falta ningún recorte de emergencia ahí: object-cover
                 con esta imagen es casi un mapeo 1:1. Ronda 136: desktop
                 pasó a su propio asset dedicado (1774x887, 2:1, ver
-                abajo) — mismo criterio, tampoco recorta nada. */}
+                abajo) — mismo criterio, tampoco recorta nada.
+                Ronda 167: el set mobile se reemplaza por uno nuevo a
+                1672x1164 (mismo criterio, nueva proporción — ver nota
+                junto al aspect-ratio de la caja más arriba). */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={s.mobileImage}
