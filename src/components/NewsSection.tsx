@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import { news } from "@/data/news";
 
 function PlayIcon() {
@@ -14,9 +11,6 @@ function PlayIcon() {
 }
 
 export default function NewsSection() {
-  const [active, setActive] = useState<string | null>(null);
-  const activeItem = news.find((n) => n.id === active) ?? null;
-
   return (
     <section id="novedades" className="bg-barcel-cream py-16 md:py-24">
       <div className="container-page mb-10">
@@ -30,14 +24,19 @@ export default function NewsSection() {
         </p>
       </div>
 
-      {/* Grid 1:1 con el diseño de referencia: tile grande (n1) + 4 tiles
-          regulares en 2 columnas x 2 filas a su derecha. */}
-      <div className="container-page grid grid-cols-2 gap-2 md:grid-cols-3 md:grid-rows-2 md:gap-3">
+      {/* Ronda 163: grid uniforme de 6 tiles del mismo tamaño — 2 columnas en
+          mobile, 3 en desktop (6 es múltiplo exacto de ambas, así que nunca
+          queda un tile solo en su fila con espacio vacío al lado, a
+          diferencia del patrón anterior "1 grande + 4 chicos" pensado solo
+          para 5 items). Cada tile ahora es un <a> real hacia la publicación
+          de Instagram (antes solo abría un modal interno). */}
+      <div className="container-page grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
         {news.map((item) => (
-          <button
+          <a
             key={item.id}
-            type="button"
-            onClick={() => setActive(item.id)}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className={`group relative flex min-h-[180px] overflow-hidden text-left transition-transform duration-300 hover:-translate-y-1 md:min-h-[220px] ${item.span}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -47,41 +46,9 @@ export default function NewsSection() {
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             {item.isVideo && <PlayIcon />}
-          </button>
+          </a>
         ))}
       </div>
-
-      {activeItem && (
-        <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-6"
-          onClick={() => setActive(null)}
-        >
-          <div
-            className="relative w-full max-w-sm overflow-hidden bg-barcel-black text-white shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              aria-label="Cerrar"
-              onClick={() => setActive(null)}
-              className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center bg-black/50 hover:bg-black/70"
-            >
-              ✕
-            </button>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={activeItem.image}
-              alt={activeItem.label}
-              className="max-h-[70vh] w-full object-cover"
-            />
-            <div className="p-6">
-              <h3 className="font-display text-lg font-extrabold leading-snug">
-                {activeItem.label}
-              </h3>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
