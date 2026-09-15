@@ -485,8 +485,15 @@ export default function TakisProductDetail({
           Ronda 148: subheading enriquecido con términos de categoría
           (marcas, botanas, sabores) por SEO/identidad algorítmica — mismo
           cambio y mismo criterio que en BrandPage.tsx (idéntico string,
-          debe mantenerse sincronizado ahí también). */}
-      <section className="bg-barcel-cream py-14 md:py-16">
+          debe mantenerse sincronizado ahí también).
+          Ronda 154: el cliente pidió el fondo de "Explora otras marcas"
+          en #F4E5FF dentro de la marca Takis — coincide 1:1 con el token
+          que ya trae el propio archivo de Figma para esta sección
+          (complementary-colors/takis/100). Este componente es exclusivo
+          de las páginas de sabor de Takis (a diferencia de BrandPage.tsx,
+          que es compartido por las 8 marcas), así que aquí el color va
+          fijo, sin condicional de marca. */}
+      <section className="bg-[#F4E5FF] py-14 md:py-16">
         <OtherBrandsGrid
           brands={otherBrands}
           heading="Explora otras marcas"

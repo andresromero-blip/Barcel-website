@@ -444,7 +444,14 @@ export default function BrandPage({
           entender de qué trata el sitio, sin tocar el <p> genérico que ya
           renderiza OtherBrandsGrid (mismo componente/estilo, solo cambia
           el string). */}
-      <section className="bg-barcel-cream py-14 md:py-16">
+      {/* Ronda 154: el cliente pidió el fondo de esta sección en #F4E5FF
+          específicamente dentro de la marca Takis (coincide con el token
+          complementary-colors/takis/100 del propio archivo de Figma). Este
+          componente es compartido por las 8 marcas (a diferencia de
+          TakisProductDetail.tsx, que es exclusivo de Takis y sí lleva el
+          color fijo) — se usa el mismo isTakis que ya calcula el resto del
+          archivo para no tocar el bg-barcel-cream de las otras 7 marcas. */}
+      <section className={`${isTakis ? "bg-[#F4E5FF]" : "bg-barcel-cream"} py-14 md:py-16`}>
         <OtherBrandsGrid
           brands={otherBrands}
           heading="Explora otras marcas"
