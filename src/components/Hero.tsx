@@ -461,8 +461,12 @@ export default function Hero() {
             y la de abajo, desktop). El label ya vive en sentence case en
             SLIDES (ver arriba, ej. "Descubre Chip's Jalapeño") — era
             puramente la clase CSS la que forzaba las mayúsculas, así que
-            quitarla ya alcanza, sin tocar el copy. */}
-        <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center px-3 xs:bottom-5 sm:bottom-6 sm:px-4 md:hidden">
+            quitarla ya alcanza, sin tocar el copy.
+            Ronda 168: el cliente pidió subir 25px la posición del CTA,
+            solo en mobile (este overlay ya es `md:hidden`, así que no
+            afecta al CTA de desktop de abajo). +25px a cada breakpoint:
+            16→41px, 20→45px, 24→49px. */}
+        <div className="absolute inset-x-0 bottom-[41px] z-10 flex justify-center px-3 xs:bottom-[45px] sm:bottom-[49px] sm:px-4 md:hidden">
           <a
             href={slide.cta.href}
             {...(slide.cta.href.startsWith("http")
