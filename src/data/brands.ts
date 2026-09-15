@@ -280,6 +280,17 @@ export const brands: Brand[] = [
         image: "/products/chips/flavors/jalapeno.png",
         sliderImage: "/products/chips/lifestyle/jalapeno.jpg",
         slug: "jalapeno",
+        // Ronda 160: la misma etiqueta oficial (NPAR-FO-03) trae una hoja
+        // de cálculo nutrimental por cada presentación que Barcel produce
+        // de este sabor — para Jalapeño son 20 (18 g hasta 4.5 kg), la
+        // mayoría formatos institucionales/mayoreo. En vez de listar las
+        // 20 (ilegible en la tarjeta y no todas son de venta al público),
+        // se muestran 3 reales confirmadas por la etiqueta — chica/media/
+        // grande — mismo criterio de curaduría que ya usa Takis, con la
+        // diferencia de que aquí los 3 números SÍ están confirmados por
+        // Barcel (no son ejemplo), por eso no llevan el aviso "pendiente
+        // de confirmar".
+        sizes: ["42 g", "170 g", "450 g"],
         ingredients:
           "PAPA NATURAL, ACEITE VEGETAL, SAZONADOR [MALTODEXTRINA, SAL YODADA, GMS, CEBOLLA Y AJO EN POLVO, ALMIDÓN MODIFICADO, ÁCIDO CÍTRICO, ÁCIDO ACÉTICO, CHILE EN POLVO, SABORIZANTES NATURALES E IDÉNTICOS AL NATURAL, EXTRACTO DE PAPRIKA, INOSINATO DE SODIO, GUANILATO DE SODIO].",
         allergens: "PUEDE CONTENER: SOYA, LECHE, GLUTEN, CACAHUATE",
@@ -315,6 +326,9 @@ export const brands: Brand[] = [
         image: "/products/chips/flavors/fuego.png",
         sliderImage: "/products/chips/lifestyle/fuego.jpg",
         slug: "fuego",
+        // Ronda 160: mismo criterio que Jalapeño arriba — 3 de las 12
+        // presentaciones reales confirmadas por la etiqueta oficial.
+        sizes: ["42 g", "170 g", "450 g"],
         ingredients:
           "PAPA NATURAL, ACEITE VEGETAL, SAZONADOR (SAL YODADA, MALTODEXTRINA, ÁCIDO CÍTRICO, AZÚCARES AÑADIDOS (AZÚCAR), GMS, SABORIZANTES NATURALES Y ARTIFICIALES, EXTRACTO DE LEVADURA, ANTOCIANINAS, CEBOLLA, PROTEÍNA VEGETAL, ÁCIDO ACÉTICO, BICARBONATO DE SODIO, ACEITE VEGETAL, EXTRACTO DE PAPRIKA).",
         allergens: "PUEDE CONTENER: SOYA, LECHE, GLUTEN, CACAHUATE",
@@ -356,6 +370,10 @@ export const brands: Brand[] = [
         image: "/products/chips/flavors/crema-especias.png",
         sliderImage: "/products/chips/lifestyle/crema-especias.jpg",
         slug: "crema-especias",
+        // Ronda 160: mismo criterio que Jalapeño arriba — 3 de las 9
+        // presentaciones reales confirmadas por la etiqueta oficial (esta
+        // etiqueta no incluye 450 g; 500 g es la más cercana disponible).
+        sizes: ["42 g", "170 g", "500 g"],
         ingredients:
           "PAPA NATURAL, ACEITE VEGETAL, SAZONADOR (SÓLIDOS DE LA LECHE, MALTODEXTRINA, SAL YODADA, ACEITE VEGETAL, TOMATE (0.4%) Y CEBOLLA EN POLVO, AZÚCARES AÑADIDOS (GLUCOSA, AZÚCAR, SÓLIDOS DE JARABE DE MAÍZ), GMS, SABORIZANTES NATURALES, ARTIFICIALES E IDÉNTICOS A LOS NATURALES, ALMIDÓN MODIFICADO, AJO EN POLVO, ESPECIAS, ÁCIDO LÁCTICO, LECHE, VINAGRE, ÁCIDO MÁLICO, ÁCIDO CÍTRICO).",
         allergens: "CONTIENE: LECHE. PUEDE CONTENER: GLUTEN, SOYA, CACAHUATE",

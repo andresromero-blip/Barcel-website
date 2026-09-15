@@ -290,14 +290,25 @@ export default function TakisProductDetail({
                 Presentación debajo. Presentación se reagrupa con el
                 Picómetro y la Descripción (ver bloque de abajo), que es
                 donde vive en el diseño real. */}
+            {/* Ronda 160: dos pedidos del cliente sobre el titular de
+                Chip's — 1) color #663025, que ya existe en el proyecto
+                como el token chips.brown (Ronda 92, PMS 483 C, color
+                primario oficial del manual de marca) — se usa ese token
+                en vez del hex suelto para quedar consistente con el
+                resto de usos de chips-brown en el sitio. 2) "reduce el
+                puntaje en 10 puntos": text-6xl son 60px (line-height 1);
+                se baja a 50px con un valor arbitrario porque Tailwind no
+                trae un paso de escala a esa medida exacta. Cambio
+                acotado a Chip's — Takis y el resto de marcas siguen en
+                text-6xl, que nadie objetó. */}
             <div className="flex w-full flex-col gap-3">
               <h1
-                className={`text-6xl font-bold uppercase leading-[0.9] ${
+                className={`font-bold uppercase leading-[0.9] ${
                   brand.slug === "takis"
-                    ? "font-takisDisplay text-takis-purple"
+                    ? "text-6xl font-takisDisplay text-takis-purple"
                     : brand.slug === "chips"
-                      ? "font-introhead text-barcel-black"
-                      : "font-teko text-barcel-black"
+                      ? "text-[50px] font-introhead text-chips-brown"
+                      : "text-6xl font-teko text-barcel-black"
                 }`}
               >
                 {fullName}
