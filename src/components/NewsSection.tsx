@@ -61,20 +61,36 @@ export default function NewsSection() {
           cliente siguió viendo fotos de alto visual distinto entre tiles de
           la misma fila (correcto — "una más alta que otra").
 
-          Fix real: en vez de pelear con el CSS en el navegador, se
-          normalizan los ARCHIVOS de imagen a la proporción exacta 4:5 antes
-          de servirlos (ImageMagick -gravity center -background "#FFF7EC"
-          -extent, mismo tono que bg-barcel-cream) — se les agrega relleno
-          real en los márgenes más cortos (arriba/abajo o izq/der según cada
-          caso) hasta que el archivo mismo mide exactamente ratio 0.8, igual
-          que el contenedor. Con eso, cualquier object-fit (se usa cover)
-          llena la caja de borde a borde en las 6 por igual, sin banda
-          visible y sin recortar ni un píxel de la foto original — el
-          "recorte" de cover como mucho toca el relleno cream que se acaba de
-          agregar, nunca el contenido real (Ronda 164 se respeta). Esto
-          resuelve la causa raíz en vez de compensarla con CSS: las 6 fotos
-          ahora tienen literalmente la misma proporción en disco, así que se
-          ven con el mismo "peso" visual en cualquier breakpoint. */}
+          Ronda 165b (segundo intento, TAMPOCO alcanzó): se normalizaron los
+          6 archivos a ratio 4:5 exacto agregando RELLENO de color
+          (ImageMagick -extent con fondo #FFF7EC) a las 2 imágenes casi
+          cuadradas. Las cajas quedaron idénticas, pero con object-cover
+          sobre un archivo cuyo ratio ya es exactamente 4:5 no hay recorte —
+          o sea, el relleno que se acababa de agregar se veía completo,
+          como franjas cream visibles arriba/abajo DENTRO de esas 2 fotos.
+          El cliente lo reportó correctamente: "Pasen a confesarse" (sin
+          relleno) se veía con la foto a bandera completa, mientras
+          "No es un cumpleaños" y "Juégalos" (con relleno) se veían con su
+          foto real comprimida en el centro — mismo problema de fondo que
+          Ronda 165, solo que ahora el margen quedó "horneado" en el archivo
+          en vez de ser transparente.
+
+          Fix real (confirmado con el cliente vía pregunta directa: recortar
+          un poco los bordes es preferible a que se siga viendo asimétrico):
+          para las 2 imágenes casi cuadradas (no-es-cumple-sin-fiesta
+          1200x1196 y runners-juegalos 1194x1196, ambas ratio ≈1.0) se
+          recortan los COSTADOS (no arriba/abajo) con ImageMagick -gravity
+          center -crop hasta llegar a 957x1196 (ratio 0.8002, igual que las
+          otras 4) — el recorte solo quita fondo/follaje de los bordes
+          laterales, nunca el texto principal (centrado horizontalmente en
+          ambas piezas) ni el producto. Las otras 4 imágenes ya estaban a
+          ~0.75–0.80 de aspecto real (mucho más cerca de 4:5) y se dejan con
+          su relleno mínimo previo (1–6px, imperceptible) porque recortarles
+          ALTURA sí arriesgaba cortar texto pegado a los bordes (el problema
+          original de Ronda 164). Resultado: las 6 imágenes miden
+          exactamente ratio 0.8 en disco — con object-cover llenan la caja
+          de borde a borde, sin ninguna banda de color visible y sin tocar
+          nunca texto ni producto. */}
       <div className="container-page grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-3">
         {news.map((item) => (
           <a
