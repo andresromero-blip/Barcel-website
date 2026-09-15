@@ -185,9 +185,13 @@ export default function TakisProductDetail({
             superior, como en la referencia. El separador "→" reemplaza el
             "/" para igualar el estilo del breadcrumb de Contacto (Ronda
             146) y de este mismo frame. */}
+        {/* Ronda 158: el cliente pidió quitar las migas de pan en mobile —
+            se ocultan por debajo de sm (hidden) y se muestran desde sm
+            (sm:flex) en vez de estar siempre visibles (flex). Solo afecta
+            mobile; desktop no cambia. */}
         <nav
           aria-label="Ruta de navegación"
-          className="container-page flex flex-wrap items-center gap-1.5 py-3 font-body text-xs text-white md:text-sm"
+          className="container-page hidden flex-wrap items-center gap-1.5 py-3 font-body text-xs text-white sm:flex md:text-sm"
         >
           <Link href="/" className="text-white/80 transition-colors hover:text-white">
             Inicio
