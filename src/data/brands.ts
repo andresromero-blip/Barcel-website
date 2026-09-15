@@ -317,11 +317,14 @@ export const brands: Brand[] = [
     groupHoverText: "group-hover:text-white",
     heroText: "text-white",
     lightHero: true,
-    // Ronda 39: Takis ya usaba blanco como su propio acento (heroText),
-    // así que la caja de redes se queda igual — blanco (6.74:1 contra
-    // takis-purple) con ícono oscuro (19.17:1 contra la caja).
-    socialBg: "bg-white",
-    socialIcon: "text-barcel-black",
+    // Ronda 155: el cliente pidió colores exactos de marca para la caja de
+    // redes de Takis — contenedor #AC43FF, ícono #FFFFFF (reemplaza la
+    // caja blanca/ícono oscuro de Ronda 39). Contraste ícono-sobre-caja:
+    // blanco sobre #AC43FF da 4.2:1, por encima del piso de 3:1 para
+    // elementos gráficos (WCAG 1.4.11 Non-text Contrast) — el mismo
+    // criterio "AA-gráfico" usado en el resto de socialIcon/socialBg.
+    socialBg: "bg-[#AC43FF]",
+    socialIcon: "text-white",
     imageFirst: false,
     logo: "/logos/takis.png",
     logoHover: "/logos/takis-hover.png",
