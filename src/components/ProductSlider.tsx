@@ -43,7 +43,20 @@ function PlayIcon() {
 }
 
 const CARD_CLASSNAME =
-  "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
+  // Ronda 152: el cliente pidió eliminar "el cuadro y la sombra
+  // paralela" en desktop — la caja blanca de composición (Ronda 88-91)
+  // y el hover:shadow-lg que la acompañaba — y reemplazar todo el
+  // comportamiento por "algo más simple... un movimiento sutil y leve",
+  // señalando como referencia el prototipo del SKU en Figma
+  // (node-id=1-3858, sección "También te puede antojar"): ahí la
+  // tarjeta es solo imagen + picómetro + nombre, sin caja, sin sombra
+  // de hover, sin cambio de color — reposa igual en cualquier estado.
+  // Se quita hover:shadow-lg; se conserva SOLO hover:-translate-y-1
+  // (un lift de 4px) como único feedback de interacción, en línea con
+  // "sutil y leve". Ver CardContent y cardClass más abajo para el resto
+  // del recorte (caja de composición, fondo de yute, anillos de color,
+  // CTAs que aparecían/desaparecían con el hover).
+  "group relative isolate flex w-64 shrink-0 flex-col items-center justify-end gap-3 overflow-hidden bg-white p-5 text-center text-barcel-black transition-transform duration-300 hover:-translate-y-1 focus-visible:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-barcel-red sm:w-96 sm:gap-4 sm:p-8 md:w-[32rem] md:p-10";
 
 function CardContent({
   flavor,
@@ -54,139 +67,24 @@ function CardContent({
   isTakis: boolean;
   isChips: boolean;
 }) {
-  // Ronda 90: el cliente mandó una referencia exacta del hover que
-  // esperaba (marco violeta grueso + caja blanca + CTA con borde
-  // blanco) y marcó que el resultado de Ronda 88/89 "no se parece en
-  // nada" — causa raíz: el ring de 4px (Ronda 88) era demasiado
-  // delgado para leerse como "marco", y la composición seguía siendo
-  // full-bleed (Ronda 55/73) sin dejar margen blanco alrededor. Fix
-  // real: el marco ahora nace del padding REAL de la tarjeta
-  // (p-5/8/10, ver CARD_CLASSNAME) + fondo violeta en hover (ver
-  // cardClass) — no de un ring. La composición vive dentro de una
-  // caja blanca opaca inset (no full-bleed), con el mismo padding
-  // generoso que muestra la referencia, y el CTA con su borde blanco
-  // (Ronda 89) vive debajo, ya directamente sobre el violeta de la
-  // tarjeta. hasComposition = true solo para Takis con hoverImage.
-  const hasComposition = isTakis && !!flavor.hoverImage;
+  // Ronda 152: se elimina por completo el swap hover→composición
+  // (Ronda 55-151: caja blanca con la composición oficial del
+  // brandbook + CTA propio para Takis, fondo de yute + nombre oculto
+  // para Chip's, y los 3 overlays de "Pruébalo" que aparecían recién al
+  // hacer hover). El cliente confirmó el punto que motivó Ronda 151
+  // ("el contenido queda invisible por defecto y nunca se revela [en
+  // touch], es justo lo que marca WCAG 1.4.13 como anti-patrón") y
+  // pidió resolverlo de raíz, no parchearlo por breakpoint: en vez de
+  // mostrar/ocultar contenido según haya o no hover disponible, la
+  // tarjeta ahora es la MISMA en cualquier estado — imagen + picómetro
+  // + nombre, siempre visibles — igual que el SKU de referencia en
+  // Figma (node-id=1-3858). Ya no hay nada que dependa de group-hover
+  // dentro de esta tarjeta: el único feedback de interacción vive en
+  // CARD_CLASSNAME (el lift sutil) y es puramente decorativo, no gatea
+  // contenido ni acciones — el Link/botón que envuelve la tarjeta ya es
+  // clicable en toda su superficie.
   return (
     <>
-      {hasComposition && (
-        // Ronda 91: "no es 1:1" — causa raíz real (confirmada leyendo el
-        // DOM en vivo, no una captura): "absolute inset-0" NO deja ver
-        // el padding del padre. El containing block de un absolute es
-        // la PADDING BOX del ancestro relative, así que inset-0 llena
-        // TAMBIÉN el padding — el resultado medía exactamente el mismo
-        // ancho/alto que la tarjeta (0px de marco), pase lo que pase el
-        // ring o el fondo violeta. Fix: en vez de inset-0, esta caja usa
-        // el MISMO valor de espaciado que ya usa CARD_CLASSNAME
-        // (p-5/8/10 → inset-5/8/10, misma escala de Tailwind), así el
-        // violeta de la tarjeta SÍ queda visible como marco real de ese
-        // grosor alrededor de la caja blanca — no un valor inventado.
-        // Ronda 73 (nota original, sigue vigente): cada composición del
-        // Global Brandbook ya trae swirl + producto + cinta + picómetro
-        // quemados en un solo PNG — por eso esta caja no vuelve a
-        // renderizar cinta ni picómetro por separado, solo la imagen.
-        //
-        // Ronda 149: el cliente pidió eliminar el "borde violeta" — el
-        // marco grueso que este diseño (Ronda 88-91) generaba a propósito
-        // dejando ver el hover:bg-takis-purple de la tarjeta alrededor de
-        // esta caja blanca (ver cardClass más abajo, donde se quita ese
-        // fondo). Sin ese violeta detrás, esta caja ya no necesita
-        // simular un "marco" — se reduce inset-5/p-4 (mobile) a inset-2/
-        // p-3 para recuperar ese espacio como ancho útil para el CTA
-        // (ver nota en el <span>, evita que "Ver más información" se
-        // parta en 2 líneas). sm:/md: no se tocan: a esos anchos el CTA
-        // ya cabía en una sola línea de sobra.
-        //
-        // Ronda 151: el cliente preguntó si el hover en mobile es buena
-        // práctica y, dado que no lo es (no existe :hover real en touch —
-        // WCAG 2.1 SC 1.4.13, y en iOS Safari un elemento con :hover
-        // requiere DOS taps: el primero solo dispara el :hover, el
-        // segundo recién sigue el link), pidió que "no debería existir
-        // ese comportamiento en el prototipo" en mobile. Para ESTE swap en
-        // particular (imagen base+picómetro → composición oficial del
-        // brandbook) la solución NO es forzarlo visible siempre en mobile:
-        // esta caja es "position: absolute" y se pinta ENCIMA del picómetro
-        // (mismo z-20, pero esta caja va antes en el DOM → el picómetro,
-        // que va después, pintaría arriba solo parcialmente, dejando un
-        // resultado a medias). Se opta por lo inverso: el swap se
-        // desactiva por completo debajo de md (group-hover ya no dispara
-        // ahí, vía "md:group-hover"), así el picómetro y el nombre del
-        // sabor (recién arreglados en Ronda 149/siempre) se quedan
-        // SIEMPRE visibles en mobile — sin depender de tap/hover — y el
-        // CTA "Pruébalo" para estos sabores se resuelve con un overlay
-        // propio, mobile-only, más abajo (ver el bloque final de este
-        // componente). El swap con composición real sigue existiendo tal
-        // cual, pero solo de md: en adelante (mouse/hover real).
-        <div className="pointer-events-none absolute inset-2 z-20 flex flex-col items-center justify-center gap-3 bg-white p-3 opacity-0 transition-opacity duration-300 ease-out sm:inset-8 sm:gap-4 sm:p-5 md:inset-10 md:p-6 md:group-hover:opacity-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={flavor.hoverImage}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full flex-1 object-contain"
-          />
-          {/* Ronda 149: "el CTA no puede ser de dos líneas, jamás" — en
-              mobile, con el inset/padding originales, el texto sin
-              whitespace-nowrap envolvía a 2 líneas (verificado en vivo:
-              206.7px de ancho real vs 184px disponibles dentro de la
-              caja). whitespace-nowrap es la garantía dura pedida; el
-              inset-2/p-3 de arriba es lo que le da los ~216px que ahora
-              sí alcanzan para el texto completo en una sola línea, con
-              margen de sobra (~9px).
-              Ronda 150: el cliente pidió CTAs "más cortos, accionables,
-              directos y en un tono más dinámico" — "Ver más información"
-              es genérico (4 palabras, sirve igual para un producto que
-              para un aviso legal) y pasivo (describe la acción de LEER,
-              no de probar el sabor). Se reemplaza por "Pruébalo": un
-              verbo imperativo de una sola palabra, con el gancho de
-              antojo propio de una marca de botanas (no "conoce más" sino
-              "pruébalo ya"), y de paso el nowrap de arriba queda con
-              todavía más margen al ser un texto mucho más corto. Mismo
-              cambio en las otras 3 variantes de este componente (ver
-              abajo) para que el CTA sea consistente en las 8 marcas. */}
-          <span className="relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
-            Pruébalo
-            <span aria-hidden>→</span>
-          </span>
-        </div>
-      )}
-      {isChips && !flavor.sliderImage && (
-        // Ronda 96: el cliente mandó una textura de yute/costal y pidió
-        // que sea el fondo del hover de las tarjetas de Chip's (además
-        // de ocultar el nombre del sabor — ver el <span> de abajo). Va
-        // como PRIMER hijo del fragment con "absolute inset-0" para que
-        // quede detrás de todo el contenido en flujo normal (imagen,
-        // CTA) sin necesidad de z-index explícito — en el algoritmo de
-        // stacking de CSS, los descendientes position:relative con
-        // z-index:auto pintan en orden de aparición en el DOM dentro del
-        // mismo nivel que este div (absolute, sin z explícito = auto
-        // también), así que, al ir primero, cualquier hermano posterior
-        // ya pinta encima suyo de forma automática. Reemplaza al
-        // hover:bg-chips-brown de la tarjeta (ver cardClass) para que no
-        // se mezclen los dos fondos durante la transición de opacidad.
-        //
-        // Ronda 101: este truco dependía de que la imagen default fuera
-        // un recorte transparente (dejaba ver el yute alrededor). Los
-        // sabores con "sliderImage" (foto de estilo de vida, opaca y a
-        // sangre) ya cubren toda la tarjeta — el yute quedaría
-        // completamente tapado, invisible. Se omite solo para esos
-        // sabores en vez de borrar el código: los que aún no tengan
-        // sliderImage siguen usando el mismo tratamiento de antes.
-        // Ronda 151: mismo criterio que la caja de composición de Takis —
-        // este fondo de yute reemplaza visualmente al nombre del sabor
-        // (ver el <span> de más abajo, que se oculta junto con él) en vez
-        // de sumarse a él, así que forzarlo "siempre visible" en mobile
-        // dejaría el nombre del sabor invisible por defecto sin hover real
-        // que lo traiga de vuelta. Se desactiva el swap debajo de md
-        // (md:group-hover en vez de group-hover) para que el nombre del
-        // sabor se quede siempre visible en mobile.
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-0 transition-opacity duration-300 ease-out md:group-hover:opacity-100"
-          style={{ backgroundImage: "url(/products/chips/sku-hover-bg.jpg)" }}
-        />
-      )}
       <div className="relative flex h-56 w-full items-end justify-center overflow-visible sm:h-80 md:h-[26rem]">
         {/* Ronda 54: badge del Picómetro — el cliente pidió que cada
             tarjeta del slider muestre su nivel de picante (mismo asset
@@ -220,20 +118,14 @@ function CardContent({
           // en todos los breakpoints (verificado con el sabor de mayor
           // ancho, picante.png) sin necesidad de encoger el tamaño que
           // el cliente pidió agrandar en Ronda 73.
+          // Ronda 152: sin swap a composición (ver nota arriba), el
+          // picómetro ya no necesita ningún estado de opacidad — es
+          // estático, visible siempre, en mobile y en desktop por igual.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={SPICE_LEVELS[flavor.spiceLevel].image}
             alt={`Picómetro: ${SPICE_LEVELS[flavor.spiceLevel].label}`}
-            className={`absolute left-2 top-1/2 z-20 h-28 w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-lg sm:h-36 md:h-44 ${
-              flavor.hoverImage
-                ? // Ronda 151: el swap a composición ya no dispara en mobile
-                  // (ver nota arriba, caja de composición) — este fade-out
-                  // se restringe a md: en adelante para que el picómetro
-                  // (recién arreglado en Ronda 149) nunca desaparezca sin
-                  // hover real disponible para revertirlo.
-                  "transition-opacity duration-300 ease-out md:group-hover:opacity-0"
-                : ""
-            }`}
+            className="absolute left-2 top-1/2 z-20 h-28 w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-lg sm:h-36 md:h-44"
           />
         )}
         {isChips && flavor.sliderImage ? (
@@ -256,13 +148,7 @@ function CardContent({
             src={flavor.image}
             alt=""
             aria-hidden="true"
-            className={`h-full w-auto object-contain drop-shadow-xl ${
-              isTakis && flavor.hoverImage
-                ? // Ronda 151: mismo criterio — sin hover real en mobile, la
-                  // imagen base del producto no debe poder desaparecer ahí.
-                  "transition-opacity duration-300 ease-out md:group-hover:opacity-0"
-                : ""
-            }`}
+            className="h-full w-auto object-contain drop-shadow-xl"
           />
         )}
       </div>
@@ -282,14 +168,10 @@ function CardContent({
           brandbook (ej. las composiciones oficiales con cinta quemada
           en la imagen, que no se tocan). */}
       {isTakis ? (
-        <span
-          className={`relative px-3 py-1 font-takisDisplay text-base font-bold uppercase leading-tight tracking-wide text-takis-purple transition-opacity duration-300 sm:text-xl md:text-2xl ${
-            // Ronda 151: nombre del sabor siempre visible en mobile — solo
-            // se oculta junto con el swap a composición, que ahora es
-            // exclusivo de md: en adelante.
-            flavor.hoverImage ? "md:group-hover:opacity-0" : ""
-          }`}
-        >
+        // Ronda 152: sin swap a composición, el nombre ya no se oculta en
+        // ningún breakpoint — estático siempre, como en la referencia de
+        // Figma.
+        <span className="relative px-3 py-1 font-takisDisplay text-base font-bold uppercase leading-tight tracking-wide text-takis-purple sm:text-xl md:text-2xl">
           {flavor.name}
         </span>
       ) : (
@@ -302,122 +184,32 @@ function CardContent({
         // fuente que ya se autohospedó en Ronda 97 para el H1 del hero);
         // el resto de marcas sin tratamiento especial se queda en
         // font-display, como siempre.
+        // Ronda 152: sin fondo de yute en hover (eliminado junto con la
+        // caja de composición, ver nota al inicio de CardContent), el
+        // nombre de Chip's ya no necesita distinguir "con/sin sliderImage"
+        // para decidir si se oculta — es font-introhead siempre visible,
+        // para todos los sabores.
         <span
           className={`relative text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl ${
-            isChips
-              ? flavor.sliderImage
-                ? // Ronda 101: con foto de estilo de vida ya no hay yute
-                  // que "limpiar" en hover (ver nota de arriba) — el
-                  // nombre se queda visible siempre, mismo criterio que
-                  // el resto de marcas sin tratamiento especial.
-                  "font-introhead"
-                : // Ronda 96: en Chip's, el nombre del sabor se oculta en
-                  // hover — el cliente pidió que el fondo de yute (ver
-                  // nota de cardClass) sea lo único que cambie, sin el
-                  // nombre encima. Sigue vigente para los sabores que
-                  // aún no tienen sliderImage.
-                  // Ronda 151: igual que el resto — el swap de yute ya no
-                  // dispara en mobile, así que el nombre no debe poder
-                  // ocultarse ahí tampoco.
-                  "font-introhead transition-opacity duration-300 md:group-hover:opacity-0"
-              : "font-display"
+            isChips ? "font-introhead" : "font-display"
           }`}
         >
           {flavor.name}
         </span>
       )}
-      {/* Ronda 56: el link ya no vive en el flujo normal debajo de la
-          cinta — su posición dependía de dónde terminara CADA
-          composición (proporciones distintas por sabor), y en Fuego
-          caía justo encima de la cinta quemada en la imagen. Ahora es
-          un overlay fijo al fondo de la tarjeta — posición idéntica
-          para los 8 sabores.
-          Ronda 72: el cliente marcó que el CTA "pasa desapercibido
-          debido a la carga cognitiva de la pieza" — el scrim de
-          degradado + texto plano (Ronda 56) no alcanza a competir
-          visualmente con las composiciones oficiales del brandbook
-          (swirl + garnish a color completo, distinto por sabor). Fix:
-          el texto pasa a vivir dentro de un contenedor real de botón
-          primario (sombra, mayúsculas) en vez de flotar sobre un
-          degradado.
-          Ronda 74: al quitar el fondo violeta de la tarjeta (el cliente
-          reportó que se veía detrás de las composiciones transparentes),
-          el fondo real detrás del botón pasó a ser blanco — el botón
-          bg-white de Ronda 72 quedó blanco sobre blanco, invisible
-          ("se pierde con el fondo"). Se invierte a fondo morado sólido +
-          texto blanco: mismo contenedor opaco y mismo contraste
-          consistente sin importar el color de cada composición, pero
-          ahora SÍ se distingue del bg-white base de la tarjeta.
-          Ronda 90: este botón-overlay independiente ya NO se usa cuando
-          hay composición (hasComposition) — ese caso ahora tiene su
-          propio CTA dentro de la caja blanca de arriba, para no
-          duplicar "Ver más información" dos veces sobre la misma
-          tarjeta. Se mantiene solo para Takis SIN composición (sabores
-          que aún no tienen el asset del brandbook) y para el resto de
-          marcas.
-          Ronda 92: Chip's no tiene assets de composición transparente
-          (sus 9 fotos de "acompañamiento" son fotos de estilo de vida
-          con fondo, no PNGs de ingredientes sueltos como Takis) — el
-          cliente eligió replicar el mismo tratamiento de marco+CTA que
-          ya usan los sabores de Takis SIN composición (Salsa Brava/
-          Huacamoles), en vez de intentar forzar un swap de imagen con
-          un asset que no es el correcto para eso. */}
-      {/* Ronda 149: whitespace-nowrap agregado a las 3 variantes de "Ver
-          más información" del componente (esta, la de Chip's abajo, y la
-          de la caja de composición más arriba) — "el CTA no puede ser de
-          dos líneas, jamás" se toma como garantía dura en todo el
-          componente, no solo en el caso puntual reportado (caja de
-          composición, ya con espacio de sobra tras el fix de arriba).
-          Estas dos variantes ya cabían en una sola línea en la práctica
-          (inset-x-0 les da el ancho completo de la tarjeta, no el inset
-          reducido de la composición), pero nowrap lo deja garantizado
-          también si el texto o el padding cambian a futuro. */}
-      {/* Ronda 151: los 3 CTAs de abajo dependían de :hover (invisibles por
-          defecto, opacity-0 → group-hover:opacity-100) sin ninguna
-          alternativa en mobile — exactamente el patrón que el cliente
-          preguntó si era buena práctica (no lo es: no hay :hover real en
-          touch, WCAG 2.1 SC 1.4.13) y pidió eliminar. Fix: base
-          opacity-100 (visible siempre) + "md:opacity-0" recién oculta el
-          CTA a partir de md (mouse real) para restaurar el comportamiento
-          de hover que el cliente ya aprobó en Rondas 56-92 en esa
-          resolución. group-hover:opacity-100 (sin prefijo) se deja tal
-          cual: por debajo de md la opacidad base ya es 100, así que ese
-          hover es un no-op ahí — solo entra en juego junto con
-          md:opacity-0 a partir de md. */}
-      {hasComposition ? (
-        // Ronda 151: para los sabores con composición oficial (swap
-        // desactivado en mobile, ver la caja de composición más arriba)
-        // hace falta un CTA propio para mobile — reutiliza el mismo
-        // overlay+pill de abajo pero SOLO por debajo de md (md:hidden),
-        // ya que de md en adelante el CTA real vive dentro de la caja
-        // blanca de la composición (evita duplicar "Pruébalo" dos veces
-        // sobre la misma tarjeta en desktop).
-        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center md:hidden">
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg">
-            Pruébalo
-            <span aria-hidden>→</span>
-          </span>
-        </span>
-      ) : isTakis ? (
-        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 sm:bottom-5">
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
-            Pruébalo
-            <span aria-hidden>→</span>
-          </span>
-        </span>
-      ) : isChips ? (
-        <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 sm:bottom-5">
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-chips-brown px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
-            Pruébalo
-            <span aria-hidden>→</span>
-          </span>
-        </span>
-      ) : (
-        <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-100 transition-opacity duration-300 md:opacity-0 md:group-hover:opacity-100 sm:text-base">
-          Pruébalo
-          <span aria-hidden>→</span>
-        </span>
-      )}
+      {/* Ronda 152: se elimina el CTA "Pruébalo" que vivía como overlay
+          independiente al fondo de la tarjeta (nacido en Ronda 56, con
+          9 rondas de ajustes desde entonces — contenedor de botón real
+          en Ronda 72, borde blanco en Ronda 89, texto corto en Ronda
+          150, visible-por-defecto en mobile en Ronda 151). El cliente
+          pidió "algo más simple" y señaló como referencia el SKU de
+          Figma (node-id=1-3858, "También te puede antojar"): ahí la
+          tarjeta NO lleva ningún CTA propio — el nombre del sabor es el
+          único texto, y toda la tarjeta ya es el elemento clicable
+          (Link/button que envuelve CardContent, ver más abajo). Quitar
+          este overlay también resuelve la pregunta de fondo del cliente
+          sobre WCAG 1.4.13 de una vez: no queda NADA en la tarjeta que
+          dependa de hover para revelarse, en ningún dispositivo. */}
     </>
   );
 }
@@ -444,70 +236,22 @@ export default function ProductSlider({
   // nunca deje ver un hueco, incluso en monitores anchos.
   const loop = Array.from({ length: 4 }, () => flavors).flat();
   const isTakis = brandSlug === "takis";
-  // Ronda 92: Chip's recibe el mismo tratamiento de hover "marco+CTA" que
-  // ya usan los sabores de Takis sin composición (ver nota completa en
-  // CardContent) — sin tocar el resto de marcas ni la composición propia
-  // de Takis.
   const isChips = brandSlug === "chips";
 
-  // Ronda 74: el cliente reportó que los hovers con composición oficial
-  // (hoverImage) se veían con un fondo violeta detrás — causa raíz: la
-  // tarjeta completa (Link/button) siempre lleva "hoverBg" (hover:bg-
-  // takis-purple) para las marcas SIN composición, como color de
-  // respaldo. Las composiciones nuevas son PNG con transparencia real
-  // (Ronda 73), así que ese violeta de la tarjeta se colaba por las
-  // zonas transparentes de la imagen en vez de quedar oculto. Fix: para
-  // Takis, cuando el sabor SÍ tiene hoverImage, se omite hoverBg de la
-  // tarjeta (queda el bg-white base de CARD_CLASSNAME sin tinte) — la
-  // composición ya trae su propio fondo/color, no necesita ayuda de la
-  // tarjeta. Los sabores sin hoverImage siguen usando el violeta de
-  // respaldo, igual que las demás marcas.
-  // Ronda 88: el cliente pidió replicar, en este slider, el "marco
-  // violeta" que ya usa RelatedProductsSlider.tsx ("También te puede
-  // antojar") — pero eligió conservar intacta la composición del
-  // brandbook en hover (Ronda 55-74, ~15 rondas de trabajo), así que
-  // NO se toca el fondo/composición: solo se agrega un anillo violeta
-  // alrededor de la tarjeta en hover, únicamente para Takis (las otras
-  // 5 marcas no tienen este asset ni fueron parte del pedido).
-  // ring-inset para que el marco quede DENTRO del borde de la tarjeta
-  // (que ya tiene overflow-hidden por la composición), en vez de
-  // agregar tamaño extra que movería el layout del slider.
-  // Ronda 90: el marco violeta de la referencia del cliente no es un
-  // ring delgado (Ronda 88, insuficiente) — nace de que la TARJETA
-  // ENTERA se pone violeta en hover y la composición vive en una caja
-  // blanca con padding real por dentro (ver CardContent), así que ese
-  // padding de la propia tarjeta (p-5/8/10 en CARD_CLASSNAME) es lo
-  // que se ve como marco. El fondo violeta ya no se omite para
-  // hoverImage (a diferencia de Ronda 74): ese fix era necesario
-  // porque la composición ERA full-bleed y el violeta se colaba por
-  // sus zonas transparentes internas; ahora la composición vive dentro
-  // de una caja bg-white opaca, así que ese problema no puede repetirse.
-  const cardClass = (flavor: Flavor) => {
-    const hasComposition = isTakis && !!flavor.hoverImage;
-    if (hasComposition) {
-      // Ronda 149: "el borde violeta elimínalo" — se quita hover:bg-
-      // takis-purple. Ese fondo violeta de la TARJETA ENTERA era
-      // justamente lo que, al asomar alrededor de la caja blanca de
-      // arriba (que vive con un inset, no a sangre), se leía como un
-      // "marco grueso" — ver Ronda 90, donde se documentó a propósito
-      // como la forma de lograr ese marco. El cliente ahora pide lo
-      // contrario: sin ese fondo, la tarjeta se queda bg-white (de
-      // CARD_CLASSNAME) también en hover — el lift + shadow-lg que ya
-      // trae CARD_CLASSNAME sigue dando feedback de hover sin el color.
-      return `${CARD_CLASSNAME} ${hoverText}`;
-    }
-    if (isTakis) {
-      return `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-takis-purple`;
-    }
-    if (isChips) {
-      // Ronda 96: se omite hoverBg (hover:bg-chips-brown) — el fondo de
-      // yute (ver CardContent) ya cumple esa función; si se dejaran los
-      // dos, el marrón sólido se mezclaría con la textura durante la
-      // transición de opacidad (mismo criterio que Ronda 74 con Takis).
-      return `${CARD_CLASSNAME} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-chips-brown`;
-    }
-    return `${CARD_CLASSNAME} ${hoverBg} ${hoverText}`;
-  };
+  // Ronda 152: se elimina toda la lógica que hacía cardClass() distinta
+  // por marca/sabor (fondo violeta de Takis, anillo de color de Takis/
+  // Chip's, texto de contraste hoverText/hoverBg para cuando el fondo
+  // cambiaba en hover — Rondas 73-149). El cliente pidió quitar "el
+  // cuadro y la sombra paralela" de desktop y reemplazar todo el
+  // comportamiento por "algo más simple... un movimiento sutil y leve",
+  // con el SKU de Figma (node-id=1-3858) como referencia: ahí la
+  // tarjeta no cambia de color ni de borde en ningún estado, solo
+  // reposa. cardClass ahora es la MISMA clase para las 8 marcas — el
+  // único feedback de interacción es el lift de CARD_CLASSNAME.
+  // hoverBg/hoverText se mantienen en la firma del componente (los
+  // siguen pasando BrandPage.tsx y RelatedProductsSlider.tsx) pero ya
+  // no se aplican aquí.
+  const cardClass = (_flavor: Flavor) => CARD_CLASSNAME;
 
   // Ronda 60: el fix de Ronda 59 (pausar por JS en pointerdown, con un
   // setTimeout que reanudaba 1500ms después de soltar/salir) rompió el
