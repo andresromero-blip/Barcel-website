@@ -152,6 +152,40 @@ export default function Hero() {
   const next = useCallback(() => goTo(index + 1), [goTo, index]);
   const prev = useCallback(() => goTo(index - 1), [goTo, index]);
 
+  // Ronda 169: swipe táctil sobre el banner (pedido explícito del cliente,
+  // solo relevante en touch — las flechas prev/next ya son md:flex, es
+  // decir, ocultas en mobile). Se mide el desplazamiento horizontal entre
+  // touchstart y touchend con un umbral mínimo (40px) para no disparar un
+  // cambio de slide con un tap normal o un scroll vertical accidental
+  // (el listener vive en el contenedor de la imagen, no en toda la
+  // <section>, así que nunca compite con el scroll de la página). Mientras
+  // el dedo está sobre el banner se pausa el autoplay (mismo mecanismo que
+  // ya usa el hover de mouse en desktop, `setPaused`), y se reanuda al
+  // soltar — igual que si el usuario hubiera hecho hover y luego se fuera.
+  const touchStartX = useRef<number | null>(null);
+  const touchDeltaX = useRef(0);
+  const SWIPE_THRESHOLD_PX = 40;
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+    setPaused(true);
+  };
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+  const handleTouchEnd = () => {
+    if (touchDeltaX.current > SWIPE_THRESHOLD_PX) {
+      prev();
+    } else if (touchDeltaX.current < -SWIPE_THRESHOLD_PX) {
+      next();
+    }
+    touchStartX.current = null;
+    touchDeltaX.current = 0;
+    setPaused(false);
+  };
+
   useEffect(() => {
     if (paused) return;
     timerRef.current = setInterval(() => {
@@ -389,7 +423,12 @@ export default function Hero() {
           se deja en 16:9 (no en 2:1), igual que en la Ronda 132: usa su
           propio asset dedicado (Ronda 135, ver mobileImage arriba) que
           sí es 16:9, por lo que tampoco recorta nada ahí. */}
-      <div className="relative aspect-[1672/1164] max-h-[85vh] min-h-[100px] w-full md:aspect-[1774/887]">
+      <div
+        className="relative aspect-[1672/1164] max-h-[85vh] min-h-[100px] w-full touch-pan-y md:aspect-[1774/887]"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {SLIDES.map((s, i) => (
           <div
             key={s.id}
