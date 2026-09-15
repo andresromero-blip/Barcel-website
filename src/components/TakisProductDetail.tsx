@@ -361,9 +361,19 @@ export default function TakisProductDetail({
                    tailwind.config.ts, tomados 1:1 de Figma) en vez de negro
                    con opacidad — mismo criterio se aplica más abajo a las
                    etiquetas de la tabla nutrimental y a Ingredientes, que
-                   por Ronda 81 deben igualar a esta Descripción. */}
+                   por Ronda 81 deben igualar a esta Descripción.
+                Ronda 157: el cliente mandó una captura de referencia — en
+                mobile este bloque debe verse IGUAL que en desktop (Picómetro
+                a la izquierda, Presentación+Descripción a la derecha), no
+                apilado verticalmente. Se quita flex-col + los prefijos sm:
+                que hacían que el Picómetro se apilara ARRIBA del texto por
+                debajo del breakpoint sm — ahora la fila (Picómetro | texto)
+                aplica desde el primer breakpoint, igual que en la
+                referencia. items-start (en vez de items-center) porque en
+                la captura el Picómetro alinea su borde superior con la
+                línea de "Presentación", no con el centro del bloque. */}
             {(flavor.spiceLevel || sizesText || flavor.description || brand.description) && (
-              <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
+              <div className="flex w-full flex-row items-start gap-4 border-t border-black/10 pt-4">
                 {flavor.spiceLevel && (
                   <div className="shrink-0">
                     <Picometro level={flavor.spiceLevel} compact />
