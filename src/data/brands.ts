@@ -243,12 +243,26 @@ export const brands: Brand[] = [
     // Ronda 99: se agrega "slug" a los 6 sabores — es lo único que
     // ProductSlider.tsx necesita para dejar de abrir el modal rápido y
     // navegar en su lugar a /marcas/chips/[slug] (BrandProductDetail,
-    // misma estructura que ya usa Takis). Todavía no hay descripción,
-    // nutrición ni ingredientes propios por sabor (Barcel no ha
-    // compartido esas etiquetas para Chip's) — el componente ya sabe
-    // mostrar "contenido de ejemplo, pendiente de confirmar" en esos
-    // casos (mismo criterio que Salsa Brava en Takis), y mientras tanto
-    // cae a la descripción general de la marca (brand.description).
+    // misma estructura que ya usa Takis). Todavía no hay descripción
+    // propia por sabor — el componente ya sabe mostrar "contenido de
+    // ejemplo, pendiente de confirmar" en esos casos (mismo criterio
+    // que Salsa Brava en Takis), y mientras tanto cae a la descripción
+    // general de la marca (brand.description).
+    //
+    // Ronda 159: el cliente compartió 5 etiquetas reales (NPAR-FO-03,
+    // hoja "60g" — la presentación más chica común a las 5, mismo
+    // criterio que la hoja "70g" de Takis en la Ronda 63) para
+    // nutrición/ingredientes/alérgenos de Chip's. De esas 5, solo 3
+    // corresponden 1:1 a sabores que ya existen en el sitio (Jalapeño,
+    // Fuego — la etiqueta dice "CHIPS FUEGO", no "Fuego Ardiente" pese
+    // al nombre del archivo — y Crema y Especias): esos 3 quedan con
+    // datos reales abajo. Las otras 2 etiquetas (Habanero, Chipotle
+    // Limón) son sabores que Chip's no tiene publicados en el sitio
+    // (sin imagen/slug/slider) — se documentan aquí pero NO se agregan
+    // como sabor nuevo sin que el cliente confirme fotos y quiera
+    // publicarlos. Sal, Al Parmesano y A la Sal y Pimienta se quedan
+    // sin etiqueta (Barcel no la ha compartido todavía) — siguen
+    // cayendo al placeholder "pendiente de confirmar".
     //
     // Ronda 100: el cliente pidió revertir la Ronda 98 — "vamos a
     // quitar las imágenes con el nombre de producto ... y vamos a
@@ -266,12 +280,70 @@ export const brands: Brand[] = [
         image: "/products/chips/flavors/jalapeno.png",
         sliderImage: "/products/chips/lifestyle/jalapeno.jpg",
         slug: "jalapeno",
+        ingredients:
+          "PAPA NATURAL, ACEITE VEGETAL, SAZONADOR [MALTODEXTRINA, SAL YODADA, GMS, CEBOLLA Y AJO EN POLVO, ALMIDÓN MODIFICADO, ÁCIDO CÍTRICO, ÁCIDO ACÉTICO, CHILE EN POLVO, SABORIZANTES NATURALES E IDÉNTICOS AL NATURAL, EXTRACTO DE PAPRIKA, INOSINATO DE SODIO, GUANILATO DE SODIO].",
+        allergens: "PUEDE CONTENER: SOYA, LECHE, GLUTEN, CACAHUATE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "2",
+          kcalPorcion: 142,
+          kcal100g: 472,
+          proteinasPorcion: 2.31,
+          proteinas100g: 7.7,
+          grasasTotalesPorcion: 7.68,
+          grasasTotales100g: 25.6,
+          grasasSatPorcion: 1.08,
+          grasasSat100g: 3.6,
+          grasasTransPorcionMg: 76.5,
+          grasasTrans100gMg: 255,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 15.78,
+          hidratos100g: 52.6,
+          azucaresPorcion: 0.15,
+          azucares100g: 0.5,
+          azucaresAnadidosPorcion: 0,
+          azucaresAnadidos100g: 0,
+          fibraPorcion: 1.77,
+          fibra100g: 5.9,
+          sodioPorcionMg: 247.5,
+          sodio100gMg: 825,
+        },
       },
       {
         name: "Fuego",
         image: "/products/chips/flavors/fuego.png",
         sliderImage: "/products/chips/lifestyle/fuego.jpg",
         slug: "fuego",
+        ingredients:
+          "PAPA NATURAL, ACEITE VEGETAL, SAZONADOR (SAL YODADA, MALTODEXTRINA, ÁCIDO CÍTRICO, AZÚCARES AÑADIDOS (AZÚCAR), GMS, SABORIZANTES NATURALES Y ARTIFICIALES, EXTRACTO DE LEVADURA, ANTOCIANINAS, CEBOLLA, PROTEÍNA VEGETAL, ÁCIDO ACÉTICO, BICARBONATO DE SODIO, ACEITE VEGETAL, EXTRACTO DE PAPRIKA).",
+        allergens: "PUEDE CONTENER: SOYA, LECHE, GLUTEN, CACAHUATE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "2",
+          kcalPorcion: 134,
+          kcal100g: 447,
+          proteinasPorcion: 2.01,
+          proteinas100g: 6.7,
+          grasasTotalesPorcion: 7.5,
+          grasasTotales100g: 25,
+          grasasSatPorcion: 1.05,
+          grasasSat100g: 3.5,
+          grasasTransPorcionMg: 75,
+          grasasTrans100gMg: 250,
+          colesterolPorcionMg: 0,
+          colesterol100gMg: 0,
+          hidratosPorcion: 14.67,
+          hidratos100g: 48.9,
+          azucaresPorcion: 0.45,
+          azucares100g: 1.5,
+          azucaresAnadidosPorcion: 0.39,
+          azucaresAnadidos100g: 1.3,
+          fibraPorcion: 1.68,
+          fibra100g: 5.6,
+          sodioPorcionMg: 417,
+          sodio100gMg: 1391,
+        },
       },
       {
         name: "Sal",
@@ -284,6 +356,35 @@ export const brands: Brand[] = [
         image: "/products/chips/flavors/crema-especias.png",
         sliderImage: "/products/chips/lifestyle/crema-especias.jpg",
         slug: "crema-especias",
+        ingredients:
+          "PAPA NATURAL, ACEITE VEGETAL, SAZONADOR (SÓLIDOS DE LA LECHE, MALTODEXTRINA, SAL YODADA, ACEITE VEGETAL, TOMATE (0.4%) Y CEBOLLA EN POLVO, AZÚCARES AÑADIDOS (GLUCOSA, AZÚCAR, SÓLIDOS DE JARABE DE MAÍZ), GMS, SABORIZANTES NATURALES, ARTIFICIALES E IDÉNTICOS A LOS NATURALES, ALMIDÓN MODIFICADO, AJO EN POLVO, ESPECIAS, ÁCIDO LÁCTICO, LECHE, VINAGRE, ÁCIDO MÁLICO, ÁCIDO CÍTRICO).",
+        allergens: "CONTIENE: LECHE. PUEDE CONTENER: GLUTEN, SOYA, CACAHUATE",
+        nutrition: {
+          porcionG: 30,
+          porcionesEnvase: "2",
+          kcalPorcion: 143,
+          kcal100g: 476,
+          proteinasPorcion: 2.34,
+          proteinas100g: 7.8,
+          grasasTotalesPorcion: 7.89,
+          grasasTotales100g: 26.3,
+          grasasSatPorcion: 1.2,
+          grasasSat100g: 4,
+          grasasTransPorcionMg: 78,
+          grasasTrans100gMg: 260,
+          colesterolPorcionMg: 0.3,
+          colesterol100gMg: 1,
+          hidratosPorcion: 15.57,
+          hidratos100g: 51.9,
+          azucaresPorcion: 0.57,
+          azucares100g: 1.9,
+          azucaresAnadidosPorcion: 0.09,
+          azucaresAnadidos100g: 0.3,
+          fibraPorcion: 1.8,
+          fibra100g: 6,
+          sodioPorcionMg: 163.8,
+          sodio100gMg: 546,
+        },
       },
       {
         name: "Al Parmesano",
