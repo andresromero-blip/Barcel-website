@@ -171,8 +171,29 @@ function CardContent({
         // Ronda 152: sin swap a composición, el nombre ya no se oculta en
         // ningún breakpoint — estático siempre, como en la referencia de
         // Figma.
-        <span className="relative px-3 py-1 font-takisDisplay text-base font-bold uppercase leading-tight tracking-wide text-takis-purple sm:text-xl md:text-2xl">
-          {flavor.name}
+        // Ronda 153: el cliente pidió (a) subir el nombre +4px en todos
+        // los breakpoints (16→20, 20→24, 24→28 — el último no cae en un
+        // escalón estándar de Tailwind, de ahí los valores entre
+        // corchetes) y (b) agregar una flecha "con el mismo comportamiento
+        // que los de las marcas en el home" — la misma que usa
+        // BrandCard.tsx en "Ver todos los productos": un span aparte con
+        // transition-transform + group-hover:translate-x-1 (CARD_CLASSNAME
+        // ya trae "group" en la tarjeta, así que el hover de la tarjeta
+        // completa ya dispara este nudge, sin JS ni estado nuevo). La
+        // flecha vive en su PROPIO span, no dentro del texto, para poder
+        // animarla sola sin heredar/tocar la tipografía del nombre — el
+        // cliente pidió explícitamente "mantén la tipografía en los
+        // nombres".
+        <span className="relative inline-flex items-center gap-1.5 px-3 py-1">
+          <span className="font-takisDisplay text-[20px] font-bold uppercase leading-tight tracking-wide text-takis-purple sm:text-[24px] md:text-[28px]">
+            {flavor.name}
+          </span>
+          <span
+            className="text-takis-purple transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            →
+          </span>
         </span>
       ) : (
         // Ronda 98 (revertida en Ronda 100): se probó reemplazar este
@@ -189,12 +210,26 @@ function CardContent({
         // nombre de Chip's ya no necesita distinguir "con/sin sliderImage"
         // para decidir si se oculta — es font-introhead siempre visible,
         // para todos los sabores.
-        <span
-          className={`relative text-lg font-extrabold uppercase leading-tight sm:text-2xl md:text-3xl ${
-            isChips ? "font-introhead" : "font-display"
-          }`}
-        >
-          {flavor.name}
+        // Ronda 153: mismo +4px (18→22, 24→28, 30→34) y misma flecha con
+        // group-hover:translate-x-1 que la variante de Takis arriba — ver
+        // esa nota para el razonamiento completo. El color de la flecha
+        // aquí no se fija explícito: hereda text-barcel-black de
+        // CARD_CLASSNAME, igual que ya hacía el nombre (que tampoco traía
+        // color propio en esta rama).
+        <span className="relative inline-flex items-center gap-1.5">
+          <span
+            className={`text-[22px] font-extrabold uppercase leading-tight sm:text-[28px] md:text-[34px] ${
+              isChips ? "font-introhead" : "font-display"
+            }`}
+          >
+            {flavor.name}
+          </span>
+          <span
+            className="transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden="true"
+          >
+            →
+          </span>
         </span>
       )}
       {/* Ronda 152: se elimina el CTA "Pruébalo" que vivía como overlay
