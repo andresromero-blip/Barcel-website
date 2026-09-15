@@ -280,6 +280,12 @@ export default function TakisProductDetail({
                    los tres alineados a la izquierda, no centrados — se
                    quita mx-auto/text-center de ambos elementos de este
                    bloque. */}
+            {/* Ronda 156: "Presentación" se saca de este bloque — el
+                get_design_context real del frame (node 1:3866, "Fondo",
+                dentro de 1:3858) muestra el título SOLO, sin la línea de
+                Presentación debajo. Presentación se reagrupa con el
+                Picómetro y la Descripción (ver bloque de abajo), que es
+                donde vive en el diseño real. */}
             <div className="flex w-full flex-col gap-3">
               <h1
                 className={`text-6xl font-bold uppercase leading-[0.9] ${
@@ -292,18 +298,6 @@ export default function TakisProductDetail({
               >
                 {fullName}
               </h1>
-              {sizesText && (
-                // Ronda 87: "sube un punto y mejora su legibilidad
-                // aumentando su peso" — de text-xs (12px) a 13px y de
-                // font-normal a font-medium. El peso extra por sí solo no
-                // arregla contraste, así que también se sube la opacidad
-                // de /50 a /60 (antes ~3.6:1 sobre blanco, no pasa AA;
-                // con /60 queda ~5:1, sí pasa AA para texto normal).
-                <p className="font-body text-[13px] font-medium text-barcel-black/60">
-                  Presentación: {sizesText}
-                  {!flavor.nutrition && " — de ejemplo, pendiente de confirmar con Barcel"}
-                </p>
-              )}
             </div>
 
             {/* Ronda 79: dos pedidos del cliente sobre este bloque —
@@ -344,19 +338,50 @@ export default function TakisProductDetail({
                 resto de las propiedades (peso, color, tipografía) tal
                 cual quedaron en la Ronda 80/81.
                 Ronda 84: "baja un punto" — de 15px/17px a 14px/16px
-                (-1px en ambos breakpoints). */}
-            {(flavor.spiceLevel || flavor.description || brand.description) && (
+                (-1px en ambos breakpoints).
+                Ronda 156: el cliente volvió a marcar esta tarjeta contra el
+                prototipo real de Figma (node-id=1-3858 → frame "Fondo",
+                1:3866) en dos puntos concretos:
+                1) Ubicación del picómetro: en el diseño real, el Picómetro
+                   NO acompaña solo a la descripción — acompaña a un bloque
+                   de DOS líneas (Presentación arriba, Descripción abajo).
+                   "Presentación" se muda aquí desde el bloque del título
+                   (ver arriba) para formar ese mismo grupo de dos líneas.
+                2) Color de los textos: en Figma, Presentación usa
+                   Colors-base/Grey/700 (#4f4f4f) sólido y la Descripción usa
+                   Colors-base/Grey/950 (#262626) sólido — NINGUNO de los dos
+                   usa opacidad. Las Rondas 65/80/81/87 habían resuelto el
+                   contraste con negro (barcel-black) a opacidad reducida
+                   (/60, /70), que sí pasa AA pero se ve más "delgado"/lavado
+                   que el gris sólido real del diseño — de ahí el pedido del
+                   cliente de revisar "el peso tipográfico": no es el
+                   font-weight (ya era medium, coincide con Figma), es la
+                   opacidad quitándole densidad visual al texto. Se cambia a
+                   los tokens grey-700/grey-950 (ya existían en
+                   tailwind.config.ts, tomados 1:1 de Figma) en vez de negro
+                   con opacidad — mismo criterio se aplica más abajo a las
+                   etiquetas de la tabla nutrimental y a Ingredientes, que
+                   por Ronda 81 deben igualar a esta Descripción. */}
+            {(flavor.spiceLevel || sizesText || flavor.description || brand.description) && (
               <div className="flex w-full flex-col gap-3 border-t border-black/10 pt-4 sm:flex-row sm:items-center sm:gap-4">
                 {flavor.spiceLevel && (
                   <div className="shrink-0">
                     <Picometro level={flavor.spiceLevel} compact />
                   </div>
                 )}
-                {(flavor.description ?? brand.description) && (
-                  <p className="min-w-0 flex-1 font-body text-[14px] font-medium leading-relaxed text-barcel-black/70 md:text-[16px]">
-                    {flavor.description ?? brand.description}
-                  </p>
-                )}
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
+                  {sizesText && (
+                    <p className="font-body text-sm font-medium text-grey-700 md:text-base">
+                      Presentación: {sizesText}
+                      {!flavor.nutrition && " — de ejemplo, pendiente de confirmar con Barcel"}
+                    </p>
+                  )}
+                  {(flavor.description ?? brand.description) && (
+                    <p className="font-body text-[14px] font-medium leading-relaxed text-grey-950 md:text-[16px]">
+                      {flavor.description ?? brand.description}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
             {flavor.spiceLevel && !flavor.spiceLevelConfirmed && (
@@ -406,7 +431,12 @@ export default function TakisProductDetail({
                         ["Sodio", `${flavor.nutrition.sodio100gMg} mg`],
                       ].map(([label, value]) => (
                         <div key={label} className="flex items-center justify-between py-1.5">
-                          <span className="font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                          {/* Ronda 156: grey-950 sólido en vez de
+                              barcel-black/70 — ver nota completa junto al
+                              bloque Picómetro+Descripción de arriba (Ronda
+                              81 exige que esta etiqueta iguale a la
+                              Descripción, así que sigue el mismo cambio). */}
+                          <span className="font-body text-xs font-medium leading-relaxed text-grey-950 md:text-sm">
                             {label}
                           </span>
                           <span className="font-display font-bold text-barcel-black">
@@ -439,7 +469,9 @@ export default function TakisProductDetail({
                         first-letter:uppercase: pasa todo a minúsculas y
                         recapitaliza únicamente la primera letra, como una
                         oración normal. */}
-                    <p className="lowercase first-letter:uppercase font-body text-xs font-medium leading-relaxed text-barcel-black/70 md:text-sm">
+                    {/* Ronda 156: mismo cambio grey-950 sólido (ver nota
+                        junto al bloque Picómetro+Descripción). */}
+                    <p className="lowercase first-letter:uppercase font-body text-xs font-medium leading-relaxed text-grey-950 md:text-sm">
                       {flavor.ingredients}
                     </p>
                     {flavor.allergens && <p className="font-bold">{flavor.allergens}</p>}
