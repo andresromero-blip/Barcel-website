@@ -86,7 +86,18 @@ function CardContent({
         // Global Brandbook ya trae swirl + producto + cinta + picómetro
         // quemados en un solo PNG — por eso esta caja no vuelve a
         // renderizar cinta ni picómetro por separado, solo la imagen.
-        <div className="pointer-events-none absolute inset-5 z-20 flex flex-col items-center justify-center gap-3 bg-white p-4 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:inset-8 sm:gap-4 sm:p-5 md:inset-10 md:p-6">
+        //
+        // Ronda 149: el cliente pidió eliminar el "borde violeta" — el
+        // marco grueso que este diseño (Ronda 88-91) generaba a propósito
+        // dejando ver el hover:bg-takis-purple de la tarjeta alrededor de
+        // esta caja blanca (ver cardClass más abajo, donde se quita ese
+        // fondo). Sin ese violeta detrás, esta caja ya no necesita
+        // simular un "marco" — se reduce inset-5/p-4 (mobile) a inset-2/
+        // p-3 para recuperar ese espacio como ancho útil para el CTA
+        // (ver nota en el <span>, evita que "Ver más información" se
+        // parta en 2 líneas). sm:/md: no se tocan: a esos anchos el CTA
+        // ya cabía en una sola línea de sobra.
+        <div className="pointer-events-none absolute inset-2 z-20 flex flex-col items-center justify-center gap-3 bg-white p-3 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 sm:inset-8 sm:gap-4 sm:p-5 md:inset-10 md:p-6">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={flavor.hoverImage}
@@ -94,7 +105,15 @@ function CardContent({
             aria-hidden="true"
             className="h-full w-full flex-1 object-contain"
           />
-          <span className="relative inline-flex shrink-0 items-center gap-1.5 border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+          {/* Ronda 149: "el CTA no puede ser de dos líneas, jamás" — en
+              mobile, con el inset/padding originales, el texto sin
+              whitespace-nowrap envolvía a 2 líneas (verificado en vivo:
+              206.7px de ancho real vs 184px disponibles dentro de la
+              caja). whitespace-nowrap es la garantía dura pedida; el
+              inset-2/p-3 de arriba es lo que le da los ~216px que ahora
+              sí alcanzan para el texto completo en una sola línea, con
+              margen de sobra (~9px). */}
+          <span className="relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
           </span>
@@ -146,11 +165,26 @@ function CardContent({
             de -1/3) para que quede claramente afuera de la bolsa en vez
             de superpuesto sobre su borde. */}
         {isTakis && flavor.spiceLevel && (
+          // Ronda 149: el cliente mandó evidencia de que en mobile el
+          // Picómetro se corta — confirmado midiendo el DOM en vivo
+          // (getBoundingClientRect): con "left-0 -translate-x-1/2", el
+          // borde izquierdo de la imagen queda ~3.5px por fuera del
+          // borde izquierdo de la tarjeta (que tiene overflow-hidden por
+          // la revelación del hover, Ronda 54), así que ese margen se
+          // recorta de verdad, no es una percepción óptica — el PNG real
+          // (public/picometro/*.png, ratio ancho/alto ≈0.42-0.43) es más
+          // ancho de lo que el padding de la tarjeta en mobile (p-5,
+          // 20px) alcanza a cubrir una vez centrado con -translate-x-1/2.
+          // Fix: "left-2" en vez de "left-0" (8px) — recorre el centro
+          // del badge 8px hacia adentro, dejando ~4-10px de margen real
+          // en todos los breakpoints (verificado con el sabor de mayor
+          // ancho, picante.png) sin necesidad de encoger el tamaño que
+          // el cliente pidió agrandar en Ronda 73.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={SPICE_LEVELS[flavor.spiceLevel].image}
             alt={`Picómetro: ${SPICE_LEVELS[flavor.spiceLevel].label}`}
-            className={`absolute left-0 top-1/2 z-20 h-28 w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-lg sm:h-36 md:h-44 ${
+            className={`absolute left-2 top-1/2 z-20 h-28 w-auto -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-lg sm:h-36 md:h-44 ${
               flavor.hoverImage
                 ? "transition-opacity duration-300 ease-out group-hover:opacity-0"
                 : ""
@@ -275,16 +309,26 @@ function CardContent({
           ya usan los sabores de Takis SIN composición (Salsa Brava/
           Huacamoles), en vez de intentar forzar un swap de imagen con
           un asset que no es el correcto para eso. */}
+      {/* Ronda 149: whitespace-nowrap agregado a las 3 variantes de "Ver
+          más información" del componente (esta, la de Chip's abajo, y la
+          de la caja de composición más arriba) — "el CTA no puede ser de
+          dos líneas, jamás" se toma como garantía dura en todo el
+          componente, no solo en el caso puntual reportado (caja de
+          composición, ya con espacio de sobra tras el fix de arriba).
+          Estas dos variantes ya cabían en una sola línea en la práctica
+          (inset-x-0 les da el ancho completo de la tarjeta, no el inset
+          reducido de la composición), pero nowrap lo deja garantizado
+          también si el texto o el padding cambian a futuro. */}
       {hasComposition ? null : isTakis ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
-          <span className="inline-flex items-center gap-1.5 border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
           </span>
         </span>
       ) : isChips ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
-          <span className="inline-flex items-center gap-1.5 border-2 border-white bg-chips-brown px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-chips-brown px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
             Ver más información
             <span aria-hidden>→</span>
           </span>
@@ -362,7 +406,16 @@ export default function ProductSlider({
   const cardClass = (flavor: Flavor) => {
     const hasComposition = isTakis && !!flavor.hoverImage;
     if (hasComposition) {
-      return `${CARD_CLASSNAME} ${hoverText} hover:bg-takis-purple`;
+      // Ronda 149: "el borde violeta elimínalo" — se quita hover:bg-
+      // takis-purple. Ese fondo violeta de la TARJETA ENTERA era
+      // justamente lo que, al asomar alrededor de la caja blanca de
+      // arriba (que vive con un inset, no a sangre), se leía como un
+      // "marco grueso" — ver Ronda 90, donde se documentó a propósito
+      // como la forma de lograr ese marco. El cliente ahora pide lo
+      // contrario: sin ese fondo, la tarjeta se queda bg-white (de
+      // CARD_CLASSNAME) también en hover — el lift + shadow-lg que ya
+      // trae CARD_CLASSNAME sigue dando feedback de hover sin el color.
+      return `${CARD_CLASSNAME} ${hoverText}`;
     }
     if (isTakis) {
       return `${CARD_CLASSNAME} ${hoverBg} ${hoverText} hover:ring-4 hover:ring-inset hover:ring-takis-purple`;

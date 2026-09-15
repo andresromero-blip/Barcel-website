@@ -66,7 +66,15 @@ import { brands } from "@/data/brands";
 //   big-mix   597x597, 148,018px opacos → ERA 44px ≈ 805px² (71% del área de chips) → sube a 52px ≈ 1123px²
 //   pop       595x595, 136,603px opacos → ERA 48px ≈ 889px² (78% del área de chips) → sube a 54px ≈ 1125px²
 // Target ≈ 1120-1160px² de tinta renderizada para las 8 marcas por igual.
-const LOGO_SIZE: Record<string, string> = {
+// Ronda 149: se exporta (antes era local a este archivo) para que
+// OtherBrandsGrid.tsx ("Explora otras marcas") pueda reusar EXACTAMENTE
+// los mismos valores en vez de inventar un segundo mapa de tamaños — el
+// cliente pidió reemplazar el cuadrado de color + nombre por el logo real
+// de cada marca ahí, y estos porcentajes de "peso visual" (tinta
+// renderizada, ver tabla arriba) ya están verificados 1:1 contra Figma;
+// duplicarlos a mano en otro archivo sería una fuente de desincronización
+// si algún tamaño se ajusta a futuro.
+export const LOGO_SIZE: Record<string, string> = {
   chips: "h-[55px] md:h-[62px]",
   takis: "h-[48px] md:h-[55px]",
   runners: "h-[57px] md:h-[64px]",
