@@ -112,9 +112,20 @@ function CardContent({
               caja). whitespace-nowrap es la garantía dura pedida; el
               inset-2/p-3 de arriba es lo que le da los ~216px que ahora
               sí alcanzan para el texto completo en una sola línea, con
-              margen de sobra (~9px). */}
+              margen de sobra (~9px).
+              Ronda 150: el cliente pidió CTAs "más cortos, accionables,
+              directos y en un tono más dinámico" — "Ver más información"
+              es genérico (4 palabras, sirve igual para un producto que
+              para un aviso legal) y pasivo (describe la acción de LEER,
+              no de probar el sabor). Se reemplaza por "Pruébalo": un
+              verbo imperativo de una sola palabra, con el gancho de
+              antojo propio de una marca de botanas (no "conoce más" sino
+              "pruébalo ya"), y de paso el nowrap de arriba queda con
+              todavía más margen al ser un texto mucho más corto. Mismo
+              cambio en las otras 3 variantes de este componente (ver
+              abajo) para que el CTA sea consistente en las 8 marcas. */}
           <span className="relative inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
-            Ver más información
+            Pruébalo
             <span aria-hidden>→</span>
           </span>
         </div>
@@ -322,20 +333,20 @@ function CardContent({
       {hasComposition ? null : isTakis ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-takis-purple px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
-            Ver más información
+            Pruébalo
             <span aria-hidden>→</span>
           </span>
         </span>
       ) : isChips ? (
         <span className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:bottom-5">
           <span className="inline-flex items-center gap-1.5 whitespace-nowrap border-2 border-white bg-chips-brown px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wide text-white shadow-lg sm:px-6 sm:py-3 sm:text-sm">
-            Ver más información
+            Pruébalo
             <span aria-hidden>→</span>
           </span>
         </span>
       ) : (
         <span className="relative flex h-5 items-center gap-1.5 font-display text-sm font-bold uppercase tracking-wide opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:text-base">
-          Ver detalle
+          Pruébalo
           <span aria-hidden>→</span>
         </span>
       )}
