@@ -546,11 +546,19 @@ export default function TakisProductDetail({
           Ronda 154: el cliente pidió el fondo de "Explora otras marcas"
           en #F4E5FF dentro de la marca Takis — coincide 1:1 con el token
           que ya trae el propio archivo de Figma para esta sección
-          (complementary-colors/takis/100). Este componente es exclusivo
-          de las páginas de sabor de Takis (a diferencia de BrandPage.tsx,
-          que es compartido por las 8 marcas), así que aquí el color va
-          fijo, sin condicional de marca. */}
-      <section className="bg-[#F4E5FF] py-14 md:py-16">
+          (complementary-colors/takis/100).
+          Ronda 161: ese comentario original decía "este componente es
+          exclusivo de Takis", pero ya no lo es desde la Ronda 99 — Chip's
+          usa el mismo TakisProductDetail.tsx y heredaba sin querer el
+          lila de Takis en su propia página de sabor. El cliente pidió
+          #FAE9E6 para Chip's — se agrega el condicional de marca que
+          faltaba (mismo patrón que brand.bg/brand.slug en el resto del
+          componente) en vez de dejar el color fijo. */}
+      <section
+        className={`py-14 md:py-16 ${
+          brand.slug === "chips" ? "bg-[#FAE9E6]" : "bg-[#F4E5FF]"
+        }`}
+      >
         <OtherBrandsGrid
           brands={otherBrands}
           heading="Explora otras marcas"
