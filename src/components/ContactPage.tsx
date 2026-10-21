@@ -17,7 +17,7 @@ import { useState, type FormEvent } from "react";
 // - Formulario con toggle "¿Nos escribes como persona o como empresa?":
 //   · Personas: nombre, correo, teléfono (opcional), asunto, mensaje.
 //   · Empresas: agrega Empresa, Cargo (opcional), Ciudad / estado
-//     (opcional) y Giro del negocio (opcional).
+//     (opcional) y Tipo de negocio (opcional).
 //   El toggle son dos <input type="radio"> dentro de un <fieldset>, así
 //   funciona con teclado (flechas) y lectores de pantalla sin ARIA extra.
 // - Campos cuadrados (radio 0), etiqueta bold arriba, botón "Enviar
@@ -97,7 +97,7 @@ const LABEL_CLASSNAME = "font-display text-sm font-bold text-grey-950";
 const MENSAJE_MAX = 1000;
 const ASUNTO_MAX = 100;
 
-// Opciones de "Giro del negocio": propuesta, pendiente de validar con el
+// Opciones de "Tipo de negocio": propuesta, pendiente de validar con el
 // cliente (el diseño solo muestra el valor por defecto "Ninguno").
 const BUSINESS_TYPES = [
   "Tienda de abarrotes / conveniencia",
@@ -379,7 +379,7 @@ export default function ContactPage() {
                       htmlFor="contact-industry"
                       className={LABEL_CLASSNAME}
                     >
-                      Giro del negocio (Opcional)
+                      Tipo de negocio (Opcional)
                     </label>
                     <div className="relative">
                       <select
