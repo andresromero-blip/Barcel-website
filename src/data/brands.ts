@@ -876,7 +876,8 @@ export const brands: Brand[] = [
     // ver nota de heroText arriba) — socialBg es solo la caja del ícono.
     socialBg: "bg-white",
     socialIcon: "text-barcel-black",
-    imageFirst: true,
+    // Ronda 170: alternancia estricta del grid (Hot Nuts quedó en 4ª posición tras moverlo).
+    imageFirst: false,
     logo: "/logos/hot-nuts.png",
     logoHover: "/logos/hot-nuts-hover.png",
     heroImage: "/products/hot-nuts/hero-original.png",
@@ -913,7 +914,7 @@ export const brands: Brand[] = [
     // 3.18:1 contra bigmix-blue, ícono negro da 16.74:1 contra la caja.
     socialBg: "bg-bigmix-yellow",
     socialIcon: "text-black",
-    imageFirst: false,
+    imageFirst: true,
     logo: "/logos/big-mix.png",
     logoHover: "/logos/big-mix-hover.png",
     heroImage: "/products/big-mix/hero-queso.png",
